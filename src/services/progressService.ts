@@ -23,38 +23,49 @@ const PROGRESS_COLLECTION = 'progress'
 export async function logProgress(
   goalId: string,
   userId: string,
-  amount: number,
-  notes?: string,
-  loggedAt?: Date,
+  value: number,
+  note?: string,
+  timestamp?: Date,
   isRetroactive?: boolean
 ): Promise<Progress> {
   try {
     const progressRef = await addDoc(collection(db, PROGRESS_COLLECTION), {
       goalId,
       userId,
-      amount,
-      notes: notes || '',
-      timestamp: Timestamp.now(),
-      loggedAt: loggedAt ? Timestamp.fromDate(loggedAt) : Timestamp.now(),
+      value,
+      note: note || '',
+      loggedAt: Timestamp.now(),
+      timestamp: timestamp ? Timestamp.fromDate(timestamp) : Timestamp.now(),
       isRetroactive: isRetroactive || false,
-      revertedBy: null,
+      revertedBy: undefined,
+      metadata: {
+        deviceId: generateDeviceId(),
+        syncStatus: 'pending',
+      },
     })
 
     return {
       id: progressRef.id,
       goalId,
-      userId,
-      amount,
-      notes: notes || '',
-      timestamp: new Date(),
-      loggedAt: loggedAt || new Date(),
+      value,
+      note: note || '',
+      loggedAt: new Date(),
+      timestamp: timestamp || new Date(),
       isRetroactive: isRetroactive || false,
-      revertedBy: null,
+      metadata: {
+        deviceId: generateDeviceId(),
+        syncStatus: 'pending',
+      },
     } as unknown as Progress
   } catch (error) {
     console.error('Error logging progress:', error)
     throw error
   }
+}
+
+function generateDeviceId(): string {
+  // Simple device ID generation (could be enhanced)
+  return `device_${Date.now()}`
 }
 
 /**
