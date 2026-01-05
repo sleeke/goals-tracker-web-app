@@ -37,7 +37,6 @@ export async function logProgress(
       loggedAt: Timestamp.now(),
       timestamp: timestamp ? Timestamp.fromDate(timestamp) : Timestamp.now(),
       isRetroactive: isRetroactive || false,
-      revertedBy: undefined,
       metadata: {
         deviceId: generateDeviceId(),
         syncStatus: 'pending',
