@@ -2,7 +2,7 @@
 import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching'
 import { registerRoute } from 'workbox-routing'
 import { NetworkFirst, CacheFirst, StaleWhileRevalidate } from 'workbox-strategies'
-import { CacheExpiration } from 'workbox-expiration'
+import { ExpirationPlugin } from 'workbox-expiration'
 
 declare const self: ServiceWorkerGlobalScope
 
@@ -19,7 +19,7 @@ registerRoute(
     cacheName: 'firebase-api',
     networkTimeoutSeconds: 10,
     plugins: [
-      new CacheExpiration({
+      new ExpirationPlugin({
         maxEntries: 100,
         maxAgeSeconds: 7 * 24 * 60 * 60, // 7 days
       }),
@@ -33,7 +33,7 @@ registerRoute(
   new CacheFirst({
     cacheName: 'assets',
     plugins: [
-      new CacheExpiration({
+      new ExpirationPlugin({
         maxEntries: 50,
         maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
       }),
@@ -47,7 +47,7 @@ registerRoute(
   new StaleWhileRevalidate({
     cacheName: 'static-resources',
     plugins: [
-      new CacheExpiration({
+      new ExpirationPlugin({
         maxEntries: 100,
         maxAgeSeconds: 7 * 24 * 60 * 60, // 7 days
       }),

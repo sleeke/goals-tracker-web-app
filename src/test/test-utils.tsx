@@ -1,5 +1,5 @@
-import { render, RenderOptions } from '@testing-library/react'
-import React, { ReactElement } from 'react'
+import { render, type RenderOptions } from '@testing-library/react'
+import { type ReactElement } from 'react'
 
 /**
  * Custom render function for testing React components
