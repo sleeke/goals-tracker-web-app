@@ -11,12 +11,12 @@ test.describe('Goal Tracker - Basic Navigation', () => {
   test('should have proper PWA metadata', async ({ page }) => {
     await page.goto('/')
     
-    // Check meta tags
-    const viewport = await page.getAttribute('meta[name="viewport"]', 'content')
-    expect(viewport).toContain('width=device-width')
+    // Check meta tags using locator
+    const viewport = page.locator('meta[name="viewport"]')
+    await expect(viewport).toHaveAttribute('content', /width=device-width/)
     
-    const themeColor = await page.getAttribute('meta[name="theme-color"]', 'content')
-    expect(themeColor).toBeDefined()
+    const themeColor = page.locator('meta[name="theme-color"]')
+    await expect(themeColor).toHaveAttribute('content', /.+/)
   })
 })
 

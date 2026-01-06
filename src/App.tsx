@@ -26,12 +26,21 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 function AppRoutes() {
-  const { user, isLoading } = useAuth()
+  const { user, isLoading, error } = useAuth()
 
   if (isLoading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
         <p>Loading...</p>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column', gap: '20px' }}>
+        <p style={{ color: 'red', fontWeight: 'bold' }}>Error: {error}</p>
+        <p style={{ fontSize: '12px', color: '#666' }}>Check browser console for more details</p>
       </div>
     )
   }

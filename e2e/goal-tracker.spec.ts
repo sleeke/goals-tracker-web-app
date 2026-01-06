@@ -14,7 +14,21 @@ test.describe('Goal Tracker E2E Flow', () => {
   }) => {
     // Step 1: Log in
     console.log('Step 1: Logging in...')
-    await loginAsTestUser(page)
+    try {
+      await loginAsTestUser(page)
+    } catch (loginError) {
+      console.error('Login failed:', loginError)
+      console.log('Current URL:', page.url())
+      
+      // Check for error message on page
+      const errorMsg = page.locator('.error-message')
+      if (await errorMsg.isVisible().catch(() => false)) {
+        const errorText = await errorMsg.textContent()
+        console.error('Page error:', errorText)
+      }
+      
+      throw loginError
+    }
     
     // Verify we're on dashboard
     await expect(page).toHaveURL(/.*\/dashboard/)

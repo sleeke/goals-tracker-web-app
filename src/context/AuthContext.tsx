@@ -56,6 +56,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } finally {
         setIsLoading(false)
       }
+    }, (authError) => {
+      console.error('Auth state change error:', authError)
+      setError(authError instanceof Error ? authError.message : 'Authentication error')
+      setIsLoading(false)
     })
 
     return unsubscribe
