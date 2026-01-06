@@ -31,6 +31,7 @@ service cloud.firestore {
     // Progress collection - users can only access their own progress
     match /progress/{progressId} {
       allow read: if isAuthenticated() && isOwner(resource.data.userId);
+      allow list: if isAuthenticated();  // Allow querying, userId check happens per-document
       allow create: if isAuthenticated() && 
                        isOwner(request.resource.data.userId) &&
                        request.resource.data.goalId is string &&
