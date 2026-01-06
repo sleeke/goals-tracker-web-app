@@ -27,8 +27,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Listen for auth state changes
   useEffect(() => {
+    console.log('[AuthContext] Initializing auth state listener')
+    let mounted = true
+    
+    // Set a timeout to prevent infinite loading
+    const initTimeout = setTimeout(() => {
+      if (mounted && isLoading) {
+        console.warn('[AuthContext] Auth initialization timeout after 10s')
+        setIsLoading(false)
+        setError('Authentication initialization timeout. Check Firebase configuration.')
+      }
+    }, 10000)
+
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (!mounted) return
+      
       try {
+        console.log('[AuthContext] Auth state changed:', firebaseUser?.uid ? 'User logged in' : 'User logged out')
         if (firebaseUser) {
           // Convert Firebase user to our User type
           const appUser: User = {
@@ -51,18 +66,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(null)
         }
       } catch (err) {
-        console.error('Error setting user:', err)
+        console.error('[AuthContext] Error setting user:', err)
         setError(err instanceof Error ? err.message : 'Failed to load user')
       } finally {
-        setIsLoading(false)
+        if (mounted) {
+          setIsLoading(false)
+          clearTimeout(initTimeout)
+        }
       }
     }, (authError) => {
-      console.error('Auth state change error:', authError)
-      setError(authError instanceof Error ? authError.message : 'Authentication error')
-      setIsLoading(false)
+      console.error('[AuthContext] Auth state change error:', authError)
+      if (mounted) {
+        setError(authError instanceof Error ? authError.message : 'Authentication error')
+        setIsLoading(false)
+        clearTimeout(initTimeout)
+      }
     })
 
-    return unsubscribe
+    return () => {
+      mounted = false
+      clearTimeout(initTimeout)
+      unsubscribe()
+    }
   }, [])
 
   const signup = async (email: string, password: string, displayName?: string) => {

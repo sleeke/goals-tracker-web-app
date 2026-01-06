@@ -13,6 +13,20 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
+// Validate that required Firebase config is present
+if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+  console.error('Firebase configuration incomplete. Missing required environment variables:', {
+    hasApiKey: !!firebaseConfig.apiKey,
+    hasProjectId: !!firebaseConfig.projectId,
+    hasAuthDomain: !!firebaseConfig.authDomain,
+  });
+}
+
+console.log('Initializing Firebase with config:', {
+  projectId: firebaseConfig.projectId,
+  authDomain: firebaseConfig.authDomain,
+});
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 

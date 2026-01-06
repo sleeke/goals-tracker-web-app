@@ -2,14 +2,16 @@ import { test, expect } from '@playwright/test'
 
 test.describe('Goal Tracker - Basic Navigation', () => {
   test('should load the app', async ({ page }) => {
-    await page.goto('/')
+    await page.goto('http://localhost:5175/', { waitUntil: 'domcontentloaded' })
+
     // TODO: Add actual assertions once app is built
     // For now, just verify page loads
     expect(page.url()).toContain('localhost')
   })
 
   test('should have proper PWA metadata', async ({ page }) => {
-    await page.goto('/')
+    await page.goto('http://localhost:5175/', { waitUntil: 'domcontentloaded' })
+
     
     // Check meta tags using locator
     const viewport = page.locator('meta[name="viewport"]')
@@ -40,7 +42,8 @@ test.describe('Goal Tracker - Mobile Responsiveness', () => {
   test('should be responsive on mobile devices', async ({ page }) => {
     // Set mobile viewport
     await page.setViewportSize({ width: 375, height: 667 })
-    await page.goto('/')
+    await page.goto('http://localhost:5175/', { waitUntil: 'domcontentloaded' })
+
     
     // TODO: Add assertions for mobile layout
     expect(page.url()).toContain('localhost')
@@ -49,7 +52,8 @@ test.describe('Goal Tracker - Mobile Responsiveness', () => {
   test('should work on tablet devices', async ({ page }) => {
     // Set tablet viewport
     await page.setViewportSize({ width: 768, height: 1024 })
-    await page.goto('/')
+    await page.goto('http://localhost:5175/', { waitUntil: 'domcontentloaded' })
+
     
     // TODO: Add assertions for tablet layout
     expect(page.url()).toContain('localhost')

@@ -6,7 +6,7 @@ const TEST_GOAL_TITLE = 'E2E Test Goal'
 test.describe('Goal Tracker E2E Flow', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the app
-    await page.goto('http://localhost:5173/', { waitUntil: 'domcontentloaded' })
+    await page.goto('http://localhost:5175/', { waitUntil: 'domcontentloaded' })
   })
 
   test('should complete full flow: login → create goal → log progress → verify', async ({

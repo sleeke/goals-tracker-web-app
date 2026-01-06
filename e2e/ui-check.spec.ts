@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 
 test.describe('UI Checks', () => {
   test('should load login page', async ({ page }) => {
-    await page.goto('http://localhost:5173/', { waitUntil: 'domcontentloaded' })
+    await page.goto('http://localhost:5175/', { waitUntil: 'domcontentloaded' })
     
     // Check if login page loads
     await expect(page.locator('h1')).toContainText('Goal Tracker')
