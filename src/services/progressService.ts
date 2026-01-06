@@ -146,10 +146,16 @@ export function subscribeToGoalProgress(
   )
   
   const unsubscribe = onSnapshot(q, (snapshot) => {
-    const records = snapshot.docs.map((doc) => ({
-      ...doc.data(),
-      id: doc.id,
-    } as Progress))
+    const records = snapshot.docs.map((doc) => {
+      const data = doc.data()
+      return {
+        ...data,
+        id: doc.id,
+        // Convert Firestore Timestamps to JS Dates
+        loggedAt: data.loggedAt?.toDate ? data.loggedAt.toDate() : new Date(data.loggedAt),
+        timestamp: data.timestamp?.toDate ? data.timestamp.toDate() : new Date(data.timestamp),
+      } as Progress
+    })
     callback(records)
   })
 
@@ -209,6 +215,7 @@ export async function deleteProgress(progressId: string): Promise<void> {
  */
 export async function calculateGoalProgress(
   goalId: string,
+  userId: string,
   startDate: Date,
   endDate: Date
 ): Promise<number> {
@@ -218,6 +225,7 @@ export async function calculateGoalProgress(
 
     const constraints: QueryConstraint[] = [
       where('goalId', '==', goalId),
+      where('userId', '==', userId),
       where('loggedAt', '>=', startTimestamp),
       where('loggedAt', '<=', endTimestamp),
     ]
@@ -225,10 +233,23 @@ export async function calculateGoalProgress(
     const q = query(collection(db, PROGRESS_COLLECTION), ...constraints)
     const snapshot = await getDocs(q)
     
+    console.log('[calculateGoalProgress]', {
+      goalId,
+      userId,
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+      recordsFound: snapshot.docs.length,
+      records: snapshot.docs.map(doc => ({
+        value: doc.get('value'),
+        loggedAt: doc.get('loggedAt')?.toDate?.()?.toISOString() || doc.get('loggedAt'),
+        revertedBy: doc.get('revertedBy'),
+      }))
+    })
+    
     return snapshot.docs.reduce((total, doc) => {
       const revertedBy = doc.get('revertedBy')
       // Exclude reverted records
-      return revertedBy ? total : total + doc.get('amount')
+      return revertedBy ? total : total + doc.get('value')
     }, 0)
   } catch (error) {
     console.error('Error calculating goal progress:', error)

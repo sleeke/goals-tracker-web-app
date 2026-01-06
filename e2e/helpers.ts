@@ -14,7 +14,7 @@ export const TEST_USER = {
  */
 export async function loginAsTestUser(page: any) {
   console.log('[LOGIN] Navigating to app...')
-  await page.goto('http://localhost:5175/', { waitUntil: 'domcontentloaded' })
+  await page.goto('http://localhost:5173/', { waitUntil: 'domcontentloaded' })
   await page.waitForTimeout(500)
 
   // Check if already logged in
@@ -120,9 +120,10 @@ export async function createGoal(
   // Wait for goal to be created and visible
   await page.waitForTimeout(500) // Wait for creation and re-render
   
-  // Verify goal exists by checking if we can see it
-  const goalText = page.locator(`text=${data.title}`)
-  await goalText.waitFor({ state: 'visible', timeout: 10000 })
+  // Verify goal exists by checking if we can see it in the goal card (not modal)
+  // Use .first() to avoid strict mode violations when multiple goals have same title
+  const goalCard = page.locator(`.goal-card:has-text("${data.title}")`).first()
+  await goalCard.waitFor({ state: 'visible', timeout: 10000 })
   
   console.log('[CREATE_GOAL] Goal created successfully')
 }
@@ -141,12 +142,12 @@ export async function logProgress(
 ) {
   console.log(`[LOG_PROGRESS] Logging progress for goal: "${goalTitle}"`)
   
-  // Find and click the log progress button for this goal
-  const goalLocator = page.locator(`text="${goalTitle}"`).first()
-  await goalLocator.scrollIntoViewIfNeeded()
+  // Find the goal card with this title
+  const goalCard = page.locator(`.goal-card:has-text("${goalTitle}")`).first()
+  await goalCard.scrollIntoViewIfNeeded()
   
-  // Find the Log Progress button within or near the goal card
-  const logProgressBtn = page.locator(`text="${goalTitle}"`).locator('..').locator('button:has-text("Log Progress")')
+  // Find the Log Progress button within the goal card
+  const logProgressBtn = goalCard.locator('button:has-text("Log Progress")')
   
   console.log('[LOG_PROGRESS] Clicking Log Progress button...')
   await logProgressBtn.click()
@@ -166,9 +167,11 @@ export async function logProgress(
     await page.fill('input[id="logDate"]', data.date)
   }
 
-  // Submit form
+  // Submit form - click the submit button inside the modal form
   console.log('[LOG_PROGRESS] Submitting progress form...')
-  await page.click('button:has-text("Log Progress"):not(:disabled)')
+  // Use the modal's submit button specifically
+  const submitBtn = page.locator('.progress-form button[type="submit"]').first()
+  await submitBtn.click()
 
   console.log('[LOG_PROGRESS] Waiting for progress to be recorded...')
   await page.waitForTimeout(800) // Wait for Firestore operation

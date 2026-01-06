@@ -8,7 +8,7 @@ import {
   deleteGoal,
   subscribeToUserGoals,
 } from '@/services/goalService'
-import { logProgress, calculateGoalProgress } from '@/services/progressService'
+import { logProgress, calculateGoalProgress, subscribeToGoalProgress } from '@/services/progressService'
 import type { Goal } from '@/types'
 import './DashboardPage.css'
 
@@ -53,6 +53,53 @@ export function DashboardPage() {
     }
   }, [user?.uid])
 
+  // Subscribe to progress updates for all goals
+  useEffect(() => {
+    if (!goals.length || !user?.uid) return
+
+    const unsubscribers: Array<() => void> = []
+
+    for (const goal of goals) {
+      const unsubscribe = subscribeToGoalProgress(goal.id!, (progress) => {
+        // Calculate total progress for today
+        const today = new Date()
+        const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+        const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59)
+
+        console.log('[Dashboard] Progress subscription update for goal', goal.id, {
+          progressRecords: progress.length,
+          startOfDay: startOfDay.toISOString(),
+          endOfDay: endOfDay.toISOString(),
+          records: progress.map(p => ({
+            value: p.value,
+            loggedAt: p.loggedAt?.toISOString?.() || p.loggedAt,
+            inRange: p.loggedAt >= startOfDay && p.loggedAt <= endOfDay,
+            revertedBy: p.revertedBy,
+          }))
+        })
+
+        const totalProgress = progress
+          .filter((p) => {
+            // loggedAt is now a proper JS Date thanks to subscribeToGoalProgress conversion
+            return p.loggedAt >= startOfDay && p.loggedAt <= endOfDay && !p.revertedBy
+          })
+          .reduce((total, p) => total + (p.value || 0), 0)
+
+        console.log('[Dashboard] Calculated total progress:', totalProgress)
+
+        setGoalProgress((prev) => ({
+          ...prev,
+          [goal.id!]: totalProgress,
+        }))
+      })
+      unsubscribers.push(unsubscribe)
+    }
+
+    return () => {
+      unsubscribers.forEach((unsub) => unsub())
+    }
+  }, [goals, user?.uid])
+
   const loadProgressForGoals = async (goalsToLoad: Goal[]) => {
     if (!user?.uid) return
 
@@ -67,6 +114,7 @@ export function DashboardPage() {
         // For now, just get today's progress
         const progress = await calculateGoalProgress(
           goal.id!,
+          user.uid,
           startOfDay,
           endOfDay
         )
@@ -144,6 +192,7 @@ export function DashboardPage() {
       // Reload progress for the goal
       const progress = await calculateGoalProgress(
         selectedGoal.id,
+        user.uid,
         new Date(data.loggedAt.getFullYear(), data.loggedAt.getMonth(), data.loggedAt.getDate()),
         new Date(data.loggedAt.getFullYear(), data.loggedAt.getMonth(), data.loggedAt.getDate(), 23, 59, 59)
       )
