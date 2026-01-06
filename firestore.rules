@@ -31,7 +31,10 @@ service cloud.firestore {
     // Progress collection - users can only access their own progress
     match /progress/{progressId} {
       allow read: if isAuthenticated() && isOwner(resource.data.userId);
-      allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
+      allow create: if isAuthenticated() && 
+                       isOwner(request.resource.data.userId) &&
+                       request.resource.data.goalId is string &&
+                       request.resource.data.value is number;
       allow update: if isAuthenticated() && isOwner(resource.data.userId);
       allow delete: if isAuthenticated() && isOwner(resource.data.userId);
     }
