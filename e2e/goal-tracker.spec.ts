@@ -6,10 +6,7 @@ const TEST_GOAL_TITLE = 'E2E Test Goal'
 test.describe('Goal Tracker E2E Flow', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the app
-    await page.goto('http://localhost:5173/')
-    
-    // Wait for the page to load
-    await page.waitForLoadState('networkidle')
+    await page.goto('http://localhost:5173/', { waitUntil: 'domcontentloaded' })
   })
 
   test('should complete full flow: login → create goal → log progress → verify', async ({
@@ -51,14 +48,17 @@ test.describe('Goal Tracker E2E Flow', () => {
     console.log('Step 4: Verifying progress is stored...')
     
     // Reload page to verify data persisted
-    await page.reload()
-    await page.waitForLoadState('networkidle')
+    await page.reload({ waitUntil: 'domcontentloaded' })
+    await page.waitForTimeout(1000) // Wait for Firestore to reload and calculate progress
     
     // Goal should still be visible
-    await expect(page.locator(`text=${TEST_GOAL_TITLE}`)).toBeVisible()
+    const goalElement = page.locator(`text=${TEST_GOAL_TITLE}`)
+    await goalElement.waitFor({ state: 'visible', timeout: 5000 })
+    await expect(goalElement).toBeVisible()
     
     // Check progress bar shows progress
     const progressValue = page.locator('text=/\\d+ \\/ 5 units/')
+    await progressValue.waitFor({ state: 'visible', timeout: 5000 })
     await expect(progressValue).toBeVisible()
     
     // Verify progress is at least 2

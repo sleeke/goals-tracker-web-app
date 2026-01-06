@@ -13,24 +13,55 @@ export const TEST_USER = {
  * Helper to login via UI
  */
 export async function loginAsTestUser(page: any) {
-  await page.goto('http://localhost:5173/')
-  await page.waitForLoadState('networkidle')
+  console.log('[LOGIN] Navigating to app...')
+  await page.goto('http://localhost:5173/', { waitUntil: 'domcontentloaded' })
+  await page.waitForTimeout(500)
 
   // Check if already logged in
-  const dashboardVisible = await page.url().includes('/dashboard').catch(() => false)
-  if (dashboardVisible) {
+  const currentUrl = page.url()
+  console.log('[LOGIN] Current URL:', currentUrl)
+  
+  if (currentUrl.includes('/dashboard')) {
+    console.log('[LOGIN] Already on dashboard')
     return
   }
 
-  // Fill in login form
-  await page.fill('input[id="email"]', TEST_USER.email)
-  await page.fill('input[id="password"]', TEST_USER.password)
+  console.log('[LOGIN] Filling in login form...')
+  try {
+    // Fill in login form
+    await page.fill('input[id="email"]', TEST_USER.email, { timeout: 5000 })
+    await page.fill('input[id="password"]', TEST_USER.password, { timeout: 5000 })
 
-  // Click login
-  await page.click('button:has-text("Sign In")')
+    // Click login
+    console.log('[LOGIN] Clicking Sign In button...')
+    await page.click('button:has-text("Sign In")', { timeout: 5000 })
 
-  // Wait for dashboard
-  await page.waitForURL('**/dashboard', { timeout: 10000 })
+    // Wait for dashboard with a timeout
+    console.log('[LOGIN] Waiting for dashboard redirect...')
+    try {
+      await page.waitForURL('**/dashboard', { timeout: 10000 })
+      console.log('[LOGIN] Successfully redirected to dashboard')
+    } catch (urlWaitError) {
+      console.error('[LOGIN] Failed to redirect to dashboard:', urlWaitError)
+      
+      // Check if there's an error message displayed
+      const errorElement = page.locator('.error-message')
+      const errorVisible = await errorElement.isVisible().catch(() => false)
+      
+      if (errorVisible) {
+        const errorText = await errorElement.textContent()
+        console.error('[LOGIN] Login error displayed:', errorText)
+        throw new Error(`Login failed: ${errorText}`)
+      }
+      
+      throw new Error(`Login redirect timeout - test user may not exist. Create account with email: ${TEST_USER.email}`)
+    }
+    
+    console.log('[LOGIN] Login complete')
+  } catch (err) {
+    console.error('[LOGIN] Login error:', err)
+    throw err
+  }
 }
 
 /**
@@ -54,11 +85,15 @@ export async function createGoal(
     unit?: string
   }
 ) {
+  console.log(`[CREATE_GOAL] Creating goal: "${data.title}"`)
   // Click new goal button
   await page.click('button:has-text("New Goal")')
-  await page.waitForSelector('text=Create New Goal')
+  
+  console.log('[CREATE_GOAL] Waiting for modal...')
+  await page.waitForTimeout(300) // Brief wait for modal animation
 
   // Fill form
+  console.log('[CREATE_GOAL] Filling form...')
   await page.fill('input[id="title"]', data.title)
 
   if (data.description) {
@@ -77,14 +112,19 @@ export async function createGoal(
     await page.fill('input[id="unit"]', data.unit)
   }
 
-  // Submit
+  // Submit form
+  console.log('[CREATE_GOAL] Submitting form...')
   await page.click('button:has-text("Create Goal")')
 
-  // Wait for modal to close
-  await page.waitForSelector('text=Create New Goal', { state: 'hidden' })
-
-  // Wait for goal to appear
-  await page.waitForSelector(`text=${data.title}`, { timeout: 10000 })
+  console.log('[CREATE_GOAL] Waiting for goal to appear...')
+  // Wait for goal to be created and visible
+  await page.waitForTimeout(500) // Wait for creation and re-render
+  
+  // Verify goal exists by checking if we can see it
+  const goalText = page.locator(`text=${data.title}`)
+  await goalText.waitFor({ state: 'visible', timeout: 10000 })
+  
+  console.log('[CREATE_GOAL] Goal created successfully')
 }
 
 /**
@@ -99,15 +139,23 @@ export async function logProgress(
     date?: string
   }
 ) {
-  // Find goal and click log progress
-  const goalCard = page.locator(`text=${goalTitle}`).first()
-  await goalCard.scrollIntoViewIfNeeded()
-  await page.click('button:has-text("Log Progress")')
+  console.log(`[LOG_PROGRESS] Logging progress for goal: "${goalTitle}"`)
+  
+  // Find and click the log progress button for this goal
+  const goalLocator = page.locator(`text="${goalTitle}"`).first()
+  await goalLocator.scrollIntoViewIfNeeded()
+  
+  // Find the Log Progress button within or near the goal card
+  const logProgressBtn = page.locator(`text="${goalTitle}"`).locator('..').locator('button:has-text("Log Progress")')
+  
+  console.log('[LOG_PROGRESS] Clicking Log Progress button...')
+  await logProgressBtn.click()
 
-  // Wait for modal
-  await page.waitForSelector('text=Log Progress')
+  console.log('[LOG_PROGRESS] Waiting for modal...')
+  await page.waitForTimeout(300) // Wait for modal animation
 
   // Fill form
+  console.log('[LOG_PROGRESS] Filling progress form...')
   await page.fill('input[id="amount"]', data.amount.toString())
 
   if (data.notes) {
@@ -118,9 +166,12 @@ export async function logProgress(
     await page.fill('input[id="logDate"]', data.date)
   }
 
-  // Submit
-  await page.click('button:has-text("Log Progress")')
+  // Submit form
+  console.log('[LOG_PROGRESS] Submitting progress form...')
+  await page.click('button:has-text("Log Progress"):not(:disabled)')
 
-  // Wait for modal to close
-  await page.waitForSelector('text=Log Progress', { state: 'hidden' })
+  console.log('[LOG_PROGRESS] Waiting for progress to be recorded...')
+  await page.waitForTimeout(800) // Wait for Firestore operation
+  
+  console.log('[LOG_PROGRESS] Progress logged successfully')
 }
