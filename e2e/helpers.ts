@@ -56,7 +56,9 @@ export async function loginAsTestUser(page: any) {
       
       throw new Error(`Login redirect timeout - test user may not exist. Create account with email: ${TEST_USER.email}`)
     }
-    
+
+    await page.waitForTimeout(500)
+
     console.log('[LOGIN] Login complete')
   } catch (err) {
     console.error('[LOGIN] Login error:', err)

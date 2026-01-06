@@ -119,4 +119,67 @@ test.describe('Goal Tracker E2E Flow', () => {
 
     console.log('✅ All frequency tests passed!')
   })
+
+  test('cleanup: delete all goals to reset user data to base state', async ({ page }) => {
+    console.log('🧹 Starting cleanup: deleting all goals...')
+    
+    // Login
+    await loginAsTestUser(page)
+    await expect(page).toHaveURL(/.*\/dashboard/)
+
+    // Listen for native browser dialogs and automatically accept them
+    page.on('dialog', async (dialog) => {
+      console.log(`[Cleanup] Dialog detected: ${dialog.message()}`)
+      await dialog.accept()
+    })
+
+    // Repeatedly delete all visible goals
+    let goalsDeleted = 0
+    let maxAttempts = 20 // Safety limit to prevent infinite loops
+
+    while (maxAttempts > 0) {
+      // Check if we have an empty state
+      const emptyState = page.locator('text=No goals yet')
+      const isEmpty = await emptyState.isVisible().catch(() => false)
+      
+      console.log(`[Cleanup Loop ${21 - maxAttempts}] Empty state: ${isEmpty}`)
+
+      if (isEmpty) {
+        console.log('✅ All goals deleted! User data reset to base state.')
+        break
+      }
+
+      // Find and delete the first visible goal
+      const firstGoalCard = page.locator('.goal-card').first()
+      const isVisible = await firstGoalCard.isVisible().catch(() => false)
+
+      if (!isVisible) {
+        console.log('✅ No more visible goals. Cleanup complete.')
+        break
+      }
+
+      // Find the delete button (trash icon) within the goal card
+      const deleteBtn = firstGoalCard.locator('button[aria-label="Delete goal"]').first()
+      
+      console.log(`[Cleanup] Found delete button: ${await deleteBtn.isVisible().catch(() => false)}`)
+      
+      // Scroll into view and click delete
+      await deleteBtn.scrollIntoViewIfNeeded()
+      await deleteBtn.click()
+
+      console.log(`[Cleanup] Clicked delete button`)
+
+      // Wait for goal to be removed
+      await page.waitForTimeout(800)
+      
+      goalsDeleted++
+      console.log(`Deleted goal ${goalsDeleted}...`)
+
+      maxAttempts--
+    }
+
+    await expect(goalsDeleted).toBeGreaterThan(0) // Ensure at least one goal was deleted
+
+    console.log(`✅ Cleanup complete: ${goalsDeleted} goals deleted`)
+  })
 })
