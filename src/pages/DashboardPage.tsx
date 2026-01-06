@@ -153,9 +153,17 @@ export function DashboardPage() {
         [selectedGoal.id!]: progress,
       }))
     } catch (err) {
+      const error = err as any
       const message = err instanceof Error ? err.message : 'Failed to log progress'
-      setError(message)
-      console.error('Error logging progress:', err)
+      const fullError = `${message}${error?.code ? ` [${error.code}]` : ''}`
+      
+      setError(fullError)
+      console.error('Error logging progress:', {
+        message,
+        code: error?.code,
+        details: error?.message,
+        fullError: err,
+      })
     } finally {
       setIsLoading(false)
     }
@@ -190,7 +198,16 @@ export function DashboardPage() {
       </header>
 
       <main className="dashboard-content">
-        {error && <div className="error-banner">{error}</div>}
+        {error && (
+          <div className="error-banner">
+            <div className="error-message-header">
+              <strong>⚠️ Error:</strong> {error}
+            </div>
+            <p style={{ fontSize: '12px', color: '#999', margin: '8px 0 0 0' }}>
+              Check browser console (F12) for more details
+            </p>
+          </div>
+        )}
 
         <div className="dashboard-controls">
           <h2>Your Goals</h2>
