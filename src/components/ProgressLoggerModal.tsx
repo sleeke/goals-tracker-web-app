@@ -40,8 +40,11 @@ export function ProgressLoggerModal({
     }
 
     try {
-      const loggedDate = new Date(logDate)
-      loggedDate.setHours(12, 0, 0, 0) // Set to noon to avoid timezone issues
+      // Parse the date string (YYYY-MM-DD) correctly
+      // The HTML date input gives us a string in the user's local timezone
+      // We need to create a Date object that represents midnight of that day in the user's timezone
+      const [year, month, day] = logDate.split('-').map(Number)
+      const loggedDate = new Date(year, month - 1, day, 0, 0, 0, 0)
 
       await onSubmit({
         amount,

@@ -4,38 +4,7 @@ This document tracks open bugs in the Goal Tracker application. Bugs are listed 
 
 ## Open Bugs
 
-### 1. Incorrect date is stored for retroactive progress
-
-**Status**: Open  
-**Severity**: Medium  
-**Date Reported**: January 7, 2026
-
-**Reproduction Steps**:
-1. Add progress for a goal
-2. Select a date in the past
-3. Store the progress
-4. Check the date stored by looking at the history
-
-**Expected Behavior**: Date is as selected
-
-**Actual Behavior**: Date is one day earlier
-
-**Details**: This could be a time zone issue. When storing retroactive progress entries with a selected past date, the stored date is off by one day. This may be related to how the date picker sends the date (possibly as midnight UTC) versus how Firebase stores it or how the app displays it.
-
-**Investigation Notes**:
-- Check `ProgressLoggerModal.tsx` for how the date is captured from the date picker
-- Check `src/services/progressService.ts` for how `logProgress()` stores the timestamp
-- Consider time zone handling when converting between local time and UTC
-- Test with different browser time zones
-
-**Affected Files**:
-- `src/components/ProgressLoggerModal.tsx`
-- `src/services/progressService.ts`
-- `src/components/ProgressHistoryModal.tsx` (displays the incorrect date)
-
----
-
-## Closed Bugs
+(No open bugs at this time)
 
 (Bugs will be moved here once verified as fixed with tests)
 
