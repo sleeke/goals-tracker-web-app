@@ -57,27 +57,148 @@ across the entire application from auth to analytics.
 - Run tests: `npm run test` or `npm run test:ui`
 - E2E testing: `npm run e2e` (desktop) or `npm run e2e:headed` (with UI)
 
-### 3. Git Commit
+### 3. Update Documentation (for significant changes)
+For any significant features, refactors, or changes to the architecture:
+
+- **Identify affected docs**: Which documentation files describe the changed feature?
+  - Feature docs: `docs/03-AUTHENTICATION.md`, `docs/04-GOALS.md`, etc.
+  - Architecture docs: `docs/01-ARCHITECTURE.md`, `docs/02-DATA-TYPES.md`
+  - Config docs: `docs/09-CONFIGURATION.md`
+  - Other affected docs: See [docs/INDEX.md](./docs/INDEX.md)
+
+- **Update documentation**:
+  - Update relevant feature documentation with new/changed functionality
+  - Update architecture docs if data flow or system design changed
+  - Update code examples to match current implementation
+  - Add/remove terms in [docs/GLOSSARY.md](./docs/GLOSSARY.md) if needed
+  - Add external resources to [docs/LEARNING-RESOURCES.md](./docs/LEARNING-RESOURCES.md) if relevant
+
+- **Verify links**: Ensure all internal documentation links still work
+
+**Example**: If you add a new authentication method, update:
+- `docs/03-AUTHENTICATION.md` - Add the new method to the flow
+- `docs/01-ARCHITECTURE.md` - If system architecture changed
+- `docs/GLOSSARY.md` - If new terms need defining
+
+### 4. Git Commit (including docs)
 ```bash
 # View changes
 git status
 git diff
 
-# Stage all changes
+# Stage all changes (including documentation updates)
 git add .
 
 # Commit with descriptive message
 git commit -m "feat: Brief summary of changes
 
-Detailed description (optional) of why this change was made."
+Detailed description of changes made and why.
+
+Documentation updated:
+- Updated docs/04-GOALS.md with new goal filtering feature
+- Updated docs/08-SERVICES.md with new goalService function
+- Updated docs/GLOSSARY.md with new terms"
 ```
 
-### 4. Before Pushing
+**Commit message format for documentation updates**:
+- Add a "Documentation updated:" section listing which docs were changed
+- This makes it clear to reviewers what documentation is current
+- Example at bottom of section
+
+### 5. Before Pushing
 - Ensure all tests pass
 - Build verification: `npm run build` (0 errors)
 - Dev server runs: `npm run dev` (no errors)
+- Documentation is accurate and links work
+- Commit message clearly describes what was added/changed
 
-## Current Phase
+## Documentation Maintenance
+
+### When to Update Docs
+
+Update documentation when making:
+- **New features** - Add feature docs or update existing ones
+- **API changes** - Update service function signatures in docs/08-SERVICES.md
+- **Data model changes** - Update docs/02-DATA-TYPES.md
+- **Architecture changes** - Update docs/01-ARCHITECTURE.md
+- **Configuration changes** - Update docs/09-CONFIGURATION.md
+- **New technical concepts** - Add to docs/GLOSSARY.md
+
+**Do NOT update docs for**:
+- Minor bug fixes
+- Code style changes
+- Internal refactoring (if behavior unchanged)
+
+### How to Update Docs
+
+1. **Identify which docs are affected** (use [docs/INDEX.md](./docs/INDEX.md) for reference)
+2. **Update each affected document**:
+   - Keep examples current with actual code
+   - Update descriptions to match implementation
+   - Update diagrams/flows if behavior changed
+   - Add cross-references to related docs
+3. **Test links**: Ensure all internal links still work
+4. **Include in commit**: Add "Documentation updated:" section to commit message
+
+### Documentation Structure
+
+```
+docs/
+├── README.md                 ← Quick navigation
+├── INDEX.md                  ← Visual index & reading paths
+├── 00-OVERVIEW.md            ← Project overview
+├── 01-ARCHITECTURE.md        ← System design
+├── 02-DATA-TYPES.md          ← TypeScript types
+├── 03-AUTHENTICATION.md      ← Auth feature
+├── 04-GOALS.md               ← Goals feature
+├── 05-PROGRESS-TRACKING.md   ← Progress feature
+├── 06-OFFLINE-FIRST-SYNC.md  ← Offline/sync feature
+├── 07-COMPONENTS.md          ← React components
+├── 08-SERVICES.md            ← Business logic
+├── 09-CONFIGURATION.md       ← Firebase setup
+├── 10-TESTING.md             ← Testing guide
+├── 11-DEPLOYMENT.md          ← Deploy guide
+├── GLOSSARY.md               ← Technical terms
+└── LEARNING-RESOURCES.md     ← External links
+```
+
+See [docs/INDEX.md](./docs/INDEX.md) for which docs cover which topics.
+
+### Example: Documenting a New Feature
+
+If you add a new goal filtering feature:
+
+```bash
+# 1. Update the feature docs
+# Edit: docs/04-GOALS.md
+# Add section on filtering, update code examples, add to "Common Tasks"
+
+# 2. Update services docs if needed
+# Edit: docs/08-SERVICES.md
+# Add new service function documentation
+
+# 3. Update architecture docs if flow changed
+# Edit: docs/01-ARCHITECTURE.md
+# Update data flow diagram if relevant
+
+# 4. Update glossary if new terms
+# Edit: docs/GLOSSARY.md
+# Add definitions for new concepts
+
+# 5. Commit with documentation note
+git add .
+git commit -m "feat: Add goal filtering by category
+
+Users can now filter goals by category on the dashboard.
+Implemented GoalFilter component and updateGoalQuery service function.
+
+Documentation updated:
+- docs/04-GOALS.md: Added filtering feature section and code examples
+- docs/07-COMPONENTS.md: Added GoalFilter component documentation
+- docs/08-SERVICES.md: Added updateGoalQuery function reference"
+```
+
+
 
 **Phase 3: Visible, Testable Features**
 
