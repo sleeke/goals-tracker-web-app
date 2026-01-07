@@ -37,10 +37,11 @@ test.describe('Goal Tracker E2E Flow', () => {
     // Step 2: Ensure goal exists - create if needed
     console.log('Step 2: Checking for existing goals...')
     
-    const emptyState = page.locator('text=No goals yet')
-    const hasNoGoals = await emptyState.isVisible().catch(() => false)
+    // check for goal card with title TEST_GOAL_TITLE
+    const existingGoal = page.locator(`.goal-card:has-text("${TEST_GOAL_TITLE}")`).first()
+    const goalExists = await existingGoal.isVisible().catch(() => false)
 
-    if (hasNoGoals) {
+    if (!goalExists) {
       console.log('Step 2a: Creating test goal...')
       await createGoal(page, {
         title: TEST_GOAL_TITLE,
