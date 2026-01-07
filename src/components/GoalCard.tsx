@@ -8,6 +8,7 @@ interface GoalCardProps {
   yearlyProgress: number
   onLogProgress: (goalId: string) => void
   onEdit: (goal: Goal) => void
+  onViewHistory: (goal: Goal) => void
   onDelete: (goalId: string) => void
   isLoading?: boolean
 }
@@ -19,6 +20,7 @@ export function GoalCard({
   yearlyProgress,
   onLogProgress,
   onEdit,
+  onViewHistory,
   onDelete,
   isLoading = false,
 }: GoalCardProps) {
@@ -57,6 +59,15 @@ export function GoalCard({
             aria-label="Edit goal"
           >
             ✏️
+          </button>
+          <button
+            className="btn-icon"
+            onClick={() => onViewHistory(goal)}
+            title="View progress history"
+            disabled={isLoading}
+            aria-label="View progress history"
+          >
+            📋
           </button>
           <button
             className="btn-icon btn-danger"

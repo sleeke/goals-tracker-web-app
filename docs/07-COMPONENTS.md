@@ -121,25 +121,36 @@ if (user) {
 
 **File**: [src/components/GoalCard.tsx](../src/components/GoalCard.tsx)
 
-**Purpose**: Display a single goal with progress.
+**Purpose**: Display a single goal with progress and action buttons.
 
 **What it does**:
 - Shows goal title and target
-- Displays progress bar
-- Shows current period progress
-- Has buttons to edit/delete/log progress
+- Displays progress bar with current period progress
+- Shows yearly progress
+- Has buttons to edit, view history, delete, and log progress
 
 **Props**:
 ```typescript
 interface GoalCardProps {
   goal: Goal
   progress: number
-  yearlyProgress?: number
-  onDelete: (goalId: string) => void
+  progressTarget: number
+  yearlyProgress: number
   onLogProgress: (goalId: string) => void
-  onEdit?: (goal: Goal) => void
+  onEdit: (goal: Goal) => void
+  onViewHistory: (goal: Goal) => void
+  onDelete: (goalId: string) => void
+  isLoading?: boolean
 }
 ```
+
+**Action Buttons**:
+| Button | Icon | Action | Calls |
+|--------|------|--------|-------|
+| Edit | ✏️ | Opens EditGoalModal | `onEdit(goal)` |
+| History | 📋 | Opens ProgressHistoryModal | `onViewHistory(goal)` |
+| Delete | 🗑️ | Deletes goal with confirmation | `onDelete(goalId)` |
+| Log Progress | (text button) | Opens ProgressLoggerModal | `onLogProgress(goalId)` |
 
 **Example Usage**:
 ```typescript
@@ -305,6 +316,98 @@ export function DashboardPage() {
 - Goal rules editor (define automatic progress or alerts)
 - Goal templates (save and reuse goal configurations)
 - Comparison mode (compare against similar goals)
+
+### ProgressHistoryModal
+
+**File**: [src/components/ProgressHistoryModal.tsx](../src/components/ProgressHistoryModal.tsx)
+
+**Purpose**: Display scrollable list of all progress entries for a goal.
+
+**What it does**:
+- Displays all logged progress entries in reverse chronological order (most recent first)
+- Shows progress value, date/time, and optional notes
+- Marks retroactive entries with a badge
+- Allows individual progress entry deletion
+- Handles loading and empty states
+
+**Props**:
+```typescript
+interface ProgressHistoryModalProps {
+  isOpen: boolean
+  goal: Goal | null
+  onClose: () => void
+  isLoading?: boolean
+}
+```
+
+**Display Format** for each progress entry:
+```
+[+30 pages]  [Today at 2:30 PM]
+Read chapter 5                       [×]
+[Retroactive]
+```
+
+Where:
+- Value: `+{value} {unit}` - Progress amount
+- Date/Time: Friendly format ("Today at X PM", "Yesterday", "Jan 15, 2024 at X PM")
+- Note: Optional note user added when logging
+- Retroactive badge: Shown if progress was logged for a past date
+- Delete button (×): Click to remove individual entry
+
+**Features**:
+- **Scrollable**: List scrolls when entries exceed modal height
+- **Most recent first**: Latest entries appear at top
+- **Friendly dates**: "Today", "Yesterday", or formatted date with time
+- **Individual deletion**: Remove entries one at a time
+- **Loading state**: Shows while fetching history from Firebase
+- **Empty state**: Friendly message when no progress logged yet
+- **Error handling**: Displays error if history load or deletion fails
+
+**Example Usage**:
+```typescript
+import { ProgressHistoryModal } from '@/components/ProgressHistoryModal'
+
+export function DashboardPage() {
+  const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null)
+  const [showHistoryModal, setShowHistoryModal] = useState(false)
+
+  const handleViewHistoryClick = (goal: Goal) => {
+    setSelectedGoal(goal)
+    setShowHistoryModal(true)
+  }
+
+  return (
+    <>
+      <GoalCard
+        goal={goal}
+        onViewHistory={handleViewHistoryClick}
+      />
+
+      <ProgressHistoryModal
+        isOpen={showHistoryModal}
+        goal={selectedGoal}
+        onClose={() => setShowHistoryModal(false)}
+        isLoading={isLoading}
+      />
+    </>
+  )
+}
+```
+
+**How to Modify**:
+- Change date format: Edit the `formatProgressDate()` function
+- Add fields to display: Add new JSX elements in the progress-item
+- Change deletion behavior: Modify `handleDeleteProgress()` function
+- Add filtering: Add filter buttons/state to show specific date ranges
+- Update styling: Edit `ProgressHistoryModal.css`
+
+**Future Enhancements**:
+- Filter by date range (show last 7 days, 30 days, custom range)
+- Statistics panel (total for period, average per day, etc.)
+- Export history (CSV, PDF)
+- Edit progress entries (change value or note)
+- Search/filter entries by note text
+- Progress trends chart
 
 ### ProgressLoggerModal
 

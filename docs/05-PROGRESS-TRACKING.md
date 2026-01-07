@@ -211,6 +211,52 @@ const style = { width: `${percent}%` }
 <span>{currentProgress} / {goal.targetValue} {goal.unit}</span>
 ```
 
+### Viewing Progress History
+
+Users can view all logged progress entries for a goal by clicking the history button (📋) on a goal card:
+
+**Features**:
+- **Complete history** - See all progress entries ever logged
+- **Most recent first** - Latest entries appear at top
+- **Friendly dates** - Shows "Today at 2:30 PM", "Yesterday", or "Jan 15, 2024 at 3:45 PM"
+- **Notes** - Displays any notes added when logging progress
+- **Retroactive indicator** - Shows which entries were logged for past dates
+- **Delete entries** - Remove individual progress entries
+- **Scrollable** - Browse through many entries easily
+
+**Implementation**:
+```typescript
+// In GoalCard component
+<button
+  className="btn-icon"
+  onClick={() => onViewHistory(goal)}
+  title="View progress history"
+>
+  📋
+</button>
+
+// In DashboardPage component
+const handleViewHistoryClick = (goal: Goal) => {
+  setSelectedGoal(goal)
+  setShowHistoryModal(true)
+}
+
+// Render the modal
+<ProgressHistoryModal
+  isOpen={showHistoryModal}
+  goal={selectedGoal}
+  onClose={() => setShowHistoryModal(false)}
+/>
+```
+
+**Progress Item Display**:
+```
++30 pages     Today at 2:30 PM
+"Read chapter 5"
+```
+
+See [07-COMPONENTS.md - ProgressHistoryModal](./07-COMPONENTS.md#progresshistorymodal) for detailed component documentation.
+
 ### Current Period Progress
 
 Depends on goal frequency:
@@ -267,6 +313,10 @@ All progress-related functions:
 ### [src/components/ProgressLoggerModal.tsx](../src/components/ProgressLoggerModal.tsx)
 
 Modal form for logging progress.
+
+### [src/components/ProgressHistoryModal.tsx](../src/components/ProgressHistoryModal.tsx)
+
+Modal displaying all progress entries for a goal with delete functionality.
 
 ## Calculating Progress
 

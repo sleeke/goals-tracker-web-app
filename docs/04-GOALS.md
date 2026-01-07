@@ -28,11 +28,22 @@ CreateGoalModal (when creating new goal)
 ├── Form to enter goal details
 ├── Calls goalService.createGoal()
 │
+EditGoalModal (when editing goal)
+├── Form to edit goal details
+├── Calls goalService.updateGoal()
+│
+ProgressHistoryModal (when viewing goal history)
+├── Shows all logged progress entries
+├── Displays date/time and value
+├── Allows removing individual entries
+│
 GoalCard (for each goal)
 ├── Shows goal title, target, unit
 ├── Shows progress bar
-├── Has "Edit" and "Delete" buttons
-├── Has "Log Progress" button
+├── Has "Edit" button (✏️)
+├── Has "History" button (📋)
+├── Has "Delete" button (🗑️)
+└── Has "Log Progress" button
 ```
 
 ## Key Files
@@ -342,6 +353,121 @@ const handleSaveGoal = async (goalId: string, updates: Partial<Goal>) => {
   isLoading={isLoading}
 />
 ```
+
+## How to View Goal Progress History
+
+### User Interaction
+
+Users click the history button (📋) on a goal card to view all logged progress entries:
+
+```typescript
+<button
+  className="btn-icon"
+  onClick={() => onViewHistory(goal)}
+  title="View progress history"
+  aria-label="View progress history"
+>
+  📋
+</button>
+```
+
+### ProgressHistoryModal Component
+
+The `ProgressHistoryModal` displays all progress entries for a goal in a scrollable list:
+
+```typescript
+interface ProgressHistoryModalProps {
+  isOpen: boolean
+  goal: Goal | null
+  onClose: () => void
+  isLoading?: boolean
+}
+
+export function ProgressHistoryModal({
+  isOpen,
+  goal,
+  onClose,
+  isLoading = false,
+}: ProgressHistoryModalProps) {
+  // Displays:
+  // - Progress value (+X units)
+  // - Date and time in friendly format (e.g., "Today at 2:30 PM")
+  // - Notes if provided
+  // - Retroactive badge if applicable
+  // - Delete button to remove individual entries
+}
+```
+
+### Progress Item Display
+
+Each progress entry shows:
+
+| Field | Format | Example |
+|-------|--------|---------|
+| **Value** | `+X units` | `+30 pages` |
+| **Date/Time** | Friendly format | `Today at 2:30 PM` or `Jan 15, 2024 at 3:45 PM` |
+| **Note** | Optional | "Read chapter 5" |
+| **Retroactive** | Badge if true | `[Retroactive]` |
+| **Delete** | Button (×) | Click to remove entry |
+
+### Get Progress History
+
+Retrieve all progress entries for a goal:
+
+```typescript
+export async function getGoalProgress(
+  goalId: string,
+  limit?: number
+): Promise<Progress[]> {
+  // Fetches all progress records for a goal
+  // Ordered by most recent first
+  // Returns: Promise<Progress[]>
+}
+```
+
+### Delete Progress Entry
+
+Remove a single progress entry:
+
+```typescript
+export async function deleteProgress(progressId: string): Promise<void> {
+  try {
+    const progressRef = doc(db, PROGRESS_COLLECTION, progressId)
+    await deleteDoc(progressRef)
+  } catch (error) {
+    console.error('Error deleting progress:', error)
+    throw error
+  }
+}
+```
+
+### Use in DashboardPage
+
+```typescript
+const handleViewHistoryClick = (goal: Goal) => {
+  setSelectedGoal(goal)
+  setShowHistoryModal(true)
+}
+
+// Render the modal
+<ProgressHistoryModal
+  isOpen={showHistoryModal}
+  goal={selectedGoal}
+  onClose={() => setShowHistoryModal(false)}
+  isLoading={isLoading}
+/>
+```
+
+### Features
+
+- **Scrollable list** - Easy browsing of all past entries
+- **Most recent first** - Latest entries appear at the top
+- **Friendly dates** - "Today", "Yesterday", or formatted date with time
+- **Individual deletion** - Remove entries without affecting the goal
+- **Notes display** - Shows any notes added when logging progress
+- **Retroactive indicator** - Marks entries logged for past dates
+- **Loading state** - Shows while fetching history
+- **Empty state** - Friendly message when no progress logged yet
 
 ## How to Delete a Goal
 

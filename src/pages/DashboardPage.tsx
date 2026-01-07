@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { CreateGoalModal } from '@/components/CreateGoalModal'
 import { EditGoalModal } from '@/components/EditGoalModal'
+import { ProgressHistoryModal } from '@/components/ProgressHistoryModal'
 import { GoalCard } from '@/components/GoalCard'
 import { ProgressLoggerModal } from '@/components/ProgressLoggerModal'
 import {
@@ -24,6 +25,7 @@ export function DashboardPage() {
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [showProgressLogger, setShowProgressLogger] = useState(false)
+  const [showHistoryModal, setShowHistoryModal] = useState(false)
   const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null)
 
   // Load goals on component mount
@@ -231,6 +233,11 @@ export function DashboardPage() {
     }
   }
 
+  const handleViewHistoryClick = (goal: Goal) => {
+    setSelectedGoal(goal)
+    setShowHistoryModal(true)
+  }
+
   const handleLogProgress = async (data: {
     amount: number
     notes?: string
@@ -356,6 +363,7 @@ export function DashboardPage() {
                 yearlyProgress={yearlyProgress[goal.id!] || 0}
                 onLogProgress={handleLogProgressClick}
                 onEdit={handleEditGoalClick}
+                onViewHistory={handleViewHistoryClick}
                 onDelete={handleDeleteGoal}
                 isLoading={isLoading}
               />
@@ -376,6 +384,13 @@ export function DashboardPage() {
         goal={selectedGoal}
         onClose={() => setShowEditModal(false)}
         onSave={handleSaveGoal}
+        isLoading={isLoading}
+      />
+
+      <ProgressHistoryModal
+        isOpen={showHistoryModal}
+        goal={selectedGoal}
+        onClose={() => setShowHistoryModal(false)}
         isLoading={isLoading}
       />
 

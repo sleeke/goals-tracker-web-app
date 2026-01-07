@@ -132,6 +132,8 @@ As you build each feature:
 2. **For data structure** → `plans/DATA_MODEL.md`
 3. **For user stories** → `features/*.feature` files
 4. **For Firebase setup** → `plans/FIREBASE_SETUP.md`
+5. **For development workflow** → `plans/DEVELOPMENT_PROCESS.md`
+6. **For known bugs** → `plans/BUG_TRACKER.md`
 
 ## 🔍 Development Tips
 

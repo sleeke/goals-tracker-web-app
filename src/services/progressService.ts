@@ -88,10 +88,16 @@ export async function getGoalProgress(
     const q = query(collection(db, PROGRESS_COLLECTION), ...constraints)
     const snapshot = await getDocs(q)
     
-    const records = snapshot.docs.map((doc) => ({
-      ...doc.data(),
-      id: doc.id,
-    } as Progress))
+    const records = snapshot.docs.map((doc) => {
+      const data = doc.data()
+      return {
+        ...data,
+        id: doc.id,
+        // Convert Firestore Timestamps to JS Dates
+        loggedAt: data.loggedAt?.toDate ? data.loggedAt.toDate() : new Date(data.loggedAt),
+        timestamp: data.timestamp?.toDate ? data.timestamp.toDate() : new Date(data.timestamp),
+      } as Progress
+    })
 
     return limit ? records.slice(0, limit) : records
   } catch (error) {

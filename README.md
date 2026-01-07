@@ -147,7 +147,11 @@ Fully responsive and mobile-optimized for iOS and Android.
 - [Project Brief](./plans/PROJECT_BRIEF.md) — Feature requirements and scope
 - [Data Model](./plans/DATA_MODEL.md) — Firestore schema and offline storage
 - [Firebase Setup](./plans/FIREBASE_SETUP.md) — Firebase configuration guide
-- [Backlog](./BACKLOG.md) — Future features and enhancements
+- [Development Process](./plans/DEVELOPMENT_PROCESS.md) — Git workflow and development standards
+- [Backlog](./plans/BACKLOG.md) — Future features and enhancements
+- [Bug Tracker](./plans/BUG_TRACKER.md) — Known issues and bug reports
+
+For comprehensive developer documentation, see the [docs/](./docs/) folder.
 - [BDD Features](./features/) — User stories as Gherkin feature files
 
 ## 🚀 Deployment
