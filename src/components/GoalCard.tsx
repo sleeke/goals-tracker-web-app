@@ -5,6 +5,7 @@ interface GoalCardProps {
   goal: Goal
   progress: number
   progressTarget: number
+  yearlyProgress: number
   onLogProgress: (goalId: string) => void
   onEdit: (goal: Goal) => void
   onDelete: (goalId: string) => void
@@ -15,6 +16,7 @@ export function GoalCard({
   goal,
   progress,
   progressTarget,
+  yearlyProgress,
   onLogProgress,
   onEdit,
   onDelete,
@@ -87,6 +89,9 @@ export function GoalCard({
             {progress} / {progressTarget} {goal.unit}
           </span>
           <span className="progress-percent">{Math.round(progressPercent)}%</span>
+        </div>
+        <div className="yearly-progress-text">
+          📊 Yearly: {yearlyProgress} {goal.unit}
         </div>
       </div>
 

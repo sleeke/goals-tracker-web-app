@@ -16,6 +16,7 @@ export function DashboardPage() {
   const { user, logout } = useAuth()
   const [goals, setGoals] = useState<Goal[]>([])
   const [goalProgress, setGoalProgress] = useState<Record<string, number>>({})
+  const [yearlyProgress, setYearlyProgress] = useState<Record<string, number>>({})
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [showCreateModal, setShowCreateModal] = useState(false)
@@ -100,32 +101,70 @@ export function DashboardPage() {
     }
   }, [goals, user?.uid])
 
+  const getGoalPeriod = (goal: Goal) => {
+    // calculate startDate and EndDate based on Goal frequency
+    var today = new Date()
+    var startDate: Date
+    var endDate: Date
+      if (goal.frequency === 'daily') {
+        startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+        endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59)
+      } else if (goal.frequency === 'weekly') {
+        const dayOfWeek = today.getDay() // 0 (Sun) to 6 (Sat)
+        startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - dayOfWeek)
+        endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (6 - dayOfWeek), 23, 59, 59)
+      } else if (goal.frequency === 'monthly') {
+        startDate = new Date(today.getFullYear(), today.getMonth(), 1)
+        endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59)
+      } else {
+        // Default to daily if frequency is unknown
+        startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+        endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59)
+      }
+
+      return { start: startDate, end: endDate }
+  }
+
   const loadProgressForGoals = async (goalsToLoad: Goal[]) => {
     if (!user?.uid) return
 
-    const today = new Date()
-    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate())
-    const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59)
-
     const progressMap: Record<string, number> = {}
+    const yearlyProgressMap: Record<string, number> = {}
+
+    const today = new Date()
+    const yearStart = new Date(today.getFullYear(), 0, 1)
+    const yearEnd = new Date(today.getFullYear(), 11, 31, 23, 59, 59)
 
     for (const goal of goalsToLoad) {
+      const goalPeriod = getGoalPeriod(goal)
+
       try {
-        // For now, just get today's progress
+        // Get current period progress
         const progress = await calculateGoalProgress(
           goal.id!,
           user.uid,
-          startOfDay,
-          endOfDay
+          goalPeriod.start,
+          goalPeriod.end
         )
         progressMap[goal.id!] = progress
+
+        // Get yearly progress
+        const yearly = await calculateGoalProgress(
+          goal.id!,
+          user.uid,
+          yearStart,
+          yearEnd
+        )
+        yearlyProgressMap[goal.id!] = yearly
       } catch (err) {
         console.error(`Error calculating progress for goal ${goal.id}:`, err)
         progressMap[goal.id!] = 0
+        yearlyProgressMap[goal.id!] = 0
       }
     }
 
     setGoalProgress(progressMap)
+    setYearlyProgress(yearlyProgressMap)
   }
 
   const handleCreateGoal = async (goalData: any) => {
@@ -189,12 +228,14 @@ export function DashboardPage() {
 
       setShowProgressLogger(false)
       
+      const goalPeriod = getGoalPeriod(selectedGoal)
+
       // Reload progress for the goal
       const progress = await calculateGoalProgress(
         selectedGoal.id,
         user.uid,
-        new Date(data.loggedAt.getFullYear(), data.loggedAt.getMonth(), data.loggedAt.getDate()),
-        new Date(data.loggedAt.getFullYear(), data.loggedAt.getMonth(), data.loggedAt.getDate(), 23, 59, 59)
+        goalPeriod.start,
+        goalPeriod.end
       )
       
       setGoalProgress((prev) => ({
@@ -286,6 +327,7 @@ export function DashboardPage() {
                 goal={goal}
                 progress={goalProgress[goal.id!] || 0}
                 progressTarget={goal.targetValue}
+                yearlyProgress={yearlyProgress[goal.id!] || 0}
                 onLogProgress={handleLogProgressClick}
                 onEdit={() => {
                   // TODO: Implement edit functionality

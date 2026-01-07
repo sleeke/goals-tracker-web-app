@@ -142,6 +142,14 @@
   font-size: 12px;
 }
 
+.yearly-progress-text {
+  margin-top: 8px;
+  padding: 6px 4px;
+  font-size: 12px;
+  color: #667eea;
+  font-weight: 500;
+}
+
 .goal-complete-badge {
   background-color: #e8f5e9;
   border: 1px solid #4caf50;

@@ -120,6 +120,68 @@ test.describe('Goal Tracker E2E Flow', () => {
     console.log('✅ All frequency tests passed!')
   })
 
+  test('should respect the date chosen when logging retroactive progress', async ({ page }) => {
+    console.log('Testing retroactive date logging...')
+    
+    // Login
+    await loginAsTestUser(page)
+    await expect(page).toHaveURL(/.*\/dashboard/)
+
+    // Create a goal
+    const retroactiveGoalTitle = 'Retroactive Date Test Goal'
+    await createGoal(page, {
+      title: retroactiveGoalTitle,
+      frequency: 'daily',
+      target: 10,
+      unit: 'units',
+    })
+
+    // Log progress on a past date (3 days ago)
+    const pastDate = new Date()
+    pastDate.setDate(pastDate.getDate() - 3)
+    const dateString = pastDate.toISOString().split('T')[0] // Format: YYYY-MM-DD
+    
+    console.log(`Logging progress for date: ${dateString}`)
+
+    // Find the goal and click log progress
+    const goalCard = page.locator(`.goal-card:has-text("${retroactiveGoalTitle}")`).first()
+    await goalCard.scrollIntoViewIfNeeded()
+    const logProgressBtn = goalCard.locator('button:has-text("Log Progress")')
+    await logProgressBtn.click()
+
+    // Wait for modal and fill in the form with a past date
+    await page.waitForTimeout(300)
+    await page.fill('input[id="amount"]', '5')
+    await page.fill('input[id="logDate"]', dateString)
+
+    // Check retroactive checkbox
+    // const retroactiveCheckbox = page.locator('input[id="isRetroactive"]')
+    // await retroactiveCheckbox.check()
+
+    // Submit
+    const submitBtn = page.locator('.progress-form button[type="submit"]').first()
+    await submitBtn.click()
+
+    await page.waitForTimeout(800)
+
+    // Reload page to verify the date was persisted correctly
+    await page.reload({ waitUntil: 'domcontentloaded' })
+    await page.waitForTimeout(3000)
+
+    // Verify the goal still shows progress (it should be 0 for today since we logged it 3 days ago)
+    const reloadedGoalCard = page.locator(`.goal-card:has-text("${retroactiveGoalTitle}")`).first()
+    await reloadedGoalCard.waitFor({ state: 'visible', timeout: 5000 })
+    
+    const progressText = reloadedGoalCard.locator('text=/\\d+ \\/ 10 units/').first()
+    const progressValue = await progressText.textContent()
+    console.log(`Progress after reload: ${progressValue}`)
+    
+    // Should show 0/10 for today since we logged on a past date
+    expect(progressValue).toContain('0 / 10')
+    
+    console.log('✅ Retroactive date logging test passed!')
+  })
+
   test('cleanup: delete all goals to reset user data to base state', async ({ page }) => {
     console.log('🧹 Starting cleanup: deleting all goals...')
     

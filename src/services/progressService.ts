@@ -34,7 +34,7 @@ export async function logProgress(
       userId,
       value,
       note: note || '',
-      loggedAt: Timestamp.now(),
+      loggedAt: timestamp ? Timestamp.fromDate(timestamp) : Timestamp.now(),
       timestamp: timestamp ? Timestamp.fromDate(timestamp) : Timestamp.now(),
       isRetroactive: isRetroactive || false,
       metadata: {
@@ -48,7 +48,7 @@ export async function logProgress(
       goalId,
       value,
       note: note || '',
-      loggedAt: new Date(),
+      loggedAt: timestamp || new Date(),
       timestamp: timestamp || new Date(),
       isRetroactive: isRetroactive || false,
       metadata: {
