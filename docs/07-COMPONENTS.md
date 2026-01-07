@@ -64,6 +64,9 @@ App.tsx (Root)
 │       ├── CreateGoalModal
 │       │   └── Form inputs
 │       │
+│       ├── EditGoalModal
+│       │   └── Form inputs (editable fields)
+│       │
 │       ├── GoalCard (×many, one per goal)
 │       │   ├── Goal info display
 │       │   ├── Progress bar
@@ -182,8 +185,8 @@ export function DashboardPage() {
 interface CreateGoalModalProps {
   isOpen: boolean
   onClose: () => void
-  userId: string
-  onSuccess?: (goal: Goal) => void
+  onCreate: (goalData: Omit<Goal, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>
+  isLoading?: boolean
 }
 ```
 
@@ -203,7 +206,8 @@ export function DashboardPage() {
       <CreateGoalModal
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
-        userId={user.uid}
+        onCreate={handleCreateGoal}
+        isLoading={isLoading}
       />
     </>
   )
@@ -215,6 +219,92 @@ export function DashboardPage() {
 - Validate: Add validation logic before submit
 - Change behavior: Modify onSubmit handler
 - Update styling: Edit `GoalModal.css`
+
+### EditGoalModal
+
+**File**: [src/components/EditGoalModal.tsx](../src/components/EditGoalModal.tsx)
+
+**Purpose**: Modal form for editing existing goals.
+
+**What it does**:
+- Shows form with editable goal fields
+- Pre-fills form with current goal data
+- Validates inputs
+- Calls goalService.updateGoal()
+- Closes modal on success
+- **Extensible design** for future features (goal history, editing rules, etc.)
+
+**Props**:
+```typescript
+interface EditGoalModalProps {
+  isOpen: boolean
+  goal: Goal | null
+  onClose: () => void
+  onSave: (goalId: string, updates: Partial<Goal>) => Promise<void>
+  isLoading?: boolean
+}
+```
+
+**Editable Fields**:
+- Title
+- Description
+- Category
+- Frequency (daily, weekly, monthly)
+- Target value
+- Unit
+- Priority (low, medium, high)
+- Color
+
+**Example Usage**:
+```typescript
+import { EditGoalModal } from '@/components/EditGoalModal'
+
+export function DashboardPage() {
+  const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null)
+  const [showEditModal, setShowEditModal] = useState(false)
+
+  const handleEditGoalClick = (goal: Goal) => {
+    setSelectedGoal(goal)
+    setShowEditModal(true)
+  }
+
+  const handleSaveGoal = async (goalId: string, updates: Partial<Goal>) => {
+    await updateGoal(goalId, updates)
+    setShowEditModal(false)
+  }
+
+  return (
+    <>
+      <GoalCard
+        goal={goal}
+        onEdit={handleEditGoalClick}
+      />
+
+      <EditGoalModal
+        isOpen={showEditModal}
+        goal={selectedGoal}
+        onClose={() => setShowEditModal(false)}
+        onSave={handleSaveGoal}
+        isLoading={isLoading}
+      />
+    </>
+  )
+}
+```
+
+**How to Modify/Extend**:
+- Add new fields: Add input elements and state initialization
+- Add tabs: Create sections for different features (Basic Info, History, Rules)
+- Add advanced features: Add new input sections (e.g., goal history viewer, rule editor)
+- Customize validation: Add more validation logic before submit
+- Update styling: Edit `GoalModal.css` (shared with CreateGoalModal)
+
+**Future Enhancements** (Already architected for):
+- Tab-based interface for organizing features
+- Goal history viewer (view past values of goals)
+- Goal rules editor (define automatic progress or alerts)
+- Goal templates (save and reuse goal configurations)
+- Comparison mode (compare against similar goals)
 
 ### ProgressLoggerModal
 

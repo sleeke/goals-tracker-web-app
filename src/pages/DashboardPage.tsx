@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { CreateGoalModal } from '@/components/CreateGoalModal'
+import { EditGoalModal } from '@/components/EditGoalModal'
 import { GoalCard } from '@/components/GoalCard'
 import { ProgressLoggerModal } from '@/components/ProgressLoggerModal'
 import {
   createGoal,
+  updateGoal,
   deleteGoal,
   subscribeToUserGoals,
 } from '@/services/goalService'
@@ -20,6 +22,7 @@ export function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [showCreateModal, setShowCreateModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
   const [showProgressLogger, setShowProgressLogger] = useState(false)
   const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null)
 
@@ -205,6 +208,29 @@ export function DashboardPage() {
     }
   }
 
+  const handleEditGoalClick = (goal: Goal) => {
+    setSelectedGoal(goal)
+    setShowEditModal(true)
+  }
+
+  const handleSaveGoal = async (goalId: string, updates: Partial<Goal>) => {
+    try {
+      setIsLoading(true)
+      setError(null)
+      
+      await updateGoal(goalId, updates)
+      
+      // Goal will be updated via real-time subscription
+      setShowEditModal(false)
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to update goal'
+      setError(message)
+      console.error('Error updating goal:', err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const handleLogProgress = async (data: {
     amount: number
     notes?: string
@@ -329,10 +355,7 @@ export function DashboardPage() {
                 progressTarget={goal.targetValue}
                 yearlyProgress={yearlyProgress[goal.id!] || 0}
                 onLogProgress={handleLogProgressClick}
-                onEdit={() => {
-                  // TODO: Implement edit functionality
-                  console.log('Edit goal:', goal)
-                }}
+                onEdit={handleEditGoalClick}
                 onDelete={handleDeleteGoal}
                 isLoading={isLoading}
               />
@@ -345,6 +368,14 @@ export function DashboardPage() {
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
         onCreate={handleCreateGoal}
+        isLoading={isLoading}
+      />
+
+      <EditGoalModal
+        isOpen={showEditModal}
+        goal={selectedGoal}
+        onClose={() => setShowEditModal(false)}
+        onSave={handleSaveGoal}
         isLoading={isLoading}
       />
 

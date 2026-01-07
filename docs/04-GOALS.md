@@ -235,7 +235,63 @@ export function GoalCard({ goal, progress, onDelete }) {
 
 ## How to Edit a Goal
 
-### Method 1: Update Service Function
+### User Interaction
+
+Users click the pencil (✏️) icon on a goal card to edit:
+
+```typescript
+<button
+  className="btn-icon"
+  onClick={() => onEdit(goal)}
+  title="Edit goal"
+  aria-label="Edit goal"
+>
+  ✏️
+</button>
+```
+
+### Modal Components
+
+Two modal components handle goal editing:
+
+| Component | Purpose | When Used |
+|-----------|---------|-----------|
+| [CreateGoalModal.tsx](../src/components/CreateGoalModal.tsx) | Create new goals | New goal creation |
+| [EditGoalModal.tsx](../src/components/EditGoalModal.tsx) | Edit existing goals | Editing goal details |
+
+### EditGoalModal Component
+
+The `EditGoalModal` is extensible and can be enhanced to support additional features in the future (e.g., viewing goal history, editing goal rules):
+
+```typescript
+interface EditGoalModalProps {
+  isOpen: boolean
+  goal: Goal | null
+  onClose: () => void
+  onSave: (goalId: string, updates: Partial<Goal>) => Promise<void>
+  isLoading?: boolean
+}
+
+export function EditGoalModal({
+  isOpen,
+  goal,
+  onClose,
+  onSave,
+  isLoading = false,
+}: EditGoalModalProps) {
+  // Form fields that can be edited:
+  // - title
+  // - description
+  // - category
+  // - frequency
+  // - targetValue
+  // - unit
+  // - priority
+  // - color
+}
+```
+
+### Update Service Function
 
 ```typescript
 export async function updateGoal(
@@ -256,22 +312,35 @@ export async function updateGoal(
 }
 ```
 
-### Method 2: Use in Component
+### Use in DashboardPage
 
 ```typescript
-const handleEditGoal = async (goalId: string, newTitle: string) => {
+const handleEditGoalClick = (goal: Goal) => {
+  setSelectedGoal(goal)
+  setShowEditModal(true)
+}
+
+const handleSaveGoal = async (goalId: string, updates: Partial<Goal>) => {
   try {
-    await updateGoal(goalId, {
-      title: newTitle,
-      // Only include fields you want to change
-    })
-    
-    // No need to manually update state
-    // Firebase listener will update it automatically
-  } catch (error) {
-    setError(error.message)
+    setIsLoading(true)
+    await updateGoal(goalId, updates)
+    setShowEditModal(false)
+    // Firebase listener automatically updates UI
+  } catch (err) {
+    setError(err instanceof Error ? err.message : 'Failed to update goal')
+  } finally {
+    setIsLoading(false)
   }
 }
+
+// Render the modal
+<EditGoalModal
+  isOpen={showEditModal}
+  goal={selectedGoal}
+  onClose={() => setShowEditModal(false)}
+  onSave={handleSaveGoal}
+  isLoading={isLoading}
+/>
 ```
 
 ## How to Delete a Goal
