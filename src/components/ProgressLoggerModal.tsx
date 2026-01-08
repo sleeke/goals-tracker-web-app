@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Goal } from '@/types'
 import './ProgressLogger.css'
+import { getTodayString } from '@/utils'
 
 interface ProgressLoggerModalProps {
   isOpen: boolean
@@ -25,7 +26,7 @@ export function ProgressLoggerModal({
   const [amount, setAmount] = useState<number>(1)
   const [notes, setNotes] = useState('')
   const [isRetroactive, setIsRetroactive] = useState(false)
-  const [logDate, setLogDate] = useState(new Date().toISOString().split('T')[0])
+  const [logDate, setLogDate] = useState(getTodayString())
   const [error, setError] = useState<string | null>(null)
 
   if (!isOpen || !goal) return null
@@ -57,14 +58,14 @@ export function ProgressLoggerModal({
       setAmount(1)
       setNotes('')
       setIsRetroactive(false)
-      setLogDate(new Date().toISOString().split('T')[0])
+      setLogDate(getTodayString())
       onClose()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to log progress')
     }
   }
 
-  const today = new Date().toISOString().split('T')[0]
+  const today = getTodayString()
   const isToday = logDate === today
 
   return (

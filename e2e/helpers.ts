@@ -3,6 +3,8 @@
  * Creates a test user for E2E tests
  */
 
+import { getTodayString } from "../src/utils"
+
 export const TEST_USER = {
   email: 'test@example.com',
   password: 'Test@12345',
@@ -165,6 +167,17 @@ export async function logProgress(
     await page.fill('textarea[id="notes"]', data.notes)
   }
 
+  // Check that date is today's date by default if not provided
+  const dateInput = page.locator('input[id="logDate"]')
+  const dateValue = await dateInput.inputValue()
+
+  const todayStr = getTodayString()
+
+  // compare field content to today's date
+  if (dateValue !== todayStr) {
+    throw new Error(`[LOG_PROGRESS] Expected default log date to be today (${todayStr}), but got ${dateValue}`)
+  }
+
   if (data.date) {
     await page.fill('input[id="logDate"]', data.date)
   }
@@ -180,3 +193,4 @@ export async function logProgress(
   
   console.log('[LOG_PROGRESS] Progress logged successfully')
 }
+

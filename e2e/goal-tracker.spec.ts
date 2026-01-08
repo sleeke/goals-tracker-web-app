@@ -198,7 +198,9 @@ test.describe('Goal Tracker E2E Flow', () => {
 
     // Repeatedly delete all visible goals
     let goalsDeleted = 0
-    let maxAttempts = 20 // Safety limit to prevent infinite loops
+    let maxAttempts = 50 // Safety limit to prevent infinite loops
+
+    await page.waitForTimeout(800)  // Wait for any UI updates
 
     while (maxAttempts > 0) {
       // Check if we have an empty state
