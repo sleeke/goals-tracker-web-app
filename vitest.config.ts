@@ -13,6 +13,7 @@ export default defineConfig({
     outputFile: {
       json: './test-results.json',
     },
+    exclude: ['node_modules', 'dist', 'e2e'],
   },
   resolve: {
     alias: {

@@ -15,7 +15,8 @@
     "e2e:debug": "playwright test --debug",
     "e2e:headed": "playwright test --headed",
     "bdd": "cucumber-js",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "publish": "bash ./scripts/test-and-publish.sh"
   },
   "dependencies": {
     "@cucumber/cucumber": "^12.5.0",
