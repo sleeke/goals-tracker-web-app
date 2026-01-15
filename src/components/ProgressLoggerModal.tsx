@@ -25,7 +25,7 @@ export function ProgressLoggerModal({
 }: ProgressLoggerModalProps) {
   const [amount, setAmount] = useState<number>(1)
   const [notes, setNotes] = useState('')
-  const [isRetroactive, setIsRetroactive] = useState(false)
+  // const [isRetroactive, setIsRetroactive] = useState(false)
   const [logDate, setLogDate] = useState(getTodayString())
   const [error, setError] = useState<string | null>(null)
 
@@ -43,21 +43,30 @@ export function ProgressLoggerModal({
     try {
       // Parse the date string (YYYY-MM-DD) correctly
       // The HTML date input gives us a string in the user's local timezone
-      // We need to create a Date object that represents midnight of that day in the user's timezone
+      // For retroactive entries, use midnight of the selected day
+      // For current entries, use the current time to preserve time of day
       const [year, month, day] = logDate.split('-').map(Number)
-      const loggedDate = new Date(year, month - 1, day, 0, 0, 0, 0)
+      
+      let loggedDate: Date
+      if (!isToday) {
+        // For retroactive entries, use midnight of the selected day
+        loggedDate = new Date(year, month - 1, day, 0, 0, 0, 0)
+      } else {
+        // For current entries, preserve the time when the user logged the progress
+        loggedDate = new Date()
+      }
 
       await onSubmit({
         amount,
         notes: notes.trim() || undefined,
         loggedAt: loggedDate,
-        isRetroactive,
+        isRetroactive: !isToday,
       })
 
       // Reset form
       setAmount(1)
       setNotes('')
-      setIsRetroactive(false)
+      // setIsRetroactive(false)
       setLogDate(getTodayString())
       onClose()
     } catch (err) {
@@ -67,6 +76,7 @@ export function ProgressLoggerModal({
 
   const today = getTodayString()
   const isToday = logDate === today
+  // setIsRetroactive(!isToday)
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -132,17 +142,6 @@ export function ProgressLoggerModal({
               onChange={(e) => setLogDate(e.target.value)}
               disabled={isLoading}
             />
-            {!isToday && (
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={isRetroactive}
-                  onChange={(e) => setIsRetroactive(e.target.checked)}
-                  disabled={isLoading}
-                />
-                <span>Retroactive entry</span>
-              </label>
-            )}
           </div>
 
           <div className="form-group">

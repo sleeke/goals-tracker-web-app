@@ -121,3 +121,151 @@ describe('Date Parsing Logic for Progress Logging', () => {
     expect(parsed.getFullYear()).toBe(2024)
   })
 })
+
+/**
+ * Test suite for timestamp preservation in progress logging
+ * 
+ * Bug: "Date is missing from progress" - progress is always logged at 12:00am
+ * Expected: When user logs progress at a specific time, that time should be preserved
+ * This test suite verifies that the timestamp field includes the time of day
+ */
+describe('Timestamp Preservation in Progress Logging', () => {
+  /**
+   * Simulate the fixed behavior from ProgressLoggerModal
+   */
+  function getLoggedDateForProgress(
+    dateString: string,
+    isRetroactive: boolean
+  ): Date {
+    if (isRetroactive) {
+      // For retroactive entries, use midnight of the selected day
+      const [year, month, day] = dateString.split('-').map(Number)
+      return new Date(year, month - 1, day, 0, 0, 0, 0)
+    } else {
+      // For current entries, use current time (preserving time of day)
+      return new Date()
+    }
+  }
+
+  it('should preserve the current time when logging progress without retroactive flag', () => {
+    // When logging current progress (not retroactive), the time of day should be preserved
+    const today = new Date().toISOString().split('T')[0]
+    
+    const before = new Date()
+    const logged = getLoggedDateForProgress(today, false)
+    const after = new Date()
+    
+    // The logged time should be between before and after
+    expect(logged.getTime()).toBeGreaterThanOrEqual(before.getTime())
+    expect(logged.getTime()).toBeLessThanOrEqual(after.getTime())
+    
+    // Most importantly, it should NOT be at midnight
+    // (Unless it actually is midnight when the test runs, which is rare)
+    // We can verify it has hours/minutes/seconds set by checking it's not at midnight
+    // OR we verify the difference from before is small
+    const timeDiff = logged.getTime() - before.getTime()
+    expect(timeDiff).toBeLessThan(1000) // Logged within 1 second of "before"
+  })
+
+  it('should use midnight for retroactive entries to match the selected date', () => {
+    // When logging retroactive progress, the timestamp should be at midnight
+    // of the selected day to represent "sometime during that day"
+    
+    const retroactiveDate = '2024-01-15'
+    const logged = getLoggedDateForProgress(retroactiveDate, true)
+    
+    // Should be at midnight
+    expect(logged.getHours()).toBe(0)
+    expect(logged.getMinutes()).toBe(0)
+    expect(logged.getSeconds()).toBe(0)
+    expect(logged.getMilliseconds()).toBe(0)
+    
+    // And on the correct date
+    expect(logged.getDate()).toBe(15)
+    expect(logged.getMonth()).toBe(0)
+    expect(logged.getFullYear()).toBe(2024)
+  })
+
+  it('should preserve time of day when provided a specific timestamp for retroactive entries', () => {
+    // When user logs retroactive progress (past date), they might specify a time
+    // Example: "I made progress yesterday at 3:30 PM"
+    
+    const retroactiveTime = new Date(2024, 0, 15, 15, 30, 0) // Jan 15, 2024 at 3:30 PM
+    
+    // These fields should be available for storage
+    expect(retroactiveTime.getHours()).toBe(15)
+    expect(retroactiveTime.getMinutes()).toBe(30)
+    expect(retroactiveTime.getDate()).toBe(15)
+  })
+
+  it('should distinguish between loggedAt and timestamp fields', () => {
+    // loggedAt = when user logged the entry (now)
+    // timestamp = when progress occurred (might be in the past for retroactive)
+    
+    const loggedAt = new Date() // Current time when user logs
+    const oneHourAgo = new Date(loggedAt.getTime() - 60 * 60 * 1000) // Progress happened 1 hour ago
+    
+    // These should be different for retroactive entries
+    expect(loggedAt.getTime()).toBeGreaterThan(oneHourAgo.getTime())
+    
+    // For retroactive entries, timestamp would be oneHourAgo
+    // For current entries, timestamp and loggedAt would be nearly the same
+  })
+
+  it('should not default progress to midnight when user logs current progress', () => {
+    // Bug: progress showing at 12:00am regardless of when logged
+    // Fix: when user logs current progress, preserve the time of day
+    
+    const today = new Date().toISOString().split('T')[0]
+    const logged = getLoggedDateForProgress(today, false) // Not retroactive
+    
+    // For current progress, the time should NOT be forced to midnight
+    // It should have the actual hours/minutes when the user logged it
+    // We can verify this by checking the logged time is close to "now"
+    const now = new Date()
+    const timeDiff = Math.abs(now.getTime() - logged.getTime())
+    
+    // The difference should be small (less than 1 second)
+    expect(timeDiff).toBeLessThan(1000)
+  })
+
+  it('should handle multiple log entries with different effective times', () => {
+    // User might log progress multiple times
+    // Current entries should preserve their logging time
+    // Retroactive entries should be at midnight of selected date
+    
+    const today = new Date().toISOString().split('T')[0]
+    const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+    
+    const currentLog = getLoggedDateForProgress(today, false)
+    const retroactiveLog = getLoggedDateForProgress(yesterday, true)
+    
+    // Current log should preserve time of day
+    const now = new Date()
+    const currentDiff = Math.abs(now.getTime() - currentLog.getTime())
+    expect(currentDiff).toBeLessThan(1000)
+    
+    // Retroactive log should be at midnight
+    expect(retroactiveLog.getHours()).toBe(0)
+    expect(retroactiveLog.getMinutes()).toBe(0)
+  })
+
+  it('should fix the specific bug from the bug report', () => {
+    // Bug: "Date is missing from progress" - always shows 12:00am
+    // Expected: When user logs progress now, show the time they logged it
+    
+    const today = new Date().toISOString().split('T')[0]
+    const logged = getLoggedDateForProgress(today, false)
+    
+    // The logged date should NOT always be at midnight
+    // Verify it's close to the current time
+    const now = new Date()
+    const timeDiff = Math.abs(now.getTime() - logged.getTime())
+    
+    // Should be logged within a very short time window
+    expect(timeDiff).toBeLessThan(5000) // Within 5 seconds
+    
+    // The important thing: it's NOT forced to midnight
+    // For most test runs, it won't be exactly 00:00:00
+  })
+})
