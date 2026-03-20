@@ -1,8 +1,15 @@
 # Status
 
+## Current mission
+Fix all tests and enable on the cloud
+
 ## Done
 - Fixed tests locally, including lint, unit, e2e
-- Tests may be failing in CI due to the dev server not being spun up
+- Fixed tests in actions
 
 ## Next
-- Add a command to the action to start a dev server to test within the CI environment
+- Goals should only be marked as completed based on the status of their progress. If their progress drops below the target (e.g. on a new day/week), they should automatically be marked as active again. There should be tests to cover this behaviour
+
+## Upcoming missions
+
+- Fix Vercel preview deployments and enable on all branches
