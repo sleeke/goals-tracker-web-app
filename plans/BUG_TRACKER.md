@@ -4,7 +4,61 @@ This document tracks open bugs in the Goal Tracker application. Bugs are listed 
 
 ## Open Bugs
 
-None currently reported.
+### N. Failing tests
+
+**Status**: Open  
+**Severity**: Critical  
+
+**Reproduction Steps**:
+1. Run all tests using `npm run publish`
+
+**Expected Behavior**: All tests should pass
+
+**Actual Behavior**: Some tests fail due to recent changes
+
+**Details**: None
+
+**Affected Files**:
+- completed-goals.spec.ts
+- goal-tracker.spec.ts
+
+### N. Script doesn't kill all instances of the server
+
+**Status**: Open  
+**Severity**: Low  
+
+**Reproduction Steps**:
+1. Start some servers using `npm run dev`, potentially in the background
+1. Run all tests using `npm run publish`
+
+**Expected Behavior**: All servers should be killed
+
+**Actual Behavior**: In some cases, the other instances will not be destroyed
+
+**Details**: This may be due to the servers being started in the background, and could be solved by running through the pids produced by the `pgrep -af "npm run dev"` command
+
+**Affected Files**:
+- [test-and-publish.sh](../scripts/test-and-publish.sh)
+
+### N. Goals marked as complete are not unmarked if the history is removed
+
+**Status**: Open  
+**Severity**: Medium  
+
+**Reproduction Steps**:
+1. Create and fulfil a goal
+1. Remove the progress history
+1. Reresh the page
+
+**Expected Behavior**: The goal will no longer be marked as completed, and will expand and move to the active goals section
+
+**Actual Behavior**: The goal remains marked as completed
+
+**Details**: There shouldn't be any state to the goals when it comes to completion - when the page is refreshed the state should be calculated based on the progress towards the goal. It's not certain if this state is persisted between sessions and won't reset the following day - this needs to be confirmed.
+
+**Affected Files**:
+- ??
+
 
 ---
 

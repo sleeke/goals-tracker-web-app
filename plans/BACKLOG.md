@@ -9,7 +9,30 @@ This document tracks features and improvements that are not in the current MVP b
 - **Dependency Notes**: Reference other items if a feature depends on another being completed first
 - **Status**: Track whether items are in planning, design, or ready for development
 
+## Backlog template
+
+### Feature Title
+- **Description**: A description of the feature
+- **Priority**: High/Medium/Low
+- **Status**: In planning
+- **Dependencies**: Other features which need to be completed first
+
+
 ---
+
+## Phase 1: User Requests
+
+### Recent progress
+- **Description**: There should be a slimline visual within the goal card which shows the recent success rate for the goal. It should perhaps be a vertical bar chart showing the last 10 goal periods, with bars indicating the number of progress units, and colors indicating the success/failure of the goal. There should also be a summary showing the percentage of successful goal periods. This can replace the current indicator for progress units so far this year
+- **Priority**: Medium
+- **Status**: In planning
+- **Dependencies**: None
+
+### Shrink completed goals
+- **Description**: Goals should minimize to a smaller state at the end of the list once complete. THey should still be re-openable so they can be updated, but should be minimized byu default once complete.
+- **Priority**: Medium
+- **Status**: In planning
+- **Dependencies**: None
 
 ## Phase 2: Extended Goal Tracking
 

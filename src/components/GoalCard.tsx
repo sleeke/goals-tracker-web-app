@@ -11,6 +11,8 @@ interface GoalCardProps {
   onViewHistory: (goal: Goal) => void
   onDelete: (goalId: string) => void
   isLoading?: boolean
+  isCollapsed?: boolean
+  onToggleExpand?: () => void
 }
 
 export function GoalCard({
@@ -23,6 +25,8 @@ export function GoalCard({
   onViewHistory,
   onDelete,
   isLoading = false,
+  isCollapsed = false,
+  onToggleExpand,
 }: GoalCardProps) {
   const progressPercent = Math.min((progress / progressTarget) * 100, 100)
   const isComplete = progress >= progressTarget
@@ -31,6 +35,36 @@ export function GoalCard({
     if (confirm(`Are you sure you want to delete "${goal.title}"?`)) {
       onDelete(goal.id!)
     }
+  }
+
+  // Format completion date
+  const formatCompletedDate = () => {
+    if (!goal.completedDate) return ''
+    const date = new Date(goal.completedDate)
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  }
+
+  // Collapsed view for completed goals
+  if (isCollapsed && goal.status === 'completed') {
+    return (
+      <div className="goal-card goal-card--collapsed">
+        <div className="collapsed-content">
+          <div className="collapsed-title-section">
+            <h3 className="collapsed-title">{goal.title}</h3>
+            <span className="collapsed-date">Completed {formatCompletedDate()}</span>
+          </div>
+          <button
+            className="btn-toggle-expand"
+            onClick={onToggleExpand}
+            title="Expand"
+            disabled={isLoading}
+            aria-label="Expand completed goal"
+          >
+            ▶
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -51,6 +85,17 @@ export function GoalCard({
           </div>
         </div>
         <div className="goal-card-actions">
+          {goal.status === 'completed' && onToggleExpand && (
+            <button
+              className="btn-icon"
+              onClick={onToggleExpand}
+              title="Collapse goal"
+              disabled={isLoading}
+              aria-label="Collapse goal"
+            >
+              ▼
+            </button>
+          )}
           <button
             className="btn-icon"
             onClick={() => onEdit(goal)}
@@ -113,13 +158,15 @@ export function GoalCard({
       )}
 
       <div className="goal-card-footer">
-        <button
-          className="btn btn-primary btn-sm"
-          onClick={() => onLogProgress(goal.id!)}
-          disabled={isLoading}
-        >
-          Log Progress
-        </button>
+        {goal.status === 'active' && (
+          <button
+            className="btn btn-primary btn-sm"
+            onClick={() => onLogProgress(goal.id!)}
+            disabled={isLoading}
+          >
+            Log Progress
+          </button>
+        )}
         {goal.status === 'active' && (
           <span className="status-badge active">Active</span>
         )}
