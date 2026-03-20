@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getAuth, connectAuthEmulator } from 'firebase/auth';
+import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
 
 // Firebase configuration from environment variables
 const firebaseConfig = {
@@ -25,6 +25,7 @@ if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
 console.log('Initializing Firebase with config:', {
   projectId: firebaseConfig.projectId,
   authDomain: firebaseConfig.authDomain,
+  useEmulator: import.meta.env.VITE_USE_EMULATOR,
 });
 
 // Initialize Firebase
@@ -35,5 +36,18 @@ export const auth = getAuth(app);
 
 // Initialize Cloud Firestore and get a reference to the service
 export const db = getFirestore(app);
+
+// Connect to Firebase Local Emulators when VITE_USE_EMULATOR=true
+// This is used in CI so tests run against a local emulator instead of production
+if (import.meta.env.VITE_USE_EMULATOR === 'true') {
+  try {
+    connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
+    connectFirestoreEmulator(db, 'localhost', 8080);
+    console.log('[Firebase] Connected to local emulators (auth:9099, firestore:8080)');
+  } catch (e) {
+    // Already connected (e.g., HMR re-evaluation in dev mode)
+    console.log('[Firebase] Emulators already connected');
+  }
+}
 
 export default app;
