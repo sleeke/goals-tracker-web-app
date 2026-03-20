@@ -31,6 +31,6 @@ export default defineConfig({
     command: 'npm run dev:ci',
     url: 'http://localhost:5173',
     reuseExistingServer: false,
-    timeout: 120000,
+    timeout: 120000, // Vite dev server + Firebase emulator startup can take up to 2 minutes
   } : undefined, // Don't start webServer in development (already running)
 })

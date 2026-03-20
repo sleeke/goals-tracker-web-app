@@ -89,6 +89,8 @@ async function globalSetup(_config: FullConfig) {
   const result = (await resp.json()) as { email?: string; error?: { message: string } }
   if (result.email) {
     console.log(`[globalSetup] Test user created: ${result.email}`)
+  } else if (result.error) {
+    throw new Error(`[globalSetup] Failed to create test user: ${result.error.message}`)
   } else {
     console.warn('[globalSetup] Unexpected result creating test user:', JSON.stringify(result))
   }
