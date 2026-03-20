@@ -63,12 +63,6 @@ jobs:
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
 
-      - name: Set up Java (required by Firebase emulators)
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: "17"
-
       - name: Build project (with emulator config)
         run: npm run build
         env:
