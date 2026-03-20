@@ -1,98 +1,90 @@
 # Goal Tracker Web App
 
-A cross-platform Progressive Web App (PWA) for tracking daily, weekly, and monthly goals with offline-first capabilities, Firebase synchronization, and mobile support.
+A cross-platform [Progressive Web App (PWA)](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps) for tracking daily, weekly, and monthly goals with offline-first capabilities, [Firebase](https://firebase.google.com/) synchronisation, and mobile support.
 
-## 🚀 Quick Start
+Built with [React 19](https://react.dev/), [TypeScript](https://www.typescriptlang.org/), [Vite](https://vite.dev/), and [Firebase](https://firebase.google.com/). Uses [Workbox](https://developer.chrome.com/docs/workbox/) for service-worker caching and [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) for offline storage.
+
+## Quick Start
 
 ### Prerequisites
 - Node.js 18+ and npm 8+
-- Firebase account (free tier is sufficient for MVP)
+- A [Firebase](https://firebase.google.com/) account (free tier is sufficient)
 
-### Installation
+### Setup
 
-1. Clone or extract the project
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+```bash
+# 1. Install dependencies
+npm install
 
-3. Create a Firebase project:
-   - Go to [Firebase Console](https://console.firebase.google.com)
-   - Create a new project
-   - Create a web app within the project
-   - Copy the config values
+# 2. Configure Firebase credentials
+cp .env.example .env.local
+# Edit .env.local with your Firebase project values — see docs/firebase-setup.md
 
-4. Set up environment variables:
-   ```bash
-   cp .env.example .env.local
-   ```
-   Edit `.env.local` with your Firebase credentials from step 3.
-
-5. Start the development server:
-   ```bash
-   npm run dev
-   ```
-   The app will be available at `http://localhost:5173`
-
-## 📦 Available Scripts
-
-### Development
-- `npm run dev` — Start Vite dev server with hot module replacement
-- `npm run type-check` — Check TypeScript types without building
-
-### Building
-- `npm run build` — Build optimized production bundle
-- `npm run preview` — Preview production build locally
-
-### Testing
-- `npm run test` — Run unit/component tests with Vitest
-- `npm run test:ui` — Run tests with interactive UI
-- `npm run test:coverage` — Generate coverage report
-- `npm run e2e` — Run E2E tests with Playwright
-- `npm run e2e:headed` — Run E2E tests with visible browser
-- `npm run e2e:debug` — Debug E2E tests step-by-step
-- `npm run bdd` — Run BDD feature tests with Cucumber
-
-### Code Quality
-- `npm run lint` — Lint code with ESLint
-
-## 📁 Project Structure
-
-```
-goal-tracker-web-app/
-├── src/
-│   ├── config/           # Configuration (Firebase, env, etc.)
-│   ├── components/       # React components
-│   ├── pages/            # Page-level components
-│   ├── services/         # Business logic (Firebase, sync, etc.)
-│   ├── store/            # State management (Redux/Context)
-│   ├── hooks/            # Custom React hooks
-│   ├── types/            # TypeScript interfaces
-│   ├── utils/            # Utility functions
-│   ├── test/             # Test utilities and setup
-│   ├── sw.ts             # Service worker
-│   ├── App.tsx           # Root component
-│   └── main.tsx          # Entry point
-├── public/               # Static assets
-├── e2e/                  # Playwright E2E tests
-├── features/             # Cucumber BDD feature files
-│   └── step_definitions/ # Step definitions
-├── plans/                # Project documentation
-├── .env.example          # Environment variables template
-├── vite.config.ts        # Vite configuration with PWA
-├── vitest.config.ts      # Vitest configuration
-├── playwright.config.ts  # Playwright E2E config
-├── cucumber.js           # Cucumber configuration
-├── tsconfig.json         # TypeScript configuration
-├── package.json          # Dependencies and scripts
-└── README.md             # This file
+# 3. Start the development server
+npm run dev
+# App is available at http://localhost:5173
 ```
 
-## 🔧 Configuration
+See [`docs/getting-started.md`](docs/getting-started.md) for a full Firebase project setup checklist.
 
-### Firebase Setup
+## Available Scripts
 
-Firebase credentials should be stored in `.env.local`:
+| Command | Purpose |
+|---|---|
+| `npm run dev` | Start [Vite](https://vite.dev/) dev server with hot module replacement |
+| `npm run build` | Compile TypeScript and produce an optimised production bundle in `dist/` |
+| `npm run preview` | Preview the production build locally |
+| `npm run type-check` | Type-check TypeScript without emitting files |
+| `npm run lint` | Lint with [ESLint](https://eslint.org/) |
+| `npm run test` | Run unit/component tests with [Vitest](https://vitest.dev/) |
+| `npm run test:ui` | Run tests with the Vitest interactive UI |
+| `npm run test:coverage` | Generate a coverage report |
+| `npm run e2e` | Run end-to-end tests with [Playwright](https://playwright.dev/) |
+| `npm run e2e:headed` | Run E2E tests with a visible browser window |
+| `npm run e2e:debug` | Debug E2E tests step-by-step with Playwright Inspector |
+| `npm run bdd` | Run BDD scenarios with [Cucumber](https://cucumber.io/) |
+| `npm run publish` | Build, run E2E tests, and deploy to Firebase Hosting |
+
+## Project Structure
+
+| File / Folder | Purpose |
+|---|---|
+| [`src/`](src/README.md) | Application source code (components, pages, services, types, context) |
+| [`e2e/`](e2e/README.md) | Playwright end-to-end tests |
+| [`features/`](features/README.md) | Cucumber Gherkin BDD feature files and step definitions |
+| [`scripts/`](scripts/README.md) | Shell scripts for CI and deployment |
+| [`docs/`](docs/README.md) | Developer documentation (architecture, features, configuration, testing, deployment) |
+| [`plan/`](plan/README.md) | Planning documents (roadmap, backlog, bug tracker) |
+| [`cucumber.js`](cucumber.js) | Cucumber runner configuration |
+| [`eslint.config.js`](eslint.config.js) | ESLint flat-config rules |
+| [`firebase.json`](firebase.json) | Firebase Hosting and Firestore configuration |
+| [`firestore.indexes.json`](firestore.indexes.json) | Firestore composite index definitions |
+| [`firestore.rules`](firestore.rules) | Firestore security rules (owner-only access per collection) |
+| [`index.html`](index.html) | HTML entry point for the Vite app |
+| [`package.json`](package.json) | Dependencies and npm scripts |
+| [`playwright.config.ts`](playwright.config.ts) | Playwright E2E configuration (base URL, timeouts, projects) |
+| [`tsconfig.json`](tsconfig.json) | Root TypeScript project references |
+| [`tsconfig.app.json`](tsconfig.app.json) | TypeScript config for application source (`src/`) |
+| [`tsconfig.node.json`](tsconfig.node.json) | TypeScript config for Node.js tooling (Vite config, scripts) |
+| [`vite.config.ts`](vite.config.ts) | Vite build config with React plugin, PWA plugin, and `@/` path alias |
+| [`vitest.config.ts`](vitest.config.ts) | Vitest unit-test configuration (jsdom environment, setup files) |
+
+## Key Documentation
+
+| Resource | Description |
+|---|---|
+| [`docs/`](docs/README.md) | Full developer documentation index |
+| [`docs/01-ARCHITECTURE.md`](docs/01-ARCHITECTURE.md) | System design and data flow |
+| [`docs/firebase-setup.md`](docs/firebase-setup.md) | Firebase project and environment variable setup |
+| [`docs/getting-started.md`](docs/getting-started.md) | Step-by-step new-developer checklist |
+| [`docs/10-TESTING.md`](docs/10-TESTING.md) | Unit, component, E2E, and BDD testing guide |
+| [`docs/11-DEPLOYMENT.md`](docs/11-DEPLOYMENT.md) | Build and deploy to Firebase Hosting |
+| [`AGENTS.md`](AGENTS.md) | Available AI agents and when to use them |
+| [`plan/`](plan/README.md) | Roadmap, backlog, and bug tracker |
+
+## Firebase Configuration
+
+Credentials are read from environment variables prefixed with `VITE_FIREBASE_`. Create a `.env.local` file at the project root:
 
 ```env
 VITE_FIREBASE_API_KEY=your_api_key
@@ -101,96 +93,7 @@ VITE_FIREBASE_PROJECT_ID=your_project_id
 VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
 VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 VITE_FIREBASE_APP_ID=your_app_id
+VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
 ```
 
-See [Firebase Setup Guide](./plans/FIREBASE_SETUP.md) for detailed instructions.
-
-## 🧪 Testing
-
-### Unit & Component Tests (Vitest)
-```bash
-npm run test              # Run all tests
-npm run test:ui          # Interactive UI
-npm run test:coverage    # With coverage report
-```
-
-Test files should be in `src/` with `.test.ts` or `.spec.ts` suffix.
-
-### E2E Tests (Playwright)
-```bash
-npm run e2e              # Run all E2E tests
-npm run e2e:headed       # See browser during tests
-npm run e2e:debug        # Step through tests
-```
-
-Tests cover:
-- Desktop browsers (Chrome, Firefox, Safari)
-- Mobile browsers (iOS Safari, Chrome)
-
-### BDD Feature Tests (Cucumber)
-```bash
-npm run bdd              # Run feature files
-```
-
-Feature files are in `features/` with `.feature` extension.
-
-## 🌐 Progressive Web App (PWA)
-
-The app is configured as a PWA with offline-first caching, installation capability, and background sync.
-
-## 📱 Mobile Support
-
-Fully responsive and mobile-optimized for iOS and Android.
-
-## 📚 Documentation
-
-- [Project Brief](./plans/PROJECT_BRIEF.md) — Feature requirements and scope
-- [Data Model](./plans/DATA_MODEL.md) — Firestore schema and offline storage
-- [Firebase Setup](./plans/FIREBASE_SETUP.md) — Firebase configuration guide
-- [Development Process](./plans/DEVELOPMENT_PROCESS.md) — Git workflow and development standards
-- [Backlog](./plans/BACKLOG.md) — Future features and enhancements
-- [Bug Tracker](./plans/BUG_TRACKER.md) — Known issues and bug reports
-
-For comprehensive developer documentation, see the [docs/](./docs/) folder.
-- [BDD Features](./features/) — User stories as Gherkin feature files
-
-## 🚀 Deployment
-
-### Firebase Hosting
-
-```bash
-npm run build
-firebase deploy
-```
-
-## 📄 License
-
-[To be determined]
-
----
-
-**Status**: MVP Development Phase  
-**Last Updated**: January 4, 2026
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+See [`docs/firebase-setup.md`](docs/firebase-setup.md) for how to obtain these values from the Firebase Console.

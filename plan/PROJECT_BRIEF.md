@@ -103,7 +103,7 @@ goal-tracker-web-app/
 │   ├── manifest.json       # PWA manifest
 │   └── icons/              # App icons for PWA install
 ├── features/               # Cucumber/Gherkin BDD feature files
-├── plans/                  # Project documentation
+├── plan/                   # Planning documents (roadmap, backlog, bugs)
 │   ├── PROJECT_BRIEF.md    # This file
 │   ├── DATA_MODEL.md       # Firestore schema and offline storage
 │   └── ARCHITECTURE.md     # Detailed technical architecture

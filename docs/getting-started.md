@@ -25,7 +25,7 @@ Complete these steps to start development on the Goal Tracker app.
   - Click "Create Database"
   - Start in "Production mode"
   - Choose server location closest to you
-  - Copy the security rules from `plans/DATA_MODEL.md` → Firestore Console → Rules tab
+  - Copy the security rules from `docs/data-model.md` → Firestore Console → Rules tab
 
 - [ ] **4. Enable Authentication**
   - Firebase Console → Build → Authentication
@@ -60,7 +60,7 @@ Complete these steps to start development on the Goal Tracker app.
 - [ ] **Create TypeScript Types** (1 hour)
   - File: `src/types/index.ts`
   - Define: Goal, Progress, Period, User interfaces
-  - Reference: `plans/DATA_MODEL.md`
+  - Reference: `docs/data-model.md`
 
 - [ ] **Build Firebase Services** (2 hours)
   - File: `src/services/firestore.ts`
@@ -70,7 +70,7 @@ Complete these steps to start development on the Goal Tracker app.
 - [ ] **Create IndexedDB Service** (1 hour)
   - File: `src/services/indexeddb.ts`
   - Implement: Local caching layer for offline-first
-  - Reference: `plans/DATA_MODEL.md` for schema
+  - Reference: `docs/data-model.md` for schema
 
 - [ ] **Build Auth Context** (1 hour)
   - File: `src/context/AuthContext.tsx`
@@ -128,18 +128,18 @@ npm run test:ui
 
 As you build each feature:
 
-1. **For feature requirements** → `plans/PROJECT_BRIEF.md`
-2. **For data structure** → `plans/DATA_MODEL.md`
+1. **For feature requirements** → `plan/PROJECT_BRIEF.md`
+2. **For data structure** → `docs/data-model.md`
 3. **For user stories** → `features/*.feature` files
-4. **For Firebase setup** → `plans/FIREBASE_SETUP.md`
-5. **For development workflow** → `plans/DEVELOPMENT_PROCESS.md`
-6. **For known bugs** → `plans/BUG_TRACKER.md`
+4. **For Firebase setup** → `docs/firebase-setup.md`
+5. **For development workflow** → `docs/development-process.md`
+6. **For known bugs** → `plan/BUG_TRACKER.md`
 
 ## 🔍 Development Tips
 
 ### Before You Start Coding
 1. Read the relevant feature file (e.g., `features/goal-management.feature`)
-2. Check the data model (e.g., Goal structure in `plans/DATA_MODEL.md`)
+2. Check the data model (e.g., Goal structure in `docs/data-model.md`)
 3. Sketch the component hierarchy
 4. Write tests first (TDD approach)
 
@@ -232,7 +232,7 @@ import { getGoals, createGoal } from '@/services/firestore'
 ## 🚨 Common Gotchas
 
 - **Don't forget `.env.local`** — App won't connect to Firebase without it
-- **Firestore security rules** — Copy from `plans/DATA_MODEL.md`
+- **Firestore security rules** — Copy from `docs/data-model.md`
 - **Service workers** — Don't affect dev server, only production builds
 - **IndexedDB** — Local storage in browser, not backed up automatically
 - **Timestamps** — Always use `serverTimestamp()` from Firebase for consistency
