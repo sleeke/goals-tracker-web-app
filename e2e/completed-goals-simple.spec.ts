@@ -2,9 +2,9 @@ import { test, expect } from '@playwright/test'
 import { loginAsTestUser, createGoal } from './helpers'
 
 test.describe('Completed Goals - Auto-Completion Feature', () => {
-  test.beforeEach(async ({ page, baseURL }) => {
-    // Navigate to the app
-    await page.goto(baseURL || 'http://localhost:5173/', { waitUntil: 'domcontentloaded' })
+  test.beforeEach(async ({ page }) => {
+    // Navigate to the app (baseURL is configured in playwright.config.ts)
+    await page.goto('/', { waitUntil: 'domcontentloaded' })
     
     // Login
     await loginAsTestUser(page)

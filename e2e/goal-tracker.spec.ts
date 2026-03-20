@@ -6,7 +6,7 @@ const TEST_GOAL_TITLE = 'E2E Test Goal'
 test.describe('Goal Tracker E2E Flow', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the app
-    await page.goto('http://localhost:5173/', { waitUntil: 'domcontentloaded' })
+    await page.goto('/', { waitUntil: 'domcontentloaded' })
   })
 
   test('should complete full flow: login → create goal → log progress → verify', async ({
@@ -184,6 +184,7 @@ test.describe('Goal Tracker E2E Flow', () => {
   })
 
   test('cleanup: delete all goals to reset user data to base state', async ({ page }) => {
+    test.setTimeout(180000) // allow up to 3 minutes to delete many accumulated goals
     console.log('🧹 Starting cleanup: deleting all goals...')
     
     // Login
@@ -198,7 +199,7 @@ test.describe('Goal Tracker E2E Flow', () => {
 
     // Repeatedly delete all visible goals
     let goalsDeleted = 0
-    let maxAttempts = 50 // Safety limit to prevent infinite loops
+    let maxAttempts = 100 // Safety limit to prevent infinite loops
 
     await page.waitForTimeout(800)  // Wait for any UI updates
 
@@ -223,11 +224,28 @@ test.describe('Goal Tracker E2E Flow', () => {
         break
       }
 
+      // If this is a collapsed completed goal, expand it first so the delete button is visible
+      const expandBtn = firstGoalCard.locator('button[aria-label="Expand completed goal"]').first()
+      const isCollapsed = await expandBtn.isVisible().catch(() => false)
+      if (isCollapsed) {
+        console.log('[Cleanup] Expanding collapsed goal...')
+        await expandBtn.click()
+        await page.waitForTimeout(300)
+      }
+
       // Find the delete button (trash icon) within the goal card
       const deleteBtn = firstGoalCard.locator('button[aria-label="Delete goal"]').first()
       
-      console.log(`[Cleanup] Found delete button: ${await deleteBtn.isVisible().catch(() => false)}`)
-      
+      const deleteBtnVisible = await deleteBtn.isVisible().catch(() => false)
+      console.log(`[Cleanup] Found delete button: ${deleteBtnVisible}`)
+
+      if (!deleteBtnVisible) {
+        // No delete button found and card is not expandable — skip to avoid infinite loop
+        console.log('[Cleanup] No delete button found; skipping this card.')
+        maxAttempts--
+        continue
+      }
+
       // Scroll into view and click delete
       await deleteBtn.scrollIntoViewIfNeeded()
       await deleteBtn.click()
@@ -235,7 +253,7 @@ test.describe('Goal Tracker E2E Flow', () => {
       console.log(`[Cleanup] Clicked delete button`)
 
       // Wait for goal to be removed
-      await page.waitForTimeout(800)
+      await page.waitForTimeout(400)
       
       goalsDeleted++
       console.log(`Deleted goal ${goalsDeleted}...`)

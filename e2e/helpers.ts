@@ -17,7 +17,7 @@ export const TEST_USER = {
  */
 export async function loginAsTestUser(page: Page) {
   console.log('[LOGIN] Navigating to app...')
-  await page.goto('http://localhost:5173/', { waitUntil: 'domcontentloaded' })
+  await page.goto('/', { waitUntil: 'domcontentloaded' })
   await page.waitForTimeout(500)
 
   // Check if already logged in
