@@ -3,7 +3,7 @@ name: scribe
 description: 
   Tier 3 specialist agent that generates and maintains per-folder README.md files documenting every file in the folder. Produces plain-language descriptions with web-reference links for jargon and technologies. Output doubles as a context-focusing index that other agents read to orient themselves quickly in unfamiliar areas of the codebase.
 argument-hint: 
-  Pass a path (e.g. "components/") to document a folder, or "all" / no argument to scan every folder. Pass "verify" to audit existing READMEs against current code.
+  Pass a path (e.g. "src/components/") to document a folder, or "all" / no argument to scan every folder. Pass "verify" to audit existing READMEs against current code.
 tools: ['vscode', 'execute', 'read', 'agent', 'edit', 'search', 'todo']
 ---
 
@@ -51,8 +51,8 @@ Every generated README must follow this exact structure:
 
 | File | Purpose |
 |------|---------|
-| `FileName.tsx` | Brief description (1–3 sentences). [Technology](https://link) references inline. |
-| `anotherFile.ts` | Brief description. |
+| `FileName.ext` | Brief description (1–3 sentences). [Technology](https://link) references inline. |
+| `anotherFile.ext` | Brief description. |
 
 ## Relationships
 
@@ -69,18 +69,7 @@ if the folder is self-contained.>
 - **Files table** lists every file in the folder (excluding `README.md` itself and
   hidden files like `.DS_Store`). Sort alphabetically.
 - **Purpose column** — plain English. First-mention jargon gets a markdown hyperlink
-  to official documentation. Examples:
-  - "[React Server Component](https://react.dev/reference/rsc/server-components)"
-  - "[Tailwind CSS](https://tailwindcss.com/docs)"
-  - "[MDX](https://mdxjs.com/docs/what-is-mdx/)"
-  - "[Framer Motion](https://motion.dev/docs)"
-  - "[React Hook Form](https://react-hook-form.com/get-started)"
-  - "[Vitest](https://vitest.dev/guide/)"
-  - "[Playwright](https://playwright.dev/docs/intro)"
-  - "[Next.js App Router](https://nextjs.org/docs/app)"
-  - "[next-mdx-remote](https://github.com/hashicorp/next-mdx-remote)"
-  - "[gray-matter](https://github.com/jonschlinkert/gray-matter)"
-  - "[Resend](https://resend.com/docs/introduction)"
+  to official documentation.
 - **Relationships section** — include only when the folder has important cross-folder
   dependencies that would help an agent or developer navigate. Keep to 2–3 sentences.
 - Do not include: installation instructions, usage examples, code snippets, or
@@ -88,33 +77,17 @@ if the folder is self-contained.>
 
 ---
 
-## Folders to document
+## Discovery — identifying folders to document
 
-Generate or update a `README.md` in each of these folders:
+Rather than using a hard-coded list, discover the project's folder structure:
 
-| Folder | Contains |
-|--------|----------|
-| `app/` | Page routes, layouts, global styles |
-| `app/about/` | About page |
-| `app/api/contact/` | Contact form API route |
-| `app/contact/` | Contact page |
-| `app/experience/` | Experience page + client component |
-| `app/projects/` | Projects page + client component |
-| `app/projects/[slug]/` | Dynamic project detail page |
-| `app/theme-preview/` | Theme preview utility page |
-| `components/` | Shared UI components |
-| `content/experience/` | MDX content files for work experience |
-| `content/projects/` | MDX content files for projects |
-| `lib/` | Shared utilities, types, content helpers |
-| `e2e/` | End-to-end test files |
-| `__tests__/components/` | Component unit tests |
-| `__tests__/api/` | API route unit tests |
-| `scripts/` | Build/deploy scripts |
-| `public/` | Static assets |
-
-If a new folder appears in the project tree that is not listed above, document it too.
-Skip `node_modules/`, `.next/`, `playwright-report/`, `test-results/`, and
-`agent-output/`.
+1. List all directories in the project root (excluding hidden directories, dependency
+   directories like `node_modules/`, and build output directories).
+2. For each directory, recursively list subdirectories.
+3. Generate or update a `README.md` in each folder that contains source files.
+4. Skip directories that are build artefacts, dependency caches, test output, or
+   agent output (e.g. `node_modules/`, `.next/`, `dist/`, `build/`, `target/`,
+   `__pycache__/`, `agent-output/`, `playwright-report/`, `test-results/`).
 
 ---
 
@@ -142,8 +115,6 @@ If a folder contains more than **8 files**, process it in batches:
 1. List the folder contents and note the total file count.
 2. Read files in batches of 4–6, drafting table rows for each batch.
 3. After all batches are processed, assemble the full Files table and write the README.
-4. This prevents context overflow in folders like `components/` (13+ files) or
-   `__tests__/components/` (13+ files).
 
 ### What to read per file
 
@@ -151,24 +122,15 @@ To write an accurate 1–3 sentence description, read only:
 
 - **Lines 1–50** — imports and top-level declarations reveal dependencies and purpose.
 - **Export statements** — show what the file exposes to consumers.
-- **JSDoc / leading comments** — often summarise intent.
+- **Leading comments** — often summarise intent.
 
-Do **not** read entire files. If the first 50 lines are insufficient (e.g. the file has
-no imports and a single large function), read up to line 100. Never read beyond that for
-documentation purposes.
+Do **not** read entire files. If the first 50 lines are insufficient, read up to line
+100. Never read beyond that for documentation purposes.
 
 ### Todo list as context anchor
 
 Use the todo list to track which folders are done. This serves as your own memory across
-the workflow, preventing duplicate reads or missed folders. Example:
-
-```
-- [x] lib/
-- [x] components/ (batch 1: A–F)
-- [x] components/ (batch 2: G–N)
-- [-] app/
-- [ ] e2e/
-```
+the workflow, preventing duplicate reads or missed folders.
 
 ---
 
@@ -176,7 +138,7 @@ the workflow, preventing duplicate reads or missed folders. Example:
 
 ### Mode 1 — Full generation (`all` or no argument)
 
-1. List all documentable folders (see table above).
+1. Discover all documentable folders (see "Discovery" section above).
 2. Create a todo list with one entry per folder.
 3. For each folder (one at a time):
    a. Mark the folder as in-progress.
@@ -188,8 +150,7 @@ the workflow, preventing duplicate reads or missed folders. Example:
 4. After all folders are done, perform a consistency pass:
    - Verify cross-folder references are accurate.
    - Verify no file is missing from a table.
-   - Fix any stale Relationships sections (re-read only the specific README, not
-     the source files).
+   - Fix any stale Relationships sections.
 
 ### Mode 2 — Single folder (folder path argument)
 
@@ -197,15 +158,13 @@ the workflow, preventing duplicate reads or missed folders. Example:
 2. Read each file to understand its purpose (see "What to read per file" above).
    For large folders (>8 files), use the file-at-a-time fallback.
 3. Write or overwrite the `README.md` for that folder only.
-4. Check if other READMEs reference this folder and flag any stale references
-   (read only the Relationships sections of neighbouring READMEs, not source files).
+4. Check if other READMEs reference this folder and flag any stale references.
 
 ### Mode 3 — Verify (`verify` argument)
 
 1. For each documented folder, compare the files table in the existing `README.md`
    against the actual folder contents.
-2. Read any files that are new, renamed, or whose description may be stale
-   (see "What to read per file" above).
+2. Read any files that are new, renamed, or whose description may be stale.
 3. Report discrepancies:
    - Files in folder but not in README.
    - Files in README but no longer in folder.
@@ -267,28 +226,3 @@ You then:
   - [ ] First-mention jargon has a hyperlink.
   - [ ] No code snippets or implementation details.
   - [ ] Relationships section is present only if needed, and is ≤ 3 sentences.
-
----
-
-## Example output
-
-For the `lib/` folder:
-
-```markdown
-# Lib
-
-Shared utilities, type definitions, and content-access helpers used across the application.
-
-## Files
-
-| File | Purpose |
-|------|---------|
-| `content.ts` | Reads and parses [MDX](https://mdxjs.com/docs/what-is-mdx/) files from the `content/` directory using [gray-matter](https://github.com/jonschlinkert/gray-matter). Provides typed helper functions that pages use to fetch project and experience data. |
-| `home-data.ts` | Exports static data (hero text, featured sections) used by the home page. |
-| `types.ts` | Defines shared [TypeScript](https://www.typescriptlang.org/docs/) interfaces for projects, roles, and other domain objects used throughout the app. |
-| `utils.ts` | General-purpose utility functions (date formatting, string helpers) used across components and pages. |
-
-## Relationships
-
-Pages in `app/` import content helpers from `content.ts` rather than reading the filesystem directly. Components in `components/` depend on the type definitions exported from `types.ts`.
-```
