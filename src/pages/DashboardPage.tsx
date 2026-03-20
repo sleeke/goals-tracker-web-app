@@ -66,6 +66,7 @@ export function DashboardPage() {
     return () => {
       unsubscribePromise.then((unsub) => unsub?.())
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.uid])
 
   // Subscribe to progress updates for all goals
@@ -117,9 +118,9 @@ export function DashboardPage() {
 
   const getGoalPeriod = (goal: Goal) => {
     // calculate startDate and EndDate based on Goal frequency
-    var today = new Date()
-    var startDate: Date
-    var endDate: Date
+    const today = new Date()
+    let startDate: Date
+    let endDate: Date
       if (goal.frequency === 'daily') {
         startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate())
         endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59)
@@ -181,7 +182,7 @@ export function DashboardPage() {
     setYearlyProgress(yearlyProgressMap)
   }
 
-  const handleCreateGoal = async (goalData: any) => {
+  const handleCreateGoal = async (goalData: Omit<Goal, 'id' | 'createdAt' | 'updatedAt'>) => {
     if (!user?.uid) return
 
     try {
@@ -285,7 +286,7 @@ export function DashboardPage() {
         [selectedGoal.id!]: progress,
       }))
     } catch (err) {
-      const error = err as any
+      const error = err as Error & { code?: string }
       const message = err instanceof Error ? err.message : 'Failed to log progress'
       const fullError = `${message}${error?.code ? ` [${error.code}]` : ''}`
       

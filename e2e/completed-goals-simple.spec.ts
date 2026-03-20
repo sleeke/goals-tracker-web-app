@@ -152,7 +152,6 @@ test.describe('Completed Goals - Auto-Completion Feature', () => {
     await page.waitForTimeout(2000)
 
     // Verify section is visible
-    const completedSection = page.locator('.completed-goals-section')
     const goalsList = page.locator('.completed-goals-list')
     await expect(goalsList).toBeVisible()
 

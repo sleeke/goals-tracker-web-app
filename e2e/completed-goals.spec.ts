@@ -137,22 +137,24 @@ test.describe('Completed Goals Feature', () => {
     await page.waitForTimeout(1000)
 
     const completedSection = page.locator('.completed-goals-section')
-    const completedGoal = completedSection.locator(`.goal-card--collapsed:has-text("${goalTitle}")`)
+    const collapsedGoal = completedSection.locator(`.goal-card--collapsed:has-text("${goalTitle}")`)
     
     // Should start collapsed
-    await expect(completedGoal).toHaveClass(/goal-card--collapsed/)
+    await expect(collapsedGoal).toHaveClass(/goal-card--collapsed/)
     
     // Click expand button
-    const toggleButton = completedGoal.locator('.btn-toggle-expand')
+    const toggleButton = collapsedGoal.locator('.btn-toggle-expand')
     await toggleButton.click()
     
     await page.waitForTimeout(500)
     
-    // Should expand - no longer have collapsed class
-    await expect(completedGoal).not.toHaveClass(/goal-card--collapsed/)
+    // After expanding, the card no longer has goal-card--collapsed class, so use
+    // a class-independent locator to assert the expanded state
+    const expandedGoal = completedSection.locator(`.goal-card:has-text("${goalTitle}")`)
+    await expect(expandedGoal).not.toHaveClass(/goal-card--collapsed/)
     
     // Should show full content now
-    const progressBar = completedGoal.locator('.progress-bar-fill')
+    const progressBar = expandedGoal.locator('.progress-bar-fill')
     await expect(progressBar).toBeVisible()
   })
 
@@ -181,7 +183,6 @@ test.describe('Completed Goals Feature', () => {
     await page.waitForTimeout(1000)
 
     // Completed goals should be visible
-    const completedSection = page.locator('.completed-goals-section')
     const completedGoalsList = page.locator('.completed-goals-list')
     await expect(completedGoalsList).toBeVisible()
 

@@ -1,5 +1,4 @@
-import { Given, When, Then, Before, After } from '@cucumber/cucumber'
-import { expect } from '@playwright/test'
+import { Given, When, Then, Before, After, type DataTable } from '@cucumber/cucumber'
 import { Browser, BrowserContext, Page, chromium } from '@playwright/test'
 
 let browser: Browser
@@ -39,22 +38,22 @@ Given('I have no existing goals', async function () {
 })
 
 Given('I have created a goal {string} with frequency {string} and targetValue {int}', 
-  async function (title: string, frequency: string, targetValue: number) {
+  async function (_title: string, _frequency: string, _targetValue: number) {
     // TODO: Create goal via API or UI
   }
 )
 
-When('I create a goal with the following details:', async function (dataTable: any) {
+When('I create a goal with the following details:', async function (dataTable: DataTable) {
   const data = dataTable.rowsHash()
   // TODO: Fill in goal creation form and submit
   console.log('Creating goal:', data)
 })
 
-Then('the goal {string} should be saved in my goals list', async function (title: string) {
+Then('the goal {string} should be saved in my goals list', async function (_title: string) {
   // TODO: Assert goal appears in goals list
 })
 
-Then('the goal should have status {string}', async function (status: string) {
+Then('the goal should have status {string}', async function (_status: string) {
   // TODO: Assert goal status
 })
 
@@ -62,7 +61,7 @@ Then('the goal should have status {string}', async function (status: string) {
  * Progress Tracking Steps
  */
 When('I log {int} minutes of progress for the goal {string}', 
-  async function (minutes: number, goalTitle: string) {
+  async function (_minutes: number, _goalTitle: string) {
     // TODO: Log progress via UI
   }
 )
@@ -72,7 +71,7 @@ Then('the progress should be recorded with timestamp of today', async function (
 })
 
 Then('the current period progress should show {int} out of {int} minutes', 
-  async function (current: number, target: number) {
+  async function (_current: number, _target: number) {
     // TODO: Assert progress display
   }
 )

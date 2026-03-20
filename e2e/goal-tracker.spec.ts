@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { TEST_USER, loginAsTestUser, logout, createGoal, logProgress } from './helpers'
+import { loginAsTestUser, createGoal, logProgress } from './helpers'
 
 const TEST_GOAL_TITLE = 'E2E Test Goal'
 

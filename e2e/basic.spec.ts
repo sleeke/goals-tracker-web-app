@@ -23,17 +23,17 @@ test.describe('Goal Tracker - Basic Navigation', () => {
 })
 
 test.describe('Goal Tracker - Authentication', () => {
-  test('should redirect to login when not authenticated', async ({ page }) => {
+  test('should redirect to login when not authenticated', async ({ page: _page }) => {
     // TODO: Implement once auth is set up
     // await page.goto('/dashboard')
     // await expect(page).toHaveURL('/login')
   })
 
-  test('should allow email signup', async ({ page }) => {
+  test('should allow email signup', async ({ page: _page }) => {
     // TODO: Implement signup test
   })
 
-  test('should allow email login', async ({ page }) => {
+  test('should allow email login', async ({ page: _page }) => {
     // TODO: Implement login test
   })
 })
@@ -61,12 +61,12 @@ test.describe('Goal Tracker - Mobile Responsiveness', () => {
 })
 
 test.describe('Goal Tracker - Offline Functionality', () => {
-  test('should cache app for offline access', async ({ page }) => {
+  test('should cache app for offline access', async ({ page: _page }) => {
     // TODO: Implement offline detection test
     // Test service worker caching
   })
 
-  test('should queue mutations when offline', async ({ page }) => {
+  test('should queue mutations when offline', async ({ page: _page }) => {
     // TODO: Implement offline sync test
   })
 })
