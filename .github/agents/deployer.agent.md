@@ -3,7 +3,7 @@ name: deployer
 description: 
   Tier 3 specialist that runs the deployment pipeline and reports the outcome. Assumes CI gates have already been verified by the quality-gate agent unless told otherwise.
 argument-hint: 
-  Optionally pass "--skip-local" to skip unit/lint/E2E checks (default when called by a workflow agent after quality-gate). Pass "--full" to run the complete pipeline including local tests. Omit to default to "--skip-local".
+  Optionally pass "--skip-local" to skip checks (default when called by agent after quality-gate). Pass "--full" to run the complete pipeline including local tests. Omit to default to "--skip-local".
 tools: ['execute', 'read', 'todo']
 ---
 

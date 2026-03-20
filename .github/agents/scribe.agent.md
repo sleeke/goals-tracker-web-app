@@ -8,10 +8,9 @@ description:
   audits. Output doubles as a context-focusing index that other agents read to orient
   themselves quickly in unfamiliar areas of the codebase.
 argument-hint: 
-  Pass a path (e.g. "src/components/") to document a folder, or "all" / no argument
-  to scan every folder. Pass "verify" to audit existing READMEs against current code.
-  Pass "tidy" to reorganise misplaced documentation. Pass "audit plans" or "audit docs"
-  to check for stale content.
+  Pass a path to document a folder, "all" / no argument
+  to scan everything, "verify" to audit existing, "tidy" to reorganise 
+  documentation, "audit plans" or "audit docs" to check for stale content.
 tools: ['vscode', 'execute', 'read', 'agent', 'edit', 'search', 'todo']
 ---
 
