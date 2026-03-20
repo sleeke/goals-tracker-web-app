@@ -63,8 +63,8 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Start server
-        run: npm run dev &> .devserver.log
+      - name: Start dev server
+        run: npm run dev &> .devserver.log &
 
       - name: Run Playwright tests
         run: npx playwright test --config=playwright.config.ts
