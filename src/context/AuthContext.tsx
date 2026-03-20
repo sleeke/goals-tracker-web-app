@@ -5,7 +5,7 @@ import {
   signOut,
   onAuthStateChanged,
 } from 'firebase/auth'
-import { auth } from '@/config/firebase'
+import { auth, firebaseInitError } from '@/config/firebase'
 import type { User } from '@/types'
 
 interface AuthContextType {
@@ -27,6 +27,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Listen for auth state changes
   useEffect(() => {
+    // If Firebase failed to initialise (e.g. missing env vars), surface the error
+    // immediately so the app renders an error screen instead of a blank page.
+    if (firebaseInitError) {
+      setError(firebaseInitError)
+      setIsLoading(false)
+      return
+    }
+
     console.log('[AuthContext] Initializing auth state listener')
     let mounted = true
     
