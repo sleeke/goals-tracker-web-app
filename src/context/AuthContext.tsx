@@ -39,7 +39,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
  * to all descendant components via `AuthContext`.
  *
  * A 10-second timeout guard prevents the UI from hanging if Firebase fails to
- * initialise (e.g. due to missing environment variables).
+ * initialize (e.g. due to missing environment variables).
  *
  * @param children - React subtree that should have access to auth state.
  */

@@ -7,7 +7,7 @@ import './AuthPages.css'
  * Sign-up page component that renders the account creation form.
  *
  * Performs client-side validation (password length, match, valid email) before
- * calling {@link useAuth}.`signup()`. On success, navigates to `/dashboard`.
+ * calling `signup()` from {@link useAuth}. On success, navigates to `/dashboard`.
  * Both validation errors and Firebase auth errors are displayed inline.
  */
 export function SignupPage() {
