@@ -2,6 +2,16 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
+/**
+ * Firebase initialisation module.
+ *
+ * Reads all required Firebase configuration from Vite environment variables
+ * (`VITE_FIREBASE_*`) and exports a ready-to-use Firebase app, Auth instance,
+ * and Firestore database instance.
+ *
+ * @module firebase
+ */
+
 // Firebase configuration from environment variables
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -36,4 +46,8 @@ export const auth = getAuth(app);
 // Initialize Cloud Firestore and get a reference to the service
 export const db = getFirestore(app);
 
+/**
+ * The initialised Firebase app instance.
+ * Use {@link auth} and {@link db} for Firebase Authentication and Firestore respectively.
+ */
 export default app;

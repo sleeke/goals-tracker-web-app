@@ -3,6 +3,15 @@ import type { Goal } from '@/types'
 import './ProgressLogger.css'
 import { getTodayString } from '@/utils'
 
+/**
+ * Props for the {@link ProgressLoggerModal} component.
+ *
+ * @property isOpen     - Controls modal visibility.
+ * @property goal       - The goal for which progress is being logged, or `null`.
+ * @property onClose    - Called when the modal should close.
+ * @property onSubmit   - Async handler that persists the progress entry.
+ * @property isLoading  - When `true`, all inputs and buttons are disabled.
+ */
 interface ProgressLoggerModalProps {
   isOpen: boolean
   goal: Goal | null
@@ -16,6 +25,16 @@ interface ProgressLoggerModalProps {
   isLoading?: boolean
 }
 
+/**
+ * Modal dialog for logging a progress entry against a goal.
+ *
+ * Allows the user to specify an amount, an optional date (defaulting to today),
+ * and an optional note. Entries logged on a date other than today are
+ * automatically flagged as retroactive. Renders `null` when `isOpen` is `false`
+ * or `goal` is `null`.
+ *
+ * @param props - {@link ProgressLoggerModalProps}
+ */
 export function ProgressLoggerModal({
   isOpen,
   goal,

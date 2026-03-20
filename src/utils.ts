@@ -1,3 +1,9 @@
+/**
+ * Returns today's date as an ISO 8601 date string (`YYYY-MM-DD`) in the user's
+ * **local** timezone, making it suitable for use with `<input type="date">` elements.
+ *
+ * @returns A string like `"2024-03-15"` representing today's local date.
+ */
 export function getTodayString() {
   // Return today's date in ISO 8601 format (YYYY-MM-DD) in the current LOCAL timezone
   // This is required for HTML <input type="date"> elements

@@ -3,6 +3,13 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 import './AuthPages.css'
 
+/**
+ * Sign-up page component that renders the account creation form.
+ *
+ * Performs client-side validation (password length, match, valid email) before
+ * calling {@link useAuth}.`signup()`. On success, navigates to `/dashboard`.
+ * Both validation errors and Firebase auth errors are displayed inline.
+ */
 export function SignupPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
