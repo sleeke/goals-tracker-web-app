@@ -2,7 +2,7 @@
 name: spec-expander
 description: Expands requirements into detailed, implementation-ready specifications that the implementer agent can execute. Run this agent before starting any feature work — it bridges the gap between a one-liner requirement and a fully-specified, testable change. The output is a Markdown specification file placed in `specs/` at the repository root. Input priority (1) requirement text in the prompt, (2) a file referenced in the prompt, (3) plan/ROADMAP.md.
 argument-hint: 
-  Pass requirement text directly in the prompt for highest priority, or reference a file containing requirements. If omitted, the items under `## Prepared requirements` in `plan/ROADMAP.md` will be used.
+  Pass requirement text directly in the prompt for highest priority, or reference a file. If omitted, the items under `## Prepared requirements` in `plan/ROADMAP.md` will be used.
 tools: ['read', 'search', 'execute', 'edit', 'todo']
 ---
 
