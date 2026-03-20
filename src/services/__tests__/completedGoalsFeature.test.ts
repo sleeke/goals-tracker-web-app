@@ -235,4 +235,122 @@ describe('Completed Goals Feature Logic', () => {
       expect(buttonText).toBe('Reopen Goal')
     })
   })
+
+  describe('Recurring goal auto-completion logic', () => {
+    interface RecurringGoal {
+      id: string
+      status: 'active' | 'archived' | 'completed'
+      targetValue: number
+      completedDate?: Date
+    }
+
+    /**
+     * Simulates the DashboardPage useEffect logic for determining what update
+     * should be applied to a goal based on current progress.
+     */
+    function computeGoalUpdate(
+      goal: RecurringGoal,
+      currentProgress: number
+    ): Partial<RecurringGoal> | null {
+      if (goal.status === 'active' && currentProgress >= goal.targetValue) {
+        return { status: 'completed', completedDate: new Date() }
+      } else if (goal.status === 'completed' && currentProgress < goal.targetValue) {
+        return { status: 'active', completedDate: undefined }
+      }
+      return null
+    }
+
+    it('should auto-complete an active goal when progress reaches target', () => {
+      const goal: RecurringGoal = { id: '1', status: 'active', targetValue: 10 }
+      const update = computeGoalUpdate(goal, 10)
+
+      expect(update).not.toBeNull()
+      expect(update!.status).toBe('completed')
+      expect(update!.completedDate).toBeInstanceOf(Date)
+    })
+
+    it('should auto-complete an active goal when progress exceeds target', () => {
+      const goal: RecurringGoal = { id: '1', status: 'active', targetValue: 10 }
+      const update = computeGoalUpdate(goal, 15)
+
+      expect(update).not.toBeNull()
+      expect(update!.status).toBe('completed')
+    })
+
+    it('should not change an active goal when progress is below target', () => {
+      const goal: RecurringGoal = { id: '1', status: 'active', targetValue: 10 }
+      const update = computeGoalUpdate(goal, 5)
+
+      expect(update).toBeNull()
+    })
+
+    it('should auto-reopen a completed goal when progress drops below target', () => {
+      const goal: RecurringGoal = {
+        id: '1',
+        status: 'completed',
+        targetValue: 10,
+        completedDate: new Date('2026-01-01'),
+      }
+      const update = computeGoalUpdate(goal, 0)
+
+      expect(update).not.toBeNull()
+      expect(update!.status).toBe('active')
+      expect(update!.completedDate).toBeUndefined()
+    })
+
+    it('should auto-reopen a completed goal when progress is partially reset', () => {
+      const goal: RecurringGoal = {
+        id: '1',
+        status: 'completed',
+        targetValue: 10,
+        completedDate: new Date('2026-01-01'),
+      }
+      const update = computeGoalUpdate(goal, 9)
+
+      expect(update).not.toBeNull()
+      expect(update!.status).toBe('active')
+      expect(update!.completedDate).toBeUndefined()
+    })
+
+    it('should not change a completed goal when progress still meets target', () => {
+      const goal: RecurringGoal = {
+        id: '1',
+        status: 'completed',
+        targetValue: 10,
+        completedDate: new Date('2026-01-01'),
+      }
+      const update = computeGoalUpdate(goal, 10)
+
+      expect(update).toBeNull()
+    })
+
+    it('should not affect archived goals', () => {
+      const archivedGoal: RecurringGoal = { id: '1', status: 'archived', targetValue: 10 }
+
+      const updateBelowTarget = computeGoalUpdate(archivedGoal, 0)
+      const updateAtTarget = computeGoalUpdate(archivedGoal, 10)
+
+      expect(updateBelowTarget).toBeNull()
+      expect(updateAtTarget).toBeNull()
+    })
+
+    it('should treat a goal as recurring: completing then resetting then completing again', () => {
+      let goal: RecurringGoal = { id: '1', status: 'active', targetValue: 5 }
+
+      // First completion
+      const completeUpdate = computeGoalUpdate(goal, 5)
+      expect(completeUpdate!.status).toBe('completed')
+      goal = { ...goal, ...completeUpdate! }
+
+      // Progress reset (e.g. new period begins)
+      const resetUpdate = computeGoalUpdate(goal, 0)
+      expect(resetUpdate!.status).toBe('active')
+      expect(resetUpdate!.completedDate).toBeUndefined()
+      goal = { ...goal, ...resetUpdate! }
+
+      // Re-completed in new period
+      const recompleteUpdate = computeGoalUpdate(goal, 7)
+      expect(recompleteUpdate!.status).toBe('completed')
+    })
+  })
 })

@@ -330,22 +330,29 @@ export function DashboardPage() {
     )
   }
 
-  // Auto-complete goals when progress reaches target for the current period
+  // Auto-complete or reopen goals based on current progress (goals are recurring)
   useEffect(() => {
     if (!goals.length || !user?.uid) return
 
     for (const goal of goals) {
-      if (goal.status === 'active') {
-        const currentProgress = goalProgress[goal.id!] || 0
-        if (currentProgress >= goal.targetValue && !goal.completedDate) {
-          // Goal has reached target and hasn't been marked complete yet
-          updateGoal(goal.id!, {
-            status: 'completed',
-            completedDate: new Date(),
-          }).catch((err) => {
-            console.error('Error auto-completing goal:', err)
-          })
-        }
+      const currentProgress = goalProgress[goal.id!] || 0
+
+      if (goal.status === 'active' && currentProgress >= goal.targetValue) {
+        // Goal has reached target - mark as completed
+        updateGoal(goal.id!, {
+          status: 'completed',
+          completedDate: new Date(),
+        }).catch((err) => {
+          console.error('Error auto-completing goal:', err)
+        })
+      } else if (goal.status === 'completed' && currentProgress < goal.targetValue) {
+        // Progress dropped below target (e.g. after a period reset) - revert to active
+        updateGoal(goal.id!, {
+          status: 'active',
+          completedDate: undefined,
+        }).catch((err) => {
+          console.error('Error auto-reopening goal:', err)
+        })
       }
     }
   }, [goalProgress, goals, user?.uid])
