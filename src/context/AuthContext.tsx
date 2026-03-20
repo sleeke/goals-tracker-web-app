@@ -8,6 +8,17 @@ import {
 import { auth } from '@/config/firebase'
 import type { User } from '@/types'
 
+/**
+ * Shape of the authentication context value provided by {@link AuthProvider}.
+ *
+ * @property user        - The currently authenticated application user, or `null` when unauthenticated.
+ * @property isLoading   - `true` while Firebase is resolving the initial auth state.
+ * @property error       - A human-readable error message from the last failed auth operation, or `null`.
+ * @property signup      - Creates a new Firebase account with the given credentials.
+ * @property login       - Signs in an existing user with email and password.
+ * @property logout      - Signs out the current user and clears local state.
+ * @property clearError  - Clears the current {@link error} value.
+ */
 interface AuthContextType {
   user: User | null
   isLoading: boolean
@@ -20,6 +31,18 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
+/**
+ * Context provider that manages Firebase authentication state for the entire app.
+ *
+ * Wraps Firebase's `onAuthStateChanged` listener and exposes auth operations
+ * ({@link AuthContextType.signup}, {@link AuthContextType.login}, {@link AuthContextType.logout})
+ * to all descendant components via `AuthContext`.
+ *
+ * A 10-second timeout guard prevents the UI from hanging if Firebase fails to
+ * initialize (e.g. due to missing environment variables).
+ *
+ * @param children - React subtree that should have access to auth state.
+ */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -144,6 +167,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
+/**
+ * Hook that returns the current {@link AuthContextType} value.
+ *
+ * Must be called from inside an {@link AuthProvider} — throws if used outside.
+ *
+ * @returns The current authentication context.
+ * @throws {Error} When called outside of an `AuthProvider`.
+ *
+ * @example
+ * ```tsx
+ * const { user, login, logout } = useAuth();
+ * ```
+ */
 export function useAuth() {
   const context = useContext(AuthContext)
   if (!context) {

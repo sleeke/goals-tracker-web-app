@@ -15,6 +15,19 @@ import { logProgress, calculateGoalProgress, subscribeToGoalProgress } from '@/s
 import type { Goal } from '@/types'
 import './DashboardPage.css'
 
+/**
+ * Main application dashboard page.
+ *
+ * Displays all goals belonging to the authenticated user, split into
+ * **active / archived** goals and a collapsible **completed goals** section.
+ *
+ * Responsibilities:
+ * - Subscribes to real-time Firestore updates for goals and per-goal progress.
+ * - Computes current-period progress and yearly totals for each goal.
+ * - Orchestrates the create, edit, delete, and progress-logging modals.
+ * - Persists the "show completed section" toggle and per-goal expand/collapse
+ *   state to `localStorage` across page reloads.
+ */
 export function DashboardPage() {
   const { user, logout } = useAuth()
   const [goals, setGoals] = useState<Goal[]>([])

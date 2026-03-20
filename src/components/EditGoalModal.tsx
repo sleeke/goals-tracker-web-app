@@ -2,6 +2,16 @@ import { useState, useEffect } from 'react'
 import type { Goal } from '@/types'
 import './GoalModal.css'
 
+/**
+ * Props for the {@link EditGoalModal} component.
+ *
+ * @property isOpen     - Controls modal visibility.
+ * @property goal       - The goal to edit, or `null` when no goal is selected.
+ * @property onClose    - Called when the modal should close.
+ * @property onSave     - Async handler that persists the changes; receives the goal ID
+ *                        and a partial {@link Goal} object with updated fields.
+ * @property isLoading  - When `true`, all inputs and buttons are disabled.
+ */
 interface EditGoalModalProps {
   isOpen: boolean
   goal: Goal | null
@@ -10,6 +20,15 @@ interface EditGoalModalProps {
   isLoading?: boolean
 }
 
+/**
+ * Modal dialog for editing an existing goal.
+ *
+ * Pre-populates all form fields from `goal` whenever `isOpen` becomes `true`.
+ * Validates that `title` is non-empty and `targetValue` is greater than zero.
+ * Renders `null` when `isOpen` is `false` or `goal` is `null`.
+ *
+ * @param props - {@link EditGoalModalProps}
+ */
 export function EditGoalModal({
   isOpen,
   goal,

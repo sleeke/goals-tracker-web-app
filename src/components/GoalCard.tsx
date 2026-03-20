@@ -1,6 +1,21 @@
 import type { Goal } from '@/types'
 import './GoalCard.css'
 
+/**
+ * Props for the {@link GoalCard} component.
+ *
+ * @property goal            - The goal data to display.
+ * @property progress        - Progress logged in the current period.
+ * @property progressTarget  - The goal's target value for the current period.
+ * @property yearlyProgress  - Cumulative progress logged in the current calendar year.
+ * @property onLogProgress   - Called with the goal ID when the user clicks "Log Progress".
+ * @property onEdit          - Called with the full goal when the user clicks the edit button.
+ * @property onViewHistory   - Called with the full goal when the user clicks the history button.
+ * @property onDelete        - Called with the goal ID after the user confirms deletion.
+ * @property isLoading       - When `true`, all action buttons are disabled.
+ * @property isCollapsed     - When `true` and the goal is completed, renders the compact collapsed view.
+ * @property onToggleExpand  - Called when the user clicks the expand / collapse toggle button.
+ */
 interface GoalCardProps {
   goal: Goal
   progress: number
@@ -15,6 +30,16 @@ interface GoalCardProps {
   onToggleExpand?: () => void
 }
 
+/**
+ * Renders a single goal card with a progress bar, action buttons, and status badge.
+ *
+ * Supports two display modes:
+ * - **Normal** – shows all goal details, progress bar, and action buttons.
+ * - **Collapsed** (when `isCollapsed` is `true` and `goal.status === 'completed'`) –
+ *   renders a compact single-line view with just the title, completion date, and expand button.
+ *
+ * @param props - {@link GoalCardProps}
+ */
 export function GoalCard({
   goal,
   progress,

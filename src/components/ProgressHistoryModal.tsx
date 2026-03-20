@@ -3,6 +3,15 @@ import type { Goal, Progress } from '@/types'
 import { getGoalProgress, deleteProgress } from '@/services/progressService'
 import './ProgressHistoryModal.css'
 
+/**
+ * Props for the {@link ProgressHistoryModal} component.
+ *
+ * @property isOpen     - Controls modal visibility.
+ * @property goal       - The goal whose progress history is displayed, or `null`.
+ * @property onClose    - Called when the modal should close.
+ * @property isLoading  - Reserved for external loading state; the modal manages its own
+ *                        internal fetch loading state independently.
+ */
 interface ProgressHistoryModalProps {
   isOpen: boolean
   goal: Goal | null
@@ -57,6 +66,14 @@ function formatProgressDate(dateInput: any): string {
   return `${dateStr} at ${timeStr}`
 }
 
+/**
+ * Modal dialog that displays and manages the progress history for a single goal.
+ *
+ * Fetches progress entries from Firestore when opened and allows individual
+ * entries to be deleted. Renders `null` when `isOpen` is `false` or `goal` is `null`.
+ *
+ * @param props - {@link ProgressHistoryModalProps}
+ */
 export function ProgressHistoryModal({
   isOpen,
   goal,

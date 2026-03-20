@@ -3,6 +3,13 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 import './AuthPages.css'
 
+/**
+ * Login page component that renders the sign-in form.
+ *
+ * Uses {@link useAuth} to call `login()` with the user's email and password.
+ * On success, navigates to `/dashboard`. Auth errors are displayed inline.
+ * Redirects authenticated users away from this page (handled by `AppRoutes`).
+ */
 export function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

@@ -2,6 +2,15 @@ import { useState } from 'react'
 import type { Goal } from '@/types'
 import './GoalModal.css'
 
+/**
+ * Props for the {@link CreateGoalModal} component.
+ *
+ * @property isOpen     - Controls modal visibility.
+ * @property onClose    - Called when the modal should close (cancel or after successful creation).
+ * @property onCreate   - Async handler that persists the new goal; receives all fields except
+ *                        server-generated `id`, `createdAt`, and `updatedAt`.
+ * @property isLoading  - When `true`, all inputs and buttons are disabled.
+ */
 interface CreateGoalModalProps {
   isOpen: boolean
   onClose: () => void
@@ -9,6 +18,15 @@ interface CreateGoalModalProps {
   isLoading?: boolean
 }
 
+/**
+ * Modal dialog for creating a new goal.
+ *
+ * Manages its own form state and resets on successful creation. Validates
+ * that `title` is non-empty and `targetValue` is greater than zero before
+ * calling `onCreate`. Renders `null` when `isOpen` is `false`.
+ *
+ * @param props - {@link CreateGoalModalProps}
+ */
 export function CreateGoalModal({
   isOpen,
   onClose,
