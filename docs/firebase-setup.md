@@ -44,7 +44,7 @@ VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id (optional, for Analytics)
 ### Firestore Database
 - Create Firestore database in production mode
 - Location: Choose closest to your users
-- Security Rules: See `plans/DATA_MODEL.md` for full rules
+- Security Rules: See `docs/data-model.md` for full rules
 
 ### Cloud Storage (Optional for future features)
 - Enable Cloud Storage for profile pictures, backups, etc.

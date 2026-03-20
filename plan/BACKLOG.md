@@ -31,7 +31,7 @@ This document tracks features and improvements that are not in the current MVP b
 ### Shrink completed goals
 - **Description**: Goals should minimize to a smaller state at the end of the list once complete. THey should still be re-openable so they can be updated, but should be minimized byu default once complete.
 - **Priority**: Medium
-- **Status**: In planning
+- **Status**: ✅ Done — implemented in `src/components/GoalCard.tsx` and `src/pages/DashboardPage.tsx`
 - **Dependencies**: None
 
 ## Phase 2: Extended Goal Tracking

@@ -64,7 +64,7 @@ For any significant features, refactors, or changes to the architecture:
   - Feature docs: `docs/03-AUTHENTICATION.md`, `docs/04-GOALS.md`, etc.
   - Architecture docs: `docs/01-ARCHITECTURE.md`, `docs/02-DATA-TYPES.md`
   - Config docs: `docs/09-CONFIGURATION.md`
-  - Other affected docs: See [docs/INDEX.md](./docs/INDEX.md)
+  - Other affected docs: See [INDEX.md](INDEX.md)
 
 - **Update documentation**:
   - Update relevant feature documentation with new/changed functionality
@@ -131,7 +131,7 @@ Update documentation when making:
 
 ### How to Update Docs
 
-1. **Identify which docs are affected** (use [docs/INDEX.md](./docs/INDEX.md) for reference)
+1. **Identify which docs are affected** (use [INDEX.md](INDEX.md) for reference)
 2. **Update each affected document**:
    - Keep examples current with actual code
    - Update descriptions to match implementation
@@ -162,7 +162,7 @@ docs/
 └── LEARNING-RESOURCES.md     ← External links
 ```
 
-See [docs/INDEX.md](./docs/INDEX.md) for which docs cover which topics.
+See [INDEX.md](INDEX.md) for which docs cover which topics.
 
 ### Example: Documenting a New Feature
 
