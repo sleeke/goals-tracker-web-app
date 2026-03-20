@@ -27,6 +27,15 @@ export function DashboardPage() {
   const [showProgressLogger, setShowProgressLogger] = useState(false)
   const [showHistoryModal, setShowHistoryModal] = useState(false)
   const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null)
+  const [showCompletedGoalsSection, setShowCompletedGoalsSection] = useState(() => {
+    const saved = localStorage.getItem('goal-tracker-show-completed-section')
+    return saved !== 'false'
+  })
+  const [expandedCompletedGoals, setExpandedCompletedGoals] = useState<Set<string>>(() => {
+    const saved = localStorage.getItem('goal-tracker-expanded-completed-goals')
+    // By default, completed goals are collapsed (empty Set = all collapsed)
+    return new Set(saved ? saved.split(',').filter(Boolean) : [])
+  })
 
   // Load goals on component mount
   useEffect(() => {
@@ -300,6 +309,46 @@ export function DashboardPage() {
     }
   }
 
+  const handleToggleCompletedSection = () => {
+    const newValue = !showCompletedGoalsSection
+    setShowCompletedGoalsSection(newValue)
+    localStorage.setItem('goal-tracker-show-completed-section', String(newValue))
+  }
+
+  const handleToggleCompletedGoalExpanded = (goalId: string) => {
+    const newExpanded = new Set(expandedCompletedGoals)
+    if (newExpanded.has(goalId)) {
+      newExpanded.delete(goalId)
+    } else {
+      newExpanded.add(goalId)
+    }
+    setExpandedCompletedGoals(newExpanded)
+    localStorage.setItem(
+      'goal-tracker-expanded-completed-goals',
+      Array.from(newExpanded).join(',')
+    )
+  }
+
+  // Auto-complete goals when progress reaches target for the current period
+  useEffect(() => {
+    if (!goals.length || !user?.uid) return
+
+    for (const goal of goals) {
+      if (goal.status === 'active') {
+        const currentProgress = goalProgress[goal.id!] || 0
+        if (currentProgress >= goal.targetValue && !goal.completedDate) {
+          // Goal has reached target and hasn't been marked complete yet
+          updateGoal(goal.id!, {
+            status: 'completed',
+            completedDate: new Date(),
+          }).catch((err) => {
+            console.error('Error auto-completing goal:', err)
+          })
+        }
+      }
+    }
+  }, [goalProgress, goals, user?.uid])
+
   const handleLogout = async () => {
     try {
       await logout()
@@ -307,6 +356,15 @@ export function DashboardPage() {
       console.error('Logout failed:', err)
     }
   }
+
+  const activeGoals = goals.filter((g) => g.status === 'active')
+  const completedGoals = goals
+    .filter((g) => g.status === 'completed')
+    .sort((a, b) => {
+      const dateA = a.completedDate ? new Date(a.completedDate).getTime() : 0
+      const dateB = b.completedDate ? new Date(b.completedDate).getTime() : 0
+      return dateB - dateA // Most recent first
+    })
 
   return (
     <div className="dashboard-container">
@@ -347,28 +405,76 @@ export function DashboardPage() {
           <div className="loading-placeholder">
             <p>Loading your goals...</p>
           </div>
-        ) : goals.length === 0 ? (
+        ) : activeGoals.length === 0 && completedGoals.length === 0 ? (
           <div className="empty-state">
             <p>📌 No goals yet!</p>
             <p>Create your first goal to get started.</p>
           </div>
         ) : (
-          <div className="goals-grid">
-            {goals.map((goal) => (
-              <GoalCard
-                key={goal.id}
-                goal={goal}
-                progress={goalProgress[goal.id!] || 0}
-                progressTarget={goal.targetValue}
-                yearlyProgress={yearlyProgress[goal.id!] || 0}
-                onLogProgress={handleLogProgressClick}
-                onEdit={handleEditGoalClick}
-                onViewHistory={handleViewHistoryClick}
-                onDelete={handleDeleteGoal}
-                isLoading={isLoading}
-              />
-            ))}
-          </div>
+          <>
+            {activeGoals.length > 0 && (
+              <div className="goals-grid">
+                {activeGoals.map((goal) => (
+                  <GoalCard
+                    key={goal.id}
+                    goal={goal}
+                    progress={goalProgress[goal.id!] || 0}
+                    progressTarget={goal.targetValue}
+                    yearlyProgress={yearlyProgress[goal.id!] || 0}
+                    onLogProgress={handleLogProgressClick}
+                    onEdit={handleEditGoalClick}
+                    onViewHistory={handleViewHistoryClick}
+                    onDelete={handleDeleteGoal}
+                    isLoading={isLoading}
+                  />
+                ))}
+              </div>
+            )}
+
+            {activeGoals.length === 0 && completedGoals.length > 0 && (
+              <div className="empty-state">
+                <p>No active goals. Create one to get started!</p>
+              </div>
+            )}
+
+            {completedGoals.length > 0 && (
+              <div className="completed-goals-section">
+                <div className="completed-goals-header">
+                  <h3>
+                    Completed Goals ({completedGoals.length})
+                  </h3>
+                  <button
+                    className="btn-toggle-section"
+                    onClick={handleToggleCompletedSection}
+                    aria-label={showCompletedGoalsSection ? 'Hide completed goals' : 'Show completed goals'}
+                  >
+                    {showCompletedGoalsSection ? '▼' : '▶'}
+                  </button>
+                </div>
+
+                {showCompletedGoalsSection && (
+                  <div className="completed-goals-list">
+                    {completedGoals.map((goal) => (
+                      <GoalCard
+                        key={goal.id}
+                        goal={goal}
+                        progress={goalProgress[goal.id!] || 0}
+                        progressTarget={goal.targetValue}
+                        yearlyProgress={yearlyProgress[goal.id!] || 0}
+                        onLogProgress={handleLogProgressClick}
+                        onEdit={handleEditGoalClick}
+                        onViewHistory={handleViewHistoryClick}
+                        onDelete={handleDeleteGoal}
+                        isLoading={isLoading}
+                        isCollapsed={!expandedCompletedGoals.has(goal.id!)}
+                        onToggleExpand={() => handleToggleCompletedGoalExpanded(goal.id!)}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </>
         )}
       </main>
 

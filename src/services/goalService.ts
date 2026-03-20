@@ -130,6 +130,36 @@ export async function archiveGoal(goalId: string): Promise<void> {
 }
 
 /**
+ * Mark a goal as completed
+ */
+export async function completeGoal(goalId: string): Promise<void> {
+  try {
+    await updateGoal(goalId, { 
+      status: 'completed',
+      completedDate: new Date(),
+    })
+  } catch (error) {
+    console.error('Error completing goal:', error)
+    throw error
+  }
+}
+
+/**
+ * Reopen a completed goal (move it back to active status)
+ */
+export async function reopenGoal(goalId: string): Promise<void> {
+  try {
+    await updateGoal(goalId, { 
+      status: 'active',
+      completedDate: undefined,
+    })
+  } catch (error) {
+    console.error('Error reopening goal:', error)
+    throw error
+  }
+}
+
+/**
  * Get a single goal by ID
  */
 export async function getGoal(goalId: string): Promise<Goal | null> {
