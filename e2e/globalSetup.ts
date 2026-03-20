@@ -39,11 +39,24 @@ async function globalSetup(_config: FullConfig) {
 
   console.log('[globalSetup] Starting Firebase emulators...')
 
+  // firebase-tools v15+ requires Java 21. GitHub Actions runners pre-install Java 21
+  // and expose its path via JAVA_HOME_21_X64. Fall back to default JAVA_HOME otherwise.
+  const javaHome = process.env.JAVA_HOME_21_X64 ?? process.env.JAVA_HOME
+  const spawnEnv = {
+    ...process.env,
+    ...(javaHome
+      ? { JAVA_HOME: javaHome, PATH: `${javaHome}/bin:${process.env.PATH ?? ''}` }
+      : {}),
+  }
+  if (javaHome) {
+    console.log(`[globalSetup] Using JAVA_HOME: ${javaHome}`)
+  }
+
   const firebaseBin = path.resolve('node_modules/.bin/firebase')
   const emulatorProcess = spawn(
     firebaseBin,
     ['emulators:start', '--only', 'auth,firestore', '--project', FIREBASE_PROJECT],
-    { stdio: 'pipe', detached: false },
+    { stdio: 'pipe', detached: false, env: spawnEnv },
   )
 
   emulatorProcess.stdout?.on('data', (d: Buffer) =>
