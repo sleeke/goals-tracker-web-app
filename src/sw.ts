@@ -65,13 +65,9 @@ registerRoute(
 )
 
 // Background sync for failed mutations
-interface SyncEvent extends ExtendableEvent {
-  readonly tag: string
-}
-self.addEventListener('sync', (event: ExtendableEvent) => {
-  const syncEvent = event as SyncEvent
-  if (syncEvent.tag === 'sync-progress') {
-    syncEvent.waitUntil(
+self.addEventListener('sync', (event: any) => {
+  if (event.tag === 'sync-progress') {
+    event.waitUntil(
       // Trigger sync queue processing from main app via PostMessage
       // The app will listen for this event and process queued operations
       new Promise((resolve) => {
@@ -108,7 +104,7 @@ self.addEventListener('notificationclick', (event: NotificationEvent) => {
       // Focus existing window if open, otherwise open new one
       for (const client of clients) {
         if (client.url === '/' && 'focus' in client) {
-          return (client as WindowClient).focus()
+          return (client as any).focus()
         }
       }
       if (self.clients.openWindow) {
