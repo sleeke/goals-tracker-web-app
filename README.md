@@ -61,28 +61,28 @@ A cross-platform Progressive Web App (PWA) for tracking daily, weekly, and month
 ```
 goal-tracker-web-app/
 ├── src/
-│   ├── config/           # Configuration (Firebase, env, etc.)
-│   ├── components/       # React components
-│   ├── pages/            # Page-level components
-│   ├── services/         # Business logic (Firebase, sync, etc.)
-│   ├── store/            # State management (Redux/Context)
-│   ├── hooks/            # Custom React hooks
-│   ├── types/            # TypeScript interfaces
-│   ├── utils/            # Utility functions
-│   ├── test/             # Test utilities and setup
-│   ├── sw.ts             # Service worker
-│   ├── App.tsx           # Root component
-│   └── main.tsx          # Entry point
+│   ├── config/           # Firebase initialisation (firebase.ts)
+│   ├── components/       # Reusable React components (GoalCard, modals, …)
+│   ├── pages/            # Page-level components (LoginPage, SignupPage, DashboardPage)
+│   ├── context/          # React context providers (AuthContext)
+│   ├── services/         # Business logic — Firestore, progress, IndexedDB
+│   ├── types/            # TypeScript interfaces and type aliases (index.ts)
+│   ├── utils.ts          # Shared utility functions (getTodayString, …)
+│   ├── test/             # Test utilities and Vitest setup
+│   ├── sw.ts             # Workbox service worker (PWA caching strategies)
+│   ├── App.tsx           # Root component — router + auth provider
+│   └── main.tsx          # Application entry point
 ├── public/               # Static assets
 ├── e2e/                  # Playwright E2E tests
 ├── features/             # Cucumber BDD feature files
 │   └── step_definitions/ # Step definitions
-├── plans/                # Project documentation
+├── docs/                 # Developer documentation
+├── plans/                # Project planning documents
 ├── .env.example          # Environment variables template
-├── vite.config.ts        # Vite configuration with PWA
-├── vitest.config.ts      # Vitest configuration
-├── playwright.config.ts  # Playwright E2E config
-├── cucumber.js           # Cucumber configuration
+├── vite.config.ts        # Vite configuration with PWA plugin
+├── vitest.config.ts      # Vitest unit-test configuration
+├── playwright.config.ts  # Playwright E2E configuration
+├── cucumber.js           # Cucumber BDD configuration
 ├── tsconfig.json         # TypeScript configuration
 ├── package.json          # Dependencies and scripts
 └── README.md             # This file
@@ -114,7 +114,7 @@ npm run test:ui          # Interactive UI
 npm run test:coverage    # With coverage report
 ```
 
-Test files should be in `src/` with `.test.ts` or `.spec.ts` suffix.
+Unit test files live alongside the code they test under `src/` with a `.test.ts` or `.test.tsx` suffix (e.g. `src/services/__tests__/progressService.test.ts`).
 
 ### E2E Tests (Playwright)
 ```bash
@@ -144,15 +144,23 @@ Fully responsive and mobile-optimized for iOS and Android.
 
 ## 📚 Documentation
 
-- [Project Brief](./plans/PROJECT_BRIEF.md) — Feature requirements and scope
-- [Data Model](./plans/DATA_MODEL.md) — Firestore schema and offline storage
-- [Firebase Setup](./plans/FIREBASE_SETUP.md) — Firebase configuration guide
-- [Development Process](./plans/DEVELOPMENT_PROCESS.md) — Git workflow and development standards
-- [Backlog](./plans/BACKLOG.md) — Future features and enhancements
-- [Bug Tracker](./plans/BUG_TRACKER.md) — Known issues and bug reports
+For comprehensive developer documentation, see the **[docs/](./docs/)** folder, including:
 
-For comprehensive developer documentation, see the [docs/](./docs/) folder.
-- [BDD Features](./features/) — User stories as Gherkin feature files
+| File | Contents |
+|------|----------|
+| [docs/01-ARCHITECTURE.md](./docs/01-ARCHITECTURE.md) | System architecture and data flow |
+| [docs/02-DATA-TYPES.md](./docs/02-DATA-TYPES.md) | TypeScript types and Firestore schema |
+| [docs/03-AUTHENTICATION.md](./docs/03-AUTHENTICATION.md) | Authentication flow |
+| [docs/04-GOALS.md](./docs/04-GOALS.md) | Goal management |
+| [docs/05-PROGRESS-TRACKING.md](./docs/05-PROGRESS-TRACKING.md) | Progress logging |
+| [docs/06-OFFLINE-FIRST-SYNC.md](./docs/06-OFFLINE-FIRST-SYNC.md) | Offline-first and sync architecture |
+| [docs/07-COMPONENTS.md](./docs/07-COMPONENTS.md) | React component reference |
+| [docs/08-SERVICES.md](./docs/08-SERVICES.md) | Services layer reference |
+| [docs/09-CONFIGURATION.md](./docs/09-CONFIGURATION.md) | Environment and Firebase setup |
+| [docs/10-TESTING.md](./docs/10-TESTING.md) | Testing guide |
+| [docs/11-DEPLOYMENT.md](./docs/11-DEPLOYMENT.md) | Build and deployment |
+
+Additional planning documents are in [plans/](./plans/) and BDD feature files are in [features/](./features/).
 
 ## 🚀 Deployment
 

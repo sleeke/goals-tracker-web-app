@@ -88,8 +88,10 @@ When data changes in Firestore:
 src/
 ├── components/              # React UI components
 │   ├── CreateGoalModal.tsx   # Modal for creating goals
-│   ├── GoalCard.tsx          # Displays individual goal
-│   └── ProgressLoggerModal.tsx # Modal for logging progress
+│   ├── EditGoalModal.tsx     # Modal for editing existing goals
+│   ├── GoalCard.tsx          # Displays individual goal with progress bar
+│   ├── ProgressLoggerModal.tsx # Modal for logging progress entries
+│   └── ProgressHistoryModal.tsx # Modal for viewing and deleting history
 │
 ├── pages/                   # Page-level components (full screens)
 │   ├── DashboardPage.tsx    # Main goals and progress view
@@ -99,13 +101,13 @@ src/
 ├── services/                # Business logic (no UI)
 │   ├── goalService.ts       # Goal CRUD operations
 │   ├── progressService.ts   # Progress logging and calculations
-│   └── indexedDB.ts         # Local database operations
+│   └── indexedDB.ts         # Local database operations and sync queue
 │
 ├── context/                 # React Context (state management)
 │   └── AuthContext.tsx      # Authentication state and methods
 │
 ├── config/                  # Configuration
-│   └── firebase.ts          # Firebase initialization
+│   └── firebase.ts          # Firebase initialisation (auth + Firestore)
 │
 ├── types/                   # TypeScript interfaces
 │   └── index.ts             # All data type definitions
@@ -114,7 +116,9 @@ src/
 │   ├── setup.ts             # Test configuration
 │   └── test-utils.tsx       # Helper functions for tests
 │
-├── App.tsx                  # Root component
+├── utils.ts                 # Shared utility helpers (getTodayString, …)
+├── sw.ts                    # Workbox service worker (PWA caching)
+├── App.tsx                  # Root component — router + auth provider
 └── main.tsx                 # Application entry point
 ```
 

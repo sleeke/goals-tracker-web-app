@@ -32,21 +32,22 @@ React Components:
 
 ```
 src/components/
-├── CreateGoalModal.tsx       # Modal for creating goals
-├── GoalCard.tsx              # Displays single goal
-├── GoalCard.css              # Styling for GoalCard
-├── ProgressLoggerModal.tsx   # Modal for logging progress
-├── ProgressLogger.css        # Styling for progress
-└── __tests__/                # Test files
-    ├── GoalCard.test.tsx
-    └── ProgressLoggerModal.test.tsx
+├── CreateGoalModal.tsx         # Modal for creating goals
+├── EditGoalModal.tsx           # Modal for editing existing goals
+├── GoalCard.tsx                # Displays single goal with progress bar
+├── GoalCard.css                # Styling for GoalCard
+├── GoalModal.css               # Shared styling for goal modals
+├── ProgressLoggerModal.tsx     # Modal for logging a progress entry
+├── ProgressLogger.css          # Styling for progress logger
+├── ProgressHistoryModal.tsx    # Modal for viewing & deleting history
+└── ProgressHistoryModal.css    # Styling for progress history
 
 src/pages/
-├── DashboardPage.tsx         # Main dashboard
-├── DashboardPage.css         # Dashboard styling
-├── LoginPage.tsx             # Login form
-├── SignupPage.tsx            # Signup form
-└── AuthPages.css             # Auth styling
+├── DashboardPage.tsx           # Main dashboard
+├── DashboardPage.css           # Dashboard styling
+├── LoginPage.tsx               # Login form
+├── SignupPage.tsx              # Signup form
+└── AuthPages.css               # Auth page styling
 ```
 
 ## Component Hierarchy
