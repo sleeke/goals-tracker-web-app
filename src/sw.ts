@@ -65,20 +65,21 @@ registerRoute(
 )
 
 // Background sync for failed mutations
-self.addEventListener('sync', (event: any) => {
-  if (event.tag === 'sync-progress') {
-    event.waitUntil(
-      // Trigger sync queue processing from main app via PostMessage
-      // The app will listen for this event and process queued operations
-      new Promise((resolve) => {
-        self.clients.matchAll().then((clients) => {
-          clients.forEach((client) => {
+self.addEventListener('sync', (event: Event) => {
+  const syncEvent = event as (ExtendableEvent & { tag?: string })
+  if (syncEvent.tag === 'sync-progress') {
+    syncEvent.waitUntil(
+      (async () => {
+        try {
+          const clients = await self.clients.matchAll();
+          clients.forEach((client) =>
             client.postMessage({ type: 'SYNC_REQUESTED' })
-          })
-        })
-        resolve(true)
-      })
-    )
+          );
+        } catch (err) {
+          console.error('Error during background sync:', err)
+        }
+      })()
+    );
   }
 })
 
@@ -103,8 +104,8 @@ self.addEventListener('notificationclick', (event: NotificationEvent) => {
     self.clients.matchAll().then((clients) => {
       // Focus existing window if open, otherwise open new one
       for (const client of clients) {
-        if (client.url === '/' && 'focus' in client) {
-          return (client as any).focus()
+        if (client.type === 'window' && client.url === '/' && 'focus' in client) {
+          return (client as WindowClient).focus();
         }
       }
       if (self.clients.openWindow) {

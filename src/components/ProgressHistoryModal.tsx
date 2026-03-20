@@ -14,15 +14,17 @@ interface ProgressHistoryModalProps {
  * Formats a date into a friendly, human-readable string
  * Examples: "Today at 2:30 PM", "Yesterday at 10:15 AM", "Jan 15, 2024 at 3:45 PM"
  */
-function formatProgressDate(dateInput: any): string {
+type FirestoreTimestampLike = { toDate: () => Date }
+
+function formatProgressDate(dateInput: Date | FirestoreTimestampLike | string | number | null | undefined): string {
   // Convert to Date object if it's a Firestore Timestamp or other format
   let date: Date
   
   if (dateInput instanceof Date) {
     date = dateInput
-  } else if (dateInput && typeof dateInput.toDate === 'function') {
+  } else if (dateInput && typeof (dateInput as FirestoreTimestampLike).toDate === 'function') {
     // Firestore Timestamp object
-    date = dateInput.toDate()
+    date = (dateInput as FirestoreTimestampLike).toDate()
   } else if (typeof dateInput === 'string') {
     date = new Date(dateInput)
   } else if (typeof dateInput === 'number') {
@@ -73,6 +75,7 @@ export function ProgressHistoryModal({
     if (isOpen && goal?.id) {
       loadProgressHistory()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, goal?.id])
 
   const loadProgressHistory = async () => {

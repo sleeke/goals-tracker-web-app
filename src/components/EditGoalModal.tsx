@@ -28,6 +28,7 @@ export function EditGoalModal({
   const [error, setError] = useState<string | null>(null)
 
   // Initialize form with goal data when modal opens
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (isOpen && goal) {
       setTitle(goal.title)
@@ -41,6 +42,7 @@ export function EditGoalModal({
       setError(null)
     }
   }, [isOpen, goal])
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

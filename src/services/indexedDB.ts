@@ -1,5 +1,14 @@
 import type { Goal, Progress } from '@/types'
 
+interface SyncOperation {
+  id?: number
+  type: 'create' | 'update' | 'delete'
+  collection: 'goals' | 'progress'
+  data: Goal | Progress | Record<string, unknown>
+  timestamp: number
+  synced: boolean
+}
+
 const DB_NAME = 'GoalTrackerDB'
 const DB_VERSION = 1
 const GOALS_STORE = 'goals'
@@ -150,7 +159,7 @@ export async function deleteProgressLocally(progressId: string): Promise<void> {
 export async function queueSyncOperation(operation: {
   type: 'create' | 'update' | 'delete'
   collection: 'goals' | 'progress'
-  data: any
+  data: Goal | Progress | Record<string, unknown>
 }): Promise<void> {
   const database = await initDB()
   return new Promise((resolve, reject) => {
@@ -170,7 +179,7 @@ export async function queueSyncOperation(operation: {
 /**
  * Get all pending sync operations
  */
-export async function getPendingSyncOperations(): Promise<any[]> {
+export async function getPendingSyncOperations(): Promise<SyncOperation[]> {
   const database = await initDB()
   return new Promise((resolve, reject) => {
     const transaction = database.transaction([SYNC_QUEUE_STORE], 'readonly')
@@ -179,7 +188,7 @@ export async function getPendingSyncOperations(): Promise<any[]> {
 
     request.onerror = () => reject(request.error)
     request.onsuccess = () => {
-      const operations = (request.result as any[]).filter((op) => !op.synced)
+      const operations = (request.result as SyncOperation[]).filter((op) => !op.synced)
       resolve(operations)
     }
   })

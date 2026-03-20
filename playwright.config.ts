@@ -11,6 +11,7 @@ export default defineConfig({
   workers: 1, // Single worker to avoid concurrency issues
   reporter: 'html',
   timeout: 30000, // 30 second timeout per test
+  globalSetup: './e2e/globalSetup.ts',
   use: {
     baseURL,
     trace: 'on-first-retry',
@@ -27,8 +28,9 @@ export default defineConfig({
   ],
 
   webServer: process.env.CI ? {
-    command: 'npm run dev',
-    url: baseURL,
+    command: 'npm run dev:ci',
+    url: 'http://localhost:5173',
     reuseExistingServer: false,
+    timeout: 120000, // Vite dev server + Firebase emulator startup can take up to 2 minutes
   } : undefined, // Don't start webServer in development (already running)
 })

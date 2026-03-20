@@ -3,6 +3,7 @@
  * Creates a test user for E2E tests
  */
 
+import type { Page } from '@playwright/test'
 import { getTodayString } from "../src/utils"
 
 export const TEST_USER = {
@@ -14,9 +15,9 @@ export const TEST_USER = {
 /**
  * Helper to login via UI
  */
-export async function loginAsTestUser(page: any) {
+export async function loginAsTestUser(page: Page) {
   console.log('[LOGIN] Navigating to app...')
-  await page.goto('http://localhost:5173/', { waitUntil: 'domcontentloaded' })
+  await page.goto('/', { waitUntil: 'domcontentloaded' })
   await page.waitForTimeout(500)
 
   // Check if already logged in
@@ -71,7 +72,7 @@ export async function loginAsTestUser(page: any) {
 /**
  * Helper to logout
  */
-export async function logout(page: any) {
+export async function logout(page: Page) {
   await page.click('button:has-text("Logout")')
   await page.waitForURL('**/login', { timeout: 10000 })
 }
@@ -80,7 +81,7 @@ export async function logout(page: any) {
  * Helper to create a goal
  */
 export async function createGoal(
-  page: any,
+  page: Page,
   data: {
     title: string
     description?: string
@@ -136,7 +137,7 @@ export async function createGoal(
  * Helper to log progress
  */
 export async function logProgress(
-  page: any,
+  page: Page,
   goalTitle: string,
   data: {
     amount: number

@@ -13,5 +13,6 @@ export function renderWithProviders(
   return render(ui, { ...options })
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export * from '@testing-library/react'
 export { renderWithProviders as render }
