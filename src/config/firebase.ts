@@ -3,7 +3,7 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 /**
- * Firebase initialisation module.
+ * Firebase initialization module.
  *
  * Reads all required Firebase configuration from Vite environment variables
  * (`VITE_FIREBASE_*`) and exports a ready-to-use Firebase app, Auth instance,
@@ -47,7 +47,7 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 
 /**
- * The initialised Firebase app instance.
+ * The initialized Firebase app instance.
  * Use {@link auth} and {@link db} for Firebase Authentication and Firestore respectively.
  */
 export default app;
