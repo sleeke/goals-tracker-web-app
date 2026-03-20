@@ -44,7 +44,7 @@ if (import.meta.env.VITE_USE_EMULATOR === 'true') {
     connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
     connectFirestoreEmulator(db, 'localhost', 8080);
     console.log('[Firebase] Connected to local emulators (auth:9099, firestore:8080)');
-  } catch (e) {
+  } catch (_e) {
     // Already connected (e.g., HMR re-evaluation in dev mode)
     console.log('[Firebase] Emulators already connected');
   }
