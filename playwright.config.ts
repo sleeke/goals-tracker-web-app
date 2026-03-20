@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test'
 
-const baseURL = process.env.BASE_URL || (process.env.CI ? 'http://localhost:4173' : 'http://localhost:5173')
+const baseURL = process.env.BASE_URL || 'http://localhost:5173'
 
 export default defineConfig({
   testDir: './e2e',
@@ -11,6 +11,7 @@ export default defineConfig({
   workers: 1, // Single worker to avoid concurrency issues
   reporter: 'html',
   timeout: 30000, // 30 second timeout per test
+  globalSetup: './e2e/globalSetup.ts',
   use: {
     baseURL,
     trace: 'on-first-retry',
@@ -27,9 +28,9 @@ export default defineConfig({
   ],
 
   webServer: process.env.CI ? {
-    command: 'npm run preview',
-    url: 'http://localhost:4173',
+    command: 'npm run dev:ci',
+    url: 'http://localhost:5173',
     reuseExistingServer: false,
-    timeout: 60000,
+    timeout: 120000,
   } : undefined, // Don't start webServer in development (already running)
 })
