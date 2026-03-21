@@ -167,14 +167,8 @@ export function GoalCard({
             Log Progress
           </button>
         )}
-        {goal.status === 'active' && (
-          <span className="status-badge active">Active</span>
-        )}
         {goal.status === 'archived' && (
           <span className="status-badge archived">Archived</span>
-        )}
-        {goal.status === 'completed' && (
-          <span className="status-badge completed">Completed</span>
         )}
       </div>
     </div>
