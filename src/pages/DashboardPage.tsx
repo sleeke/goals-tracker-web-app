@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '@/context/AuthContext'
+import { useTheme } from '@/context/ThemeContext'
 import { CreateGoalModal } from '@/components/CreateGoalModal'
 import { EditGoalModal } from '@/components/EditGoalModal'
 import { ProgressHistoryModal } from '@/components/ProgressHistoryModal'
@@ -17,6 +18,7 @@ import './DashboardPage.css'
 
 export function DashboardPage() {
   const { user, logout } = useAuth()
+  const { theme, toggleTheme } = useTheme()
   const [goals, setGoals] = useState<Goal[]>([])
   const [goalProgress, setGoalProgress] = useState<Record<string, number>>({})
   const [yearlyProgress, setYearlyProgress] = useState<Record<string, number>>({})
@@ -370,7 +372,7 @@ export function DashboardPage() {
         // Use `null` to explicitly clear the field in the backend
         updateGoal(goal.id, {
           status: 'active',
-          completedDate: null,
+          completedDate: undefined,
         })
           .catch((err) => {
             console.error('Error auto-reopening goal:', err)
@@ -404,11 +406,32 @@ export function DashboardPage() {
     <div className="dashboard-container">
       <header className="dashboard-header">
         <h1>Goal Tracker</h1>
-        <div className="user-menu">
-          <span className="user-email">{user?.email}</span>
-          <button onClick={handleLogout} className="btn btn-logout">
-            Logout
+        <div className="header-actions">
+          <button
+            className="btn btn-primary"
+            onClick={() => setShowCreateModal(true)}
+            disabled={isLoading}
+          >
+            <span className="material-icons-outlined" style={{ fontSize: 16, marginRight: 4, verticalAlign: 'text-bottom' }}>add</span>
+            New Goal
           </button>
+          <button
+            className="btn-theme-toggle"
+            onClick={toggleTheme}
+            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            aria-label="Toggle theme"
+          >
+            <span className="material-icons-outlined" style={{ fontSize: 18 }}>
+              {theme === 'dark' ? 'light_mode' : 'dark_mode'}
+            </span>
+          </button>
+          <div className="user-menu">
+            <span className="user-email">{user?.email}</span>
+            <button onClick={handleLogout} className="btn btn-logout">
+              <span className="material-icons-outlined" style={{ fontSize: 14, marginRight: 2, verticalAlign: 'text-bottom' }}>logout</span>
+              Logout
+            </button>
+          </div>
         </div>
       </header>
 
@@ -416,7 +439,7 @@ export function DashboardPage() {
         {error && (
           <div className="error-banner">
             <div className="error-message-header">
-              <strong>⚠️ Error:</strong> {error}
+              <strong><span className="material-icons-outlined" style={{ fontSize: 14, verticalAlign: 'text-bottom', marginRight: 4 }}>warning</span>Error:</strong> {error}
             </div>
             <p style={{ fontSize: '12px', color: '#999', margin: '8px 0 0 0' }}>
               Check browser console (F12) for more details
@@ -426,13 +449,6 @@ export function DashboardPage() {
 
         <div className="dashboard-controls">
           <h2>Your Goals</h2>
-          <button
-            className="btn btn-primary"
-            onClick={() => setShowCreateModal(true)}
-            disabled={isLoading}
-          >
-            + New Goal
-          </button>
         </div>
 
         {isLoading && goals.length === 0 ? (
@@ -441,8 +457,8 @@ export function DashboardPage() {
           </div>
         ) : activeGoals.length === 0 && completedGoals.length === 0 ? (
           <div className="empty-state">
-            <p>📌 No goals yet!</p>
-            <p>Create your first goal to get started.</p>
+            <p><span className="material-icons-outlined" style={{ fontSize: 28 }}>flag</span></p>
+            <p>No goals yet! Create your first goal to get started.</p>
           </div>
         ) : (
           <>

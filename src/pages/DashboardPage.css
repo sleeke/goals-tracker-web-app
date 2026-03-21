@@ -1,210 +1,268 @@
+/* ============================================
+   Dashboard — Nebula Glass
+   ============================================ */
+
 .dashboard-container {
   min-height: 100vh;
-  background: #f5f7fa;
   display: flex;
   flex-direction: column;
 }
 
+/* --- Compact top bar ---------------------- */
 .dashboard-header {
-  background: white;
-  border-bottom: 1px solid #e0e0e0;
-  padding: 20px 40px;
+  background: var(--surface-glass);
+  backdrop-filter: blur(var(--blur-glass));
+  -webkit-backdrop-filter: blur(var(--blur-glass));
+  border-bottom: 1px solid var(--surface-border);
+  padding: var(--space-sm) var(--space-xl);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .dashboard-header h1 {
   margin: 0;
-  color: #667eea;
-  font-size: 24px;
+  font-size: 16px;
+  font-weight: 700;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.3px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
 }
 
 .user-menu {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: var(--space-sm);
 }
 
 .user-email {
-  color: #666;
-  font-size: 14px;
+  color: var(--text-muted);
+  font-size: 12px;
 }
 
 .btn-logout {
-  background-color: #ff6b6b;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 600;
+  background: var(--color-danger-muted);
+  color: var(--color-danger);
+  padding: 4px 10px;
+  border: 1px solid rgba(244, 63, 94, 0.2);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all var(--transition-fast);
 }
 
 .btn-logout:hover {
-  background-color: #ff5252;
+  background: rgba(244, 63, 94, 0.25);
+  border-color: rgba(244, 63, 94, 0.4);
 }
 
+/* --- Theme toggle button ------------------- */
+.btn-theme-toggle {
+  background: var(--surface-glass);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+}
+
+.btn-theme-toggle:hover {
+  color: var(--text-primary);
+  background: var(--surface-glass-hover);
+  border-color: var(--surface-border-hover);
+}
+
+/* --- Main content area -------------------- */
 .dashboard-content {
   flex: 1;
-  padding: 40px;
-  max-width: 1400px;
+  padding: var(--space-xl);
+  max-width: 1200px;
   margin: 0 auto;
   width: 100%;
 }
 
 .error-banner {
-  background-color: #fee;
-  color: #c33;
-  border: 1px solid #fcc;
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 24px;
-  font-size: 14px;
+  background: var(--color-danger-muted);
+  color: var(--color-danger);
+  border: 1px solid rgba(244, 63, 94, 0.25);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
+  font-size: 13px;
+  backdrop-filter: blur(var(--blur-glass));
 }
 
 .dashboard-controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: var(--space-lg);
 }
 
 .dashboard-controls h2 {
   margin: 0;
-  font-size: 24px;
-  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: -0.2px;
 }
 
+/* --- Primary action button (gradient) ------ */
 .btn-primary {
-  background-color: #667eea;
-  color: white;
-  padding: 10px 20px;
+  background: var(--accent-gradient);
+  color: var(--text-on-accent);
+  padding: 6px 14px;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-weight: 600;
   cursor: pointer;
-  font-size: 14px;
-  transition: all 0.3s;
+  font-size: 13px;
+  transition: all var(--transition-normal);
+  box-shadow: 0 2px 12px rgba(124, 58, 237, 0.3);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: #5568d3;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.45);
+  filter: brightness(1.1);
 }
 
 .btn-primary:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
+/* --- Goals grid (tighter) ------------------ */
 .goals-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 24px;
-  margin-bottom: 40px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
 }
 
+/* --- Completed goals section --------------- */
 .completed-goals-section {
-  margin-top: 40px;
-  border-top: 2px solid #e0e0e0;
-  padding-top: 24px;
+  margin-top: var(--space-xl);
+  border-top: 1px solid var(--surface-border);
+  padding-top: var(--space-lg);
 }
 
 .completed-goals-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-md);
 }
 
 .completed-goals-header h3 {
   margin: 0;
-  font-size: 18px;
-  color: #666;
-  font-weight: 600;
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .btn-toggle-section {
   background: none;
   border: none;
-  font-size: 16px;
+  font-size: 14px;
   cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: all 0.2s;
-  opacity: 0.7;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  color: var(--text-muted);
 }
 
 .btn-toggle-section:hover {
-  opacity: 1;
-  background-color: #f0f0f0;
+  color: var(--text-primary);
+  background: var(--surface-glass);
 }
 
 .completed-goals-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-sm);
 }
 
+/* --- Empty & loading states ---------------- */
 .empty-state {
-  background: white;
-  border-radius: 12px;
-  padding: 60px 40px;
+  background: var(--surface-glass);
+  backdrop-filter: blur(var(--blur-glass));
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  padding: 48px var(--space-xl);
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .empty-state p:first-child {
-  font-size: 28px;
-  margin: 0 0 16px 0;
+  font-size: 20px;
+  margin: 0 0 var(--space-sm) 0;
+  color: var(--text-primary);
 }
 
 .empty-state p:last-child {
   margin: 0;
-  color: #666;
-  font-size: 16px;
+  color: var(--text-secondary);
+  font-size: 13px;
 }
 
 .loading-placeholder {
-  background: white;
-  border-radius: 12px;
-  padding: 60px 40px;
+  background: var(--surface-glass);
+  backdrop-filter: blur(var(--blur-glass));
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  padding: 48px var(--space-xl);
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .loading-placeholder p {
   margin: 0;
-  color: #999;
-  font-size: 16px;
+  color: var(--text-secondary);
+  font-size: 14px;
 }
 
+/* --- Responsive ---------------------------- */
 @media (max-width: 768px) {
   .dashboard-header {
-    flex-direction: column;
-    gap: 15px;
-    padding: 20px;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .header-actions {
+    flex-wrap: wrap;
+    gap: var(--space-xs);
   }
 
   .user-menu {
-    width: 100%;
-    justify-content: space-between;
+    width: auto;
   }
 
   .dashboard-content {
-    padding: 20px;
+    padding: var(--space-md);
   }
 
-  .welcome-card {
-    padding: 20px;
-  }
-
-  .features-grid {
+  .goals-grid {
     grid-template-columns: 1fr;
+    gap: var(--space-md);
   }
 }
