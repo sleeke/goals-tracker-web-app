@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { CreateGoalModal } from '@/components/CreateGoalModal'
 import { EditGoalModal } from '@/components/EditGoalModal'
@@ -36,6 +36,7 @@ export function DashboardPage() {
     // By default, completed goals are collapsed (empty Set = all collapsed)
     return new Set(saved ? saved.split(',').filter(Boolean) : [])
   })
+  const updatingGoalsRef = useRef<Set<string>>(new Set())
 
   // Load goals on component mount
   useEffect(() => {
@@ -335,26 +336,51 @@ export function DashboardPage() {
     if (!goals.length || !user?.uid) return
 
     for (const goal of goals) {
-      const currentProgress = goalProgress[goal.id!] || 0
+      if (!goal.id) continue
+      if (updatingGoalsRef.current.has(goal.id)) continue
+
+      const currentProgress = goalProgress[goal.id] || 0
 
       if (goal.status === 'active' && currentProgress >= goal.targetValue) {
-        // Goal has reached target - mark as completed
-        updateGoal(goal.id!, {
+        // Avoid duplicate writes by marking as in-flight
+        updatingGoalsRef.current.add(goal.id)
+
+        // Optimistically update UI so user sees immediate change
+        setGoals((prev) =>
+          prev.map((g) => (g.id === goal.id ? { ...g, status: 'completed', completedDate: new Date() } : g))
+        )
+
+        updateGoal(goal.id, {
           status: 'completed',
           completedDate: new Date(),
-        }).catch((err) => {
-          console.error('Error auto-completing goal:', err)
         })
+          .catch((err) => {
+            console.error('Error auto-completing goal:', err)
+          })
+          .finally(() => {
+            updatingGoalsRef.current.delete(goal.id!)
+          })
       } else if (goal.status === 'completed' && currentProgress < goal.targetValue) {
-        // Progress dropped below target (e.g. after a period reset) - revert to active
-        updateGoal(goal.id!, {
+        // Avoid duplicate writes by marking as in-flight
+        updatingGoalsRef.current.add(goal.id)
+
+        // Optimistically revert locally
+        setGoals((prev) => prev.map((g) => (g.id === goal.id ? { ...g, status: 'active', completedDate: undefined } : g)))
+
+        // Use `null` to explicitly clear the field in the backend
+        updateGoal(goal.id, {
           status: 'active',
-          completedDate: undefined,
-        }).catch((err) => {
-          console.error('Error auto-reopening goal:', err)
+          completedDate: null,
         })
+          .catch((err) => {
+            console.error('Error auto-reopening goal:', err)
+          })
+          .finally(() => {
+            updatingGoalsRef.current.delete(goal.id!)
+          })
       }
     }
+    // We intentionally include goals + progress so effect reacts to both
   }, [goalProgress, goals, user?.uid])
 
   const handleLogout = async () => {
