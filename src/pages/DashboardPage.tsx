@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '@/context/AuthContext'
-import { useTheme } from '@/context/ThemeContext'
+import { useTheme } from '@/context/theme'
 import { CreateGoalModal } from '@/components/CreateGoalModal'
 import { EditGoalModal } from '@/components/EditGoalModal'
 import { ProgressHistoryModal } from '@/components/ProgressHistoryModal'
