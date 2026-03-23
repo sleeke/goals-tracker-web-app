@@ -93,7 +93,7 @@ export function GoalCard({
               disabled={isLoading}
               aria-label="Collapse goal"
             >
-              ▼
+              <span className="material-icons-outlined">expand_less</span>
             </button>
           )}
           <button
@@ -103,7 +103,7 @@ export function GoalCard({
             disabled={isLoading}
             aria-label="Edit goal"
           >
-            ✏️
+            <span className="material-icons-outlined">edit</span>
           </button>
           <button
             className="btn-icon"
@@ -112,7 +112,7 @@ export function GoalCard({
             disabled={isLoading}
             aria-label="View progress history"
           >
-            📋
+            <span className="material-icons-outlined">history</span>
           </button>
           <button
             className="btn-icon btn-danger"
@@ -121,7 +121,7 @@ export function GoalCard({
             disabled={isLoading}
             aria-label="Delete goal"
           >
-            🗑️
+            <span className="material-icons-outlined">delete_outline</span>
           </button>
         </div>
       </div>
@@ -147,13 +147,15 @@ export function GoalCard({
           <span className="progress-percent">{Math.round(progressPercent)}%</span>
         </div>
         <div className="yearly-progress-text">
-          📊 Yearly: {yearlyProgress} {goal.unit}
+          <span className="material-icons-outlined" style={{ fontSize: 12 }}>bar_chart</span>
+          Yearly: {yearlyProgress} {goal.unit}
         </div>
       </div>
 
       {isComplete && (
         <div className="goal-complete-badge">
-          <span>✅ Target reached!</span>
+          <span className="material-icons-outlined" style={{ fontSize: 14, marginRight: 4, verticalAlign: 'text-bottom' }}>check_circle</span>
+          Target reached!
         </div>
       )}
 
@@ -164,6 +166,7 @@ export function GoalCard({
             onClick={() => onLogProgress(goal.id!)}
             disabled={isLoading}
           >
+            <span className="material-icons-outlined" style={{ fontSize: 14, marginRight: 4, verticalAlign: 'text-bottom' }}>add_circle_outline</span>
             Log Progress
           </button>
         )}

@@ -1,64 +1,184 @@
+/* ============================================
+   NEBULA GLASS — Design Token System
+   ============================================ */
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* Background */
+  --bg-base: #0f0d1a;
+  --bg-blob-1: #7c3aed;
+  --bg-blob-2: #06b6d4;
+
+  /* Surfaces (glass) */
+  --surface-glass: rgba(255, 255, 255, 0.06);
+  --surface-glass-hover: rgba(255, 255, 255, 0.10);
+  --surface-glass-elevated: rgba(255, 255, 255, 0.09);
+  --surface-border: rgba(255, 255, 255, 0.10);
+  --surface-border-hover: rgba(255, 255, 255, 0.18);
+
+  /* Text */
+  --text-primary: #f1f5f9;
+  --text-secondary: rgba(255, 255, 255, 0.55);
+  --text-muted: rgba(255, 255, 255, 0.35);
+  --text-on-accent: #ffffff;
+
+  /* Accent gradient */
+  --accent-start: #7c3aed;
+  --accent-end: #06b6d4;
+  --accent-gradient: linear-gradient(135deg, var(--accent-start), var(--accent-end));
+  --accent-solid: #7c3aed;
+  --accent-hover: #6d28d9;
+
+  /* Semantic */
+  --color-success: #10b981;
+  --color-success-muted: rgba(16, 185, 129, 0.15);
+  --color-danger: #f43f5e;
+  --color-danger-muted: rgba(244, 63, 94, 0.15);
+  --color-warning: #f59e0b;
+  --color-warning-muted: rgba(245, 158, 11, 0.15);
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Spacing (tighter) */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  /* Shadows */
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px var(--surface-border);
+  --shadow-card-hover: 0 8px 40px rgba(124, 58, 237, 0.2), 0 0 0 1px var(--surface-border-hover);
+  --shadow-elevated: 0 12px 48px rgba(0, 0, 0, 0.4);
+
+  /* Blur */
+  --blur-glass: 16px;
+  --blur-heavy: 40px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-slow: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+  font-family: var(--font-sans);
   line-height: 1.5;
   font-weight: 400;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: var(--text-primary);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
 a {
   font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+  color: var(--accent-start);
+  text-decoration: none;
+  transition: color var(--transition-fast);
 }
 a:hover {
-  color: #535bf2;
+  color: var(--accent-end);
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
 }
 
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  font-size: 1.5em;
+  line-height: 1.2;
+  font-weight: 700;
 }
 
 button {
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+  padding: 0.5em 1em;
+  font-size: 0.875em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--surface-glass);
+  color: var(--text-primary);
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all var(--transition-normal);
 }
 button:hover {
-  border-color: #646cff;
+  background-color: var(--surface-glass-hover);
+  border-color: var(--surface-border-hover);
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 2px solid var(--accent-start);
+  outline-offset: 2px;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+/* Material icon helper */
+.material-icons-outlined {
+  font-size: 18px;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+}
+
+/* ============================================
+   LIGHT THEME OVERRIDES
+   ============================================ */
+
+:root[data-theme="light"] {
+  /* Background */
+  --bg-base: #f0f2f5;
+  --bg-blob-1: #7c3aed;
+  --bg-blob-2: #06b6d4;
+
+  /* Surfaces (light glass) */
+  --surface-glass: rgba(255, 255, 255, 0.65);
+  --surface-glass-hover: rgba(255, 255, 255, 0.80);
+  --surface-glass-elevated: rgba(255, 255, 255, 0.75);
+  --surface-border: rgba(0, 0, 0, 0.08);
+  --surface-border-hover: rgba(0, 0, 0, 0.14);
+
+  /* Text */
+  --text-primary: #1e293b;
+  --text-secondary: rgba(30, 41, 59, 0.65);
+  --text-muted: rgba(30, 41, 59, 0.40);
+  --text-on-accent: #ffffff;
+
+  /* Semantic (slightly adjusted for light bg) */
+  --color-success: #059669;
+  --color-success-muted: rgba(5, 150, 105, 0.12);
+  --color-danger: #e11d48;
+  --color-danger-muted: rgba(225, 29, 72, 0.10);
+  --color-warning: #d97706;
+  --color-warning-muted: rgba(217, 119, 6, 0.10);
+
+  /* Shadows (lighter) */
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.06), 0 0 0 1px var(--surface-border);
+  --shadow-card-hover: 0 8px 30px rgba(124, 58, 237, 0.12), 0 0 0 1px var(--surface-border-hover);
+  --shadow-elevated: 0 10px 40px rgba(0, 0, 0, 0.12);
+
+  color: var(--text-primary);
 }
