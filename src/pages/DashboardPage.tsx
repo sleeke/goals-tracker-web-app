@@ -405,7 +405,15 @@ export function DashboardPage() {
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
-        <h1>Goal Tracker</h1>
+        <div className="header-left">
+          <div className="user-menu">
+            <span className="user-email">{user?.email}</span>
+            <button onClick={handleLogout} className="btn btn-logout">
+              <span className="material-icons-outlined" style={{ fontSize: 14, marginRight: 2, verticalAlign: 'text-bottom' }}>logout</span>
+              Logout
+            </button>
+          </div>
+        </div>
         <div className="header-actions">
           <button
             className="btn btn-primary"
@@ -425,13 +433,6 @@ export function DashboardPage() {
               {theme === 'dark' ? 'light_mode' : 'dark_mode'}
             </span>
           </button>
-          <div className="user-menu">
-            <span className="user-email">{user?.email}</span>
-            <button onClick={handleLogout} className="btn btn-logout">
-              <span className="material-icons-outlined" style={{ fontSize: 14, marginRight: 2, verticalAlign: 'text-bottom' }}>logout</span>
-              Logout
-            </button>
-          </div>
         </div>
       </header>
 
@@ -446,10 +447,6 @@ export function DashboardPage() {
             </p>
           </div>
         )}
-
-        <div className="dashboard-controls">
-          <h2>Your Goals</h2>
-        </div>
 
         {isLoading && goals.length === 0 ? (
           <div className="loading-placeholder">

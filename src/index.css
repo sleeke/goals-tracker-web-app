@@ -4,9 +4,9 @@
 
 :root {
   /* Background */
-  --bg-base: #0f0d1a;
-  --bg-blob-1: #7c3aed;
-  --bg-blob-2: #06b6d4;
+  --bg-base: #1c1008;
+  --bg-blob-1: #F18F2C;
+  --bg-blob-2: #A2CBDB;
 
   /* Surfaces (glass) */
   --surface-glass: rgba(255, 255, 255, 0.06);
@@ -21,12 +21,12 @@
   --text-muted: rgba(255, 255, 255, 0.35);
   --text-on-accent: #ffffff;
 
-  /* Accent gradient */
-  --accent-start: #7c3aed;
-  --accent-end: #06b6d4;
+  /* Accent — orange/blue palette */
+  --accent-start: #F18F2C;
+  --accent-end: #A2CBDB;
   --accent-gradient: linear-gradient(135deg, var(--accent-start), var(--accent-end));
-  --accent-solid: #7c3aed;
-  --accent-hover: #6d28d9;
+  --accent-solid: #F4A548;
+  --accent-hover: #AF5C10;
 
   /* Semantic */
   --color-success: #10b981;
@@ -56,7 +56,7 @@
 
   /* Shadows */
   --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px var(--surface-border);
-  --shadow-card-hover: 0 8px 40px rgba(124, 58, 237, 0.2), 0 0 0 1px var(--surface-border-hover);
+  --shadow-card-hover: 0 8px 40px rgba(241, 143, 44, 0.2), 0 0 0 1px var(--surface-border-hover);
   --shadow-elevated: 0 12px 48px rgba(0, 0, 0, 0.4);
 
   /* Blur */
@@ -124,7 +124,7 @@ button:hover {
 }
 button:focus,
 button:focus-visible {
-  outline: 2px solid var(--accent-start);
+  outline: 2px solid var(--accent-solid);
   outline-offset: 2px;
 }
 
@@ -150,9 +150,9 @@ button:focus-visible {
 
 :root[data-theme="light"] {
   /* Background */
-  --bg-base: #f0f2f5;
-  --bg-blob-1: #7c3aed;
-  --bg-blob-2: #06b6d4;
+  --bg-base: #F0ECE0;
+  --bg-blob-1: #F18F2C;
+  --bg-blob-2: #A2CBDB;
 
   /* Surfaces (light glass) */
   --surface-glass: rgba(255, 255, 255, 0.65);
@@ -177,7 +177,7 @@ button:focus-visible {
 
   /* Shadows (lighter) */
   --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.06), 0 0 0 1px var(--surface-border);
-  --shadow-card-hover: 0 8px 30px rgba(124, 58, 237, 0.12), 0 0 0 1px var(--surface-border-hover);
+  --shadow-card-hover: 0 8px 30px rgba(241, 143, 44, 0.12), 0 0 0 1px var(--surface-border-hover);
   --shadow-elevated: 0 10px 40px rgba(0, 0, 0, 0.12);
 
   color: var(--text-primary);
