@@ -1,0 +1,311 @@
+/* ============================================================
+   THEME SYSTEM — Goal Tracker
+   ============================================================
+   Each theme is defined as a palette of named brand colours.
+   All semantic tokens (surface, text, accent, etc.) are then
+   derived from that palette using CSS custom-property aliases.
+   Add a new theme by:
+     1. Adding a new [data-theme="name"] block with a palette.
+     2. Aliasing the semantic layer tokens inside the same block.
+   ============================================================ */
+
+
+/* ============================================================
+   SHARED — layout, spacing, radii, typography, transitions
+   (never colour — those live per-theme below)
+   ============================================================ */
+:root {
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Spacing */
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  12px;
+  --space-lg:  16px;
+  --space-xl:  24px;
+  --space-2xl: 32px;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  /* Blur */
+  --blur-glass:  16px;
+  --blur-heavy:  40px;
+
+  /* Transitions */
+  --transition-fast:   0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-slow:   0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+
+/* ============================================================
+   THEME 1 — NEBULA (dark amber-sky)  [default dark]
+   Palette: deep brown-black bg, amber accent, sky-blue complement
+   ============================================================ */
+:root,
+:root[data-theme="nebula"] {
+  /* --- Palette --- */
+  --p-bg:        #1c1008;
+  --p-blob-1:    #F18F2C;   /* amber */
+  --p-blob-2:    #A2CBDB;   /* sky  */
+
+  --p-accent-1:  #F18F2C;   /* amber warm */
+  --p-accent-2:  #F4A548;   /* amber light */
+  --p-accent-3:  #AF5C10;   /* amber dark */
+
+  --p-success:   #10b981;
+  --p-warning:   #f59e0b;
+  --p-danger:    #f43f5e;
+
+  /* --- Semantic layer (dark) --- */
+  --bg-base:              var(--p-bg);
+  --bg-blob-1:            var(--p-blob-1);
+  --bg-blob-2:            var(--p-blob-2);
+
+  --surface-glass:          rgba(255,255,255,0.06);
+  --surface-glass-hover:    rgba(255,255,255,0.10);
+  --surface-glass-elevated: rgba(255,255,255,0.09);
+  --surface-border:         rgba(255,255,255,0.10);
+  --surface-border-hover:   rgba(255,255,255,0.18);
+
+  --text-primary:   #f1f5f9;
+  --text-secondary: rgba(255,255,255,0.55);
+  --text-muted:     rgba(255,255,255,0.35);
+  --text-on-accent: #ffffff;
+
+  --accent-start:    var(--p-accent-1);
+  --accent-end:      var(--p-blob-2);
+  --accent-gradient: linear-gradient(135deg, var(--accent-start), var(--accent-end));
+  --accent-solid:    var(--p-accent-2);
+  --accent-hover:    var(--p-accent-3);
+  --accent-focus-ring: rgba(244,165,72,0.25);
+
+  --color-success:        var(--p-success);
+  --color-success-muted:  rgba(16,185,129,0.15);
+  --color-warning:        var(--p-warning);
+  --color-warning-muted:  rgba(245,158,11,0.15);
+  --color-danger:         var(--p-danger);
+  --color-danger-muted:   rgba(244,63,94,0.15);
+
+  --shadow-card:       0 4px 24px rgba(0,0,0,0.3),  0 0 0 1px var(--surface-border);
+  --shadow-card-hover: 0 8px 40px rgba(241,143,44,0.20), 0 0 0 1px var(--surface-border-hover);
+  --shadow-elevated:   0 12px 48px rgba(0,0,0,0.4);
+}
+
+/* Nebula light variant */
+:root[data-theme="nebula-light"] {
+  /* --- Palette (same accent, light bg) --- */
+  --p-bg:        #F0ECE0;
+  --p-blob-1:    #F18F2C;
+  --p-blob-2:    #A2CBDB;
+
+  --p-accent-1:  #F18F2C;
+  --p-accent-2:  #E07820;
+  --p-accent-3:  #AF5C10;
+
+  --p-success:   #059669;
+  --p-warning:   #d97706;
+  --p-danger:    #e11d48;
+
+  /* --- Semantic layer (light) --- */
+  --bg-base:              var(--p-bg);
+  --bg-blob-1:            var(--p-blob-1);
+  --bg-blob-2:            var(--p-blob-2);
+
+  --surface-glass:          rgba(255,255,255,0.65);
+  --surface-glass-hover:    rgba(255,255,255,0.80);
+  --surface-glass-elevated: rgba(255,255,255,0.75);
+  --surface-border:         rgba(0,0,0,0.08);
+  --surface-border-hover:   rgba(0,0,0,0.14);
+
+  --text-primary:   #1e293b;
+  --text-secondary: rgba(30,41,59,0.65);
+  --text-muted:     rgba(30,41,59,0.40);
+  --text-on-accent: #ffffff;
+
+  --accent-start:    var(--p-accent-1);
+  --accent-end:      var(--p-blob-2);
+  --accent-gradient: linear-gradient(135deg, var(--accent-start), var(--accent-end));
+  --accent-solid:    var(--p-accent-2);
+  --accent-hover:    var(--p-accent-3);
+  --accent-focus-ring: rgba(224,120,32,0.20);
+
+  --color-success:        var(--p-success);
+  --color-success-muted:  rgba(5,150,105,0.12);
+  --color-warning:        var(--p-warning);
+  --color-warning-muted:  rgba(217,119,6,0.12);
+  --color-danger:         var(--p-danger);
+  --color-danger-muted:   rgba(225,29,72,0.12);
+
+  --shadow-card:       0 2px 12px rgba(0,0,0,0.06),  0 0 0 1px var(--surface-border);
+  --shadow-card-hover: 0 8px 30px rgba(241,143,44,0.12), 0 0 0 1px var(--surface-border-hover);
+  --shadow-elevated:   0 10px 40px rgba(0,0,0,0.12);
+}
+
+
+/* ============================================================
+   THEME 2 — MAGENTA BLOOM (dark)  [user-supplied palette]
+   Palette:
+     #CE4760  magenta-bloom  — vivid pink-red
+     #1F2041  space-indigo   — deep navy bg
+     #BBDB9B  celadon        — sage green (complement / success)
+     #68C3D4  sky-blue       — cool accent
+     #F9EA9A  light-gold     — warm highlight
+   ============================================================ */
+:root[data-theme="magenta-bloom"] {
+  /* --- Palette --- */
+  --p-magenta:     #CE4760;   /* primary accent */
+  --p-magenta-lt:  #e06278;   /* lightened  +12% lightness */
+  --p-magenta-dk:  #9a2f44;   /* darkened   -12% lightness */
+  --p-indigo:      #1F2041;   /* bg base */
+  --p-indigo-lt:   #2b2d5a;   /* surface */
+  --p-indigo-dk:   #14152e;   /* deep bg */
+  --p-celadon:     #BBDB9B;   /* success / green */
+  --p-celadon-dk:  #84b060;   /* success hover */
+  --p-sky:         #68C3D4;   /* cool complement */
+  --p-sky-dk:      #3fa0b4;   /* sky hover */
+  --p-gold:        #F9EA9A;   /* warm highlight */
+  --p-gold-dk:     #e5d078;   /* gold hover */
+
+  /* --- Semantic layer --- */
+  --bg-base:              var(--p-indigo-dk);
+  --bg-blob-1:            var(--p-magenta);
+  --bg-blob-2:            var(--p-sky);
+
+  --surface-glass:          rgba(31,32,65,0.55);
+  --surface-glass-hover:    rgba(43,45,90,0.70);
+  --surface-glass-elevated: rgba(43,45,90,0.65);
+  --surface-border:         rgba(104,195,212,0.14);
+  --surface-border-hover:   rgba(104,195,212,0.28);
+
+  --text-primary:   #f0f4ff;
+  --text-secondary: rgba(240,244,255,0.60);
+  --text-muted:     rgba(240,244,255,0.38);
+  --text-on-accent: #ffffff;
+
+  --accent-start:    var(--p-magenta);
+  --accent-end:      var(--p-sky);
+  --accent-gradient: linear-gradient(135deg, var(--accent-start), var(--accent-end));
+  --accent-solid:    var(--p-magenta);
+  --accent-hover:    var(--p-magenta-lt);
+  --accent-focus-ring: rgba(206,71,96,0.28);
+
+  --color-success:        var(--p-celadon);
+  --color-success-muted:  rgba(187,219,155,0.15);
+  --color-warning:        var(--p-gold);
+  --color-warning-muted:  rgba(249,234,154,0.15);
+  --color-danger:         var(--p-magenta);
+  --color-danger-muted:   rgba(206,71,96,0.15);
+
+  --shadow-card:       0 4px 24px rgba(0,0,0,0.45),     0 0 0 1px var(--surface-border);
+  --shadow-card-hover: 0 8px 40px rgba(206,71,96,0.22),  0 0 0 1px var(--surface-border-hover);
+  --shadow-elevated:   0 12px 48px rgba(0,0,0,0.55);
+}
+
+
+/* ============================================================
+   THEME 3 — ARCTIC (dark cool blue-teal)
+   Palette: near-black navy bg, icy teal accent, arctic white text
+   ============================================================ */
+:root[data-theme="arctic"] {
+  /* --- Palette --- */
+  --p-navy:      #0a0e1a;   /* bg base */
+  --p-navy-lt:   #141c30;   /* surface */
+  --p-teal:      #2dd4bf;   /* primary accent */
+  --p-teal-lt:   #5eead4;   /* accent light */
+  --p-teal-dk:   #0f8a7a;   /* accent dark */
+  --p-blue:      #60a5fa;   /* complement blue */
+  --p-blue-lt:   #93c5fd;   /* complement light */
+  --p-frost:     #e0f2fe;   /* near-white */
+
+  /* --- Semantic layer --- */
+  --bg-base:              var(--p-navy);
+  --bg-blob-1:            var(--p-teal);
+  --bg-blob-2:            var(--p-blue);
+
+  --surface-glass:          rgba(20,28,48,0.60);
+  --surface-glass-hover:    rgba(20,28,48,0.80);
+  --surface-glass-elevated: rgba(20,28,48,0.75);
+  --surface-border:         rgba(45,212,191,0.14);
+  --surface-border-hover:   rgba(45,212,191,0.28);
+
+  --text-primary:   var(--p-frost);
+  --text-secondary: rgba(224,242,254,0.60);
+  --text-muted:     rgba(224,242,254,0.38);
+  --text-on-accent: #0a0e1a;
+
+  --accent-start:    var(--p-teal);
+  --accent-end:      var(--p-blue-lt);
+  --accent-gradient: linear-gradient(135deg, var(--accent-start), var(--accent-end));
+  --accent-solid:    var(--p-teal);
+  --accent-hover:    var(--p-teal-lt);
+  --accent-focus-ring: rgba(45,212,191,0.28);
+
+  --color-success:        var(--p-teal);
+  --color-success-muted:  rgba(45,212,191,0.15);
+  --color-warning:        #fbbf24;
+  --color-warning-muted:  rgba(251,191,36,0.15);
+  --color-danger:         #fb7185;
+  --color-danger-muted:   rgba(251,113,133,0.15);
+
+  --shadow-card:       0 4px 24px rgba(0,0,0,0.50),    0 0 0 1px var(--surface-border);
+  --shadow-card-hover: 0 8px 40px rgba(45,212,191,0.18), 0 0 0 1px var(--surface-border-hover);
+  --shadow-elevated:   0 12px 48px rgba(0,0,0,0.60);
+}
+
+
+/* ============================================================
+   THEME 4 — PARCHMENT (warm light editorial)
+   Palette: cream bg, terracotta accent, warm-brown text
+   ============================================================ */
+:root[data-theme="parchment"] {
+  /* --- Palette --- */
+  --p-cream:       #faf5eb;   /* bg base */
+  --p-cream-dk:    #f0e8d4;   /* surface */
+  --p-terra:       #c2522a;   /* terracotta accent */
+  --p-terra-lt:    #d9724a;   /* accent light */
+  --p-terra-dk:    #8f3918;   /* accent dark */
+  --p-sage:        #6b8f5e;   /* sage green complement */
+  --p-ink:         #2c1d0e;   /* near-black text */
+  --p-ink-lt:      #4a3520;   /* secondary text */
+
+  /* --- Semantic layer --- */
+  --bg-base:              var(--p-cream);
+  --bg-blob-1:            var(--p-terra);
+  --bg-blob-2:            var(--p-sage);
+
+  --surface-glass:          rgba(255,255,255,0.65);
+  --surface-glass-hover:    rgba(255,255,255,0.85);
+  --surface-glass-elevated: rgba(255,255,255,0.78);
+  --surface-border:         rgba(44,29,14,0.10);
+  --surface-border-hover:   rgba(44,29,14,0.18);
+
+  --text-primary:   var(--p-ink);
+  --text-secondary: rgba(44,29,14,0.60);
+  --text-muted:     rgba(44,29,14,0.38);
+  --text-on-accent: #ffffff;
+
+  --accent-start:    var(--p-terra);
+  --accent-end:      var(--p-sage);
+  --accent-gradient: linear-gradient(135deg, var(--accent-start), var(--accent-end));
+  --accent-solid:    var(--p-terra);
+  --accent-hover:    var(--p-terra-dk);
+  --accent-focus-ring: rgba(194,82,42,0.22);
+
+  --color-success:        var(--p-sage);
+  --color-success-muted:  rgba(107,143,94,0.15);
+  --color-warning:        #c07722;
+  --color-warning-muted:  rgba(192,119,34,0.15);
+  --color-danger:         #b22222;
+  --color-danger-muted:   rgba(178,34,34,0.12);
+
+  --shadow-card:       0 2px 12px rgba(44,29,14,0.08),  0 0 0 1px var(--surface-border);
+  --shadow-card-hover: 0 8px 30px rgba(194,82,42,0.12),  0 0 0 1px var(--surface-border-hover);
+  --shadow-elevated:   0 10px 40px rgba(44,29,14,0.14);
+}

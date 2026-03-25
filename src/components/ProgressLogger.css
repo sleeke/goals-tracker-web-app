@@ -129,7 +129,7 @@
 .progress-form textarea:focus {
   outline: none;
   border-color: var(--accent-start);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+  box-shadow: 0 0 0 3px var(--accent-focus-ring);
 }
 
 .progress-form input[type='date']:disabled,
