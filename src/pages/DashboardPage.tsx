@@ -408,11 +408,11 @@ export function DashboardPage() {
       <header className="dashboard-header">
         <div className="header-left">
           <div className="user-menu">
-            <span className="user-email">{user?.email}</span>
             <button onClick={handleLogout} className="btn btn-logout">
               <span className="material-icons-outlined" style={{ fontSize: 14, marginRight: 2, verticalAlign: 'text-bottom' }}>logout</span>
               Logout
             </button>
+            <span className="user-email">{user?.email}</span>
           </div>
         </div>
         <div className="header-actions">

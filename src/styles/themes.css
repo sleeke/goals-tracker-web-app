@@ -160,9 +160,9 @@
    ============================================================ */
 :root[data-theme="magenta-bloom"] {
   /* --- Palette --- */
-  --p-magenta:     #CE4760;   /* primary accent */
-  --p-magenta-lt:  #e06278;   /* lightened  +12% lightness */
-  --p-magenta-dk:  #9a2f44;   /* darkened   -12% lightness */
+  --p-magenta:     rgb(207, 69, 94);   /* primary accent */
+  --p-magenta-lt:  rgb(224, 97, 118);   /* lightened  +12% lightness */
+  --p-magenta-dk:  rgb(153, 46, 67);   /* darkened   -12% lightness */
   --p-indigo:      #1F2041;   /* bg base */
   --p-indigo-lt:   #2b2d5a;   /* surface */
   --p-indigo-dk:   #14152e;   /* deep bg */
@@ -268,9 +268,9 @@
   /* --- Palette --- */
   --p-cream:       #faf5eb;   /* bg base */
   --p-cream-dk:    #f0e8d4;   /* surface */
-  --p-terra:       #c2522a;   /* terracotta accent */
-  --p-terra-lt:    #d9724a;   /* accent light */
-  --p-terra-dk:    #8f3918;   /* accent dark */
+  --p-terra:       hsl(16, 71%, 62%);   /* terracotta accent */
+  --p-terra-lt:    hsl(16, 71%, 72%);   /* accent light */
+  --p-terra-dk:    hsl(16, 71%, 42%);   /* accent dark */
   --p-sage:        #6b8f5e;   /* sage green complement */
   --p-ink:         #2c1d0e;   /* near-black text */
   --p-ink-lt:      #4a3520;   /* secondary text */
@@ -293,7 +293,7 @@
 
   --accent-start:    var(--p-terra);
   --accent-end:      var(--p-sage);
-  --accent-gradient: linear-gradient(135deg, var(--accent-start), var(--accent-end));
+  --accent-gradient: linear-gradient(135deg, var(--p-cream), var(--accent-end));
   --accent-solid:    var(--p-terra);
   --accent-hover:    var(--p-terra-dk);
   --accent-focus-ring: rgba(194,82,42,0.22);
