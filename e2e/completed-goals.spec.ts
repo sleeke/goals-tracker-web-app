@@ -11,7 +11,6 @@ test.describe('Completed Goals Feature', () => {
     
     // Wait for dashboard
     await expect(page).toHaveURL(/.*\/dashboard/)
-    await expect(page.locator('h1')).toContainText('Goal Tracker')
   })
 
   test('should auto-complete a goal when progress reaches target', async ({

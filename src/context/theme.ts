@@ -1,9 +1,24 @@
 import { createContext, useContext } from 'react'
 
-export type Theme = 'dark' | 'light'
+export type Theme =
+  | 'nebula'
+  | 'nebula-light'
+  | 'magenta-bloom'
+  | 'arctic'
+  | 'parchment'
+
+export const THEMES: { id: Theme; label: string }[] = [
+  { id: 'nebula',        label: 'Nebula (dark)' },
+  { id: 'nebula-light',  label: 'Nebula (light)' },
+  { id: 'magenta-bloom', label: 'Magenta Bloom' },
+  { id: 'arctic',        label: 'Arctic' },
+  { id: 'parchment',     label: 'Parchment' },
+]
 
 export interface ThemeContextType {
   theme: Theme
+  setTheme: (t: Theme) => void
+  /** Convenience: cycle to next theme */
   toggleTheme: () => void
 }
 

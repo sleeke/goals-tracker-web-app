@@ -32,7 +32,6 @@ test.describe('Goal Tracker E2E Flow', () => {
     
     // Verify we're on dashboard
     await expect(page).toHaveURL(/.*\/dashboard/)
-    await expect(page.locator('h1')).toContainText('Goal Tracker')
 
     // Step 2: Ensure goal exists - create if needed
     console.log('Step 2: Checking for existing goals...')

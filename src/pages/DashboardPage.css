@@ -23,15 +23,9 @@
   z-index: 100;
 }
 
-.dashboard-header h1 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 700;
-  background: var(--accent-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: -0.3px;
+.header-left {
+  display: flex;
+  align-items: center;
 }
 
 .header-actions {
@@ -44,6 +38,38 @@
   display: flex;
   align-items: center;
   gap: var(--space-sm);
+  margin-right: auto;
+  flex: 1;
+}
+
+/* --- Theme selector dropdown -------------- */
+.theme-select {
+  background: var(--surface-glass);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-family: inherit;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  height: 30px;
+}
+
+.theme-select:hover {
+  border-color: var(--surface-border-hover);
+  color: var(--text-primary);
+  background: var(--surface-glass-hover);
+}
+
+.theme-select:focus {
+  outline: 2px solid var(--accent-solid);
+  outline-offset: 2px;
+}
+
+.theme-select option {
+  background: var(--bg-base);
+  color: var(--text-primary);
 }
 
 .user-email {
@@ -55,7 +81,7 @@
   background: var(--color-danger-muted);
   color: var(--color-danger);
   padding: 4px 10px;
-  border: 1px solid rgba(244, 63, 94, 0.2);
+  border: 1px solid var(--color-danger-muted);
   border-radius: var(--radius-sm);
   font-size: 12px;
   font-weight: 500;
@@ -110,24 +136,9 @@
   backdrop-filter: blur(var(--blur-glass));
 }
 
-.dashboard-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-lg);
-}
-
-.dashboard-controls h2 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-secondary);
-  letter-spacing: -0.2px;
-}
-
-/* --- Primary action button (gradient) ------ */
+/* --- Primary action button (flat) ---------- */
 .btn-primary {
-  background: var(--accent-gradient);
+  background: var(--accent-solid);
   color: var(--text-on-accent);
   padding: 6px 14px;
   border: none;
@@ -136,13 +147,11 @@
   cursor: pointer;
   font-size: 13px;
   transition: all var(--transition-normal);
-  box-shadow: 0 2px 12px rgba(124, 58, 237, 0.3);
 }
 
 .btn-primary:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.45);
-  filter: brightness(1.1);
+  background: var(--accent-hover);
 }
 
 .btn-primary:disabled {
