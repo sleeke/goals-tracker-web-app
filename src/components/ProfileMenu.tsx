@@ -11,7 +11,14 @@ interface ProfileMenuProps {
 export function ProfileMenu({ userEmail, onLogout }: ProfileMenuProps) {
   const [open, setOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
-  const { darkTheme, lightTheme, setDarkTheme, setLightTheme, autoTheme, setAutoTheme } = useTheme()
+  const {
+    darkTheme, lightTheme, setDarkTheme, setLightTheme,
+    autoTheme, setAutoTheme,
+    theme, setTheme,
+  } = useTheme()
+
+  // Derive current colour-scheme from active theme
+  const isDarkMode = DARK_THEMES.some((t) => t.id === theme)
 
   // Close on outside click
   useEffect(() => {
@@ -34,6 +41,11 @@ export function ProfileMenu({ userEmail, onLogout }: ProfileMenuProps) {
     document.addEventListener('keydown', handleKey)
     return () => document.removeEventListener('keydown', handleKey)
   }, [open])
+
+  const handleModeToggle = () => {
+    // Switch to the preferred theme for the opposite mode
+    setTheme(isDarkMode ? lightTheme : darkTheme)
+  }
 
   return (
     <div className="profile-menu-container" ref={menuRef}>
@@ -75,6 +87,27 @@ export function ProfileMenu({ userEmail, onLogout }: ProfileMenuProps) {
                 <span className="profile-toggle-thumb" />
               </span>
             </label>
+
+            {/* Dark / Light mode toggle */}
+            <div className={`profile-mode-toggle-row${autoTheme ? ' profile-mode-disabled' : ''}`}>
+              <span className="material-icons-outlined profile-mode-icon">
+                {isDarkMode ? 'dark_mode' : 'light_mode'}
+              </span>
+              <span className="profile-mode-label">
+                {isDarkMode ? 'Dark mode' : 'Light mode'}
+              </span>
+              <button
+                className="profile-mode-btn"
+                onClick={handleModeToggle}
+                disabled={autoTheme}
+                aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+              >
+                <span className="material-icons-outlined">
+                  {isDarkMode ? 'light_mode' : 'dark_mode'}
+                </span>
+                Switch
+              </button>
+            </div>
 
             <div className="profile-theme-group">
               <div className="profile-theme-group-label">
