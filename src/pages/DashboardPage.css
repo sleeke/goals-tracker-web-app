@@ -16,105 +16,20 @@
   border-bottom: 1px solid var(--surface-border);
   padding: var(--space-sm) var(--space-xl);
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   position: sticky;
   top: 0;
   z-index: 100;
 }
 
-.header-left {
-  display: flex;
-  align-items: center;
-}
-
 .header-actions {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
+  /* 1.5× --space-sm (8px) = 12px between New Goal and profile button */
+  gap: 12px;
 }
 
-.user-menu {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  margin-right: auto;
-  flex: 1;
-}
-
-/* --- Theme selector dropdown -------------- */
-.theme-select {
-  background: var(--surface-glass);
-  border: 1px solid var(--surface-border);
-  border-radius: var(--radius-sm);
-  color: var(--text-secondary);
-  font-size: 12px;
-  font-family: inherit;
-  padding: 4px 8px;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  height: 30px;
-}
-
-.theme-select:hover {
-  border-color: var(--surface-border-hover);
-  color: var(--text-primary);
-  background: var(--surface-glass-hover);
-}
-
-.theme-select:focus {
-  outline: 2px solid var(--accent-solid);
-  outline-offset: 2px;
-}
-
-.theme-select option {
-  background: var(--bg-base);
-  color: var(--text-primary);
-}
-
-.user-email {
-  color: var(--text-muted);
-  font-size: 12px;
-}
-
-.btn-logout {
-  background: var(--color-danger-muted);
-  color: var(--color-danger);
-  padding: 4px 10px;
-  border: 1px solid var(--color-danger-muted);
-  border-radius: var(--radius-sm);
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.btn-logout:hover {
-  background: rgba(244, 63, 94, 0.25);
-  border-color: rgba(244, 63, 94, 0.4);
-}
-
-/* --- Theme toggle button ------------------- */
-.btn-theme-toggle {
-  background: var(--surface-glass);
-  border: 1px solid var(--surface-border);
-  border-radius: var(--radius-sm);
-  padding: 4px;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  color: var(--text-secondary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-}
-
-.btn-theme-toggle:hover {
-  color: var(--text-primary);
-  background: var(--surface-glass-hover);
-  border-color: var(--surface-border-hover);
-}
 
 /* --- Main content area -------------------- */
 .dashboard-content {
@@ -252,18 +167,11 @@
 /* --- Responsive ---------------------------- */
 @media (max-width: 768px) {
   .dashboard-header {
-    flex-wrap: wrap;
-    gap: var(--space-sm);
     padding: var(--space-sm) var(--space-md);
   }
 
   .header-actions {
-    flex-wrap: wrap;
-    gap: var(--space-xs);
-  }
-
-  .user-menu {
-    width: auto;
+    gap: var(--space-sm);
   }
 
   .dashboard-content {

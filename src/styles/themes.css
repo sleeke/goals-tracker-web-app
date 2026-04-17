@@ -71,6 +71,7 @@
   --surface-glass:          rgba(255,255,255,0.06);
   --surface-glass-hover:    rgba(255,255,255,0.10);
   --surface-glass-elevated: rgba(255,255,255,0.09);
+  --surface-overlay:        rgba(28,16,8,0.88);
   --surface-border:         rgba(255,255,255,0.10);
   --surface-border-hover:   rgba(255,255,255,0.18);
 
@@ -121,6 +122,7 @@
   --surface-glass:          rgba(255,255,255,0.65);
   --surface-glass-hover:    rgba(255,255,255,0.80);
   --surface-glass-elevated: rgba(255,255,255,0.75);
+  --surface-overlay:        rgba(240,236,224,0.92);
   --surface-border:         rgba(0,0,0,0.08);
   --surface-border-hover:   rgba(0,0,0,0.14);
 
@@ -181,6 +183,7 @@
   --surface-glass:          rgba(31,32,65,0.55);
   --surface-glass-hover:    rgba(43,45,90,0.70);
   --surface-glass-elevated: rgba(43,45,90,0.65);
+  --surface-overlay:        rgba(20,21,46,0.90);
   --surface-border:         rgba(104,195,212,0.14);
   --surface-border-hover:   rgba(104,195,212,0.28);
 
@@ -232,6 +235,7 @@
   --surface-glass:          rgba(20,28,48,0.60);
   --surface-glass-hover:    rgba(20,28,48,0.80);
   --surface-glass-elevated: rgba(20,28,48,0.75);
+  --surface-overlay:        rgba(10,14,26,0.92);
   --surface-border:         rgba(45,212,191,0.14);
   --surface-border-hover:   rgba(45,212,191,0.28);
 
@@ -283,6 +287,7 @@
   --surface-glass:          rgba(255,255,255,0.65);
   --surface-glass-hover:    rgba(255,255,255,0.85);
   --surface-glass-elevated: rgba(255,255,255,0.78);
+  --surface-overlay:        rgba(250,245,235,0.94);
   --surface-border:         rgba(44,29,14,0.10);
   --surface-border-hover:   rgba(44,29,14,0.18);
 
