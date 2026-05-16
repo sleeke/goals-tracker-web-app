@@ -466,7 +466,7 @@ export function DashboardPage() {
 
             {activeGoals.length === 0 && completedGoals.length > 0 && (
               <div className="empty-state">
-                <p>No active goals. Create one to get started!</p>
+                <p>No goals scheduled for today. Check the section below or create a new goal!</p>
               </div>
             )}
 
@@ -474,7 +474,7 @@ export function DashboardPage() {
               <div className="completed-goals-section">
                 <div className="completed-goals-header">
                   <h3>
-                    Completed Goals ({completedGoals.length})
+                    Completed &amp; Not Scheduled Today ({completedGoals.length})
                   </h3>
                   <button
                     className="btn-toggle-section"
