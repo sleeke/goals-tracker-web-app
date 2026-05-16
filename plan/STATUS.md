@@ -6,6 +6,7 @@
 - Fix all tests and enable on the cloud
 
 ## Done
+- Made a decision: DO NOT WORK ON THIS PROJECT unless there's a blocker on the main focus (career), or if there's a chance to parallel process.
 - Fixed tests locally, including lint, unit, e2e
 - Fixed tests in actions
 
