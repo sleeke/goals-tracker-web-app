@@ -22,7 +22,7 @@ export function EditGoalModal({
   const [description, setDescription] = useState('')
   const [category, setCategory] = useState('personal')
   const [frequency, setFrequency] = useState<'daily' | 'weekly' | 'monthly'>('daily')
-  const [targetValue, setTargetValue] = useState<number>(1)
+  const [targetValueInput, setTargetValueInput] = useState('1')
   const [unit, setUnit] = useState('units')
   const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium')
   const [color, setColor] = useState('#667eea')
@@ -37,7 +37,7 @@ export function EditGoalModal({
       setDescription(goal.description || '')
       setCategory(goal.category)
       setFrequency(goal.frequency)
-      setTargetValue(goal.targetValue)
+      setTargetValueInput(goal.targetValue.toString())
       setUnit(goal.unit)
       setPriority(goal.priority)
       setColor(goal.color)
@@ -61,7 +61,8 @@ export function EditGoalModal({
       return
     }
 
-    if (targetValue <= 0) {
+    const parsedTargetValue = Number.parseInt(targetValueInput, 10)
+    if (Number.isNaN(parsedTargetValue) || parsedTargetValue <= 0) {
       setError('Target must be greater than 0')
       return
     }
@@ -72,7 +73,7 @@ export function EditGoalModal({
         description: description.trim(),
         category,
         frequency,
-        targetValue,
+        targetValue: parsedTargetValue,
         unit,
         priority,
         color,
@@ -174,8 +175,9 @@ export function EditGoalModal({
                 id="targetValue"
                 type="number"
                 min="1"
-                value={targetValue}
-                onChange={(e) => setTargetValue(Math.max(1, parseInt(e.target.value) || 1))}
+                step="1"
+                value={targetValueInput}
+                onChange={(e) => setTargetValueInput(e.target.value)}
                 disabled={isLoading}
               />
             </div>
