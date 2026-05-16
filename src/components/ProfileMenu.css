@@ -1,0 +1,289 @@
+/* ============================================
+   Profile Menu — dropdown from header right
+   ============================================ */
+
+.profile-menu-container {
+  position: relative;
+}
+
+/* --- Trigger button ----------------------- */
+.btn-profile {
+  background: var(--surface-glass);
+  border: 1px solid var(--surface-border);
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+  padding: 0;
+}
+
+.btn-profile:hover {
+  background: var(--surface-glass-hover);
+  border-color: var(--surface-border-hover);
+  color: var(--text-primary);
+}
+
+.btn-profile .material-icons-outlined {
+  font-size: 20px;
+}
+
+/* --- Dropdown panel ----------------------- */
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 240px;
+  background: var(--surface-overlay);
+  backdrop-filter: blur(var(--blur-heavy));
+  -webkit-backdrop-filter: blur(var(--blur-heavy));
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-elevated);
+  z-index: 200;
+  overflow: hidden;
+  animation: profileDropdownIn 0.15s ease;
+}
+
+@keyframes profileDropdownIn {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+/* --- Sections ----------------------------- */
+.profile-section {
+  padding: 10px 14px;
+}
+
+.profile-divider {
+  height: 1px;
+  background: var(--surface-border);
+  margin: 0;
+}
+
+/* --- Email -------------------------------- */
+.profile-email {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-email-icon {
+  font-size: 18px !important;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.profile-email-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  word-break: break-all;
+  line-height: 1.3;
+}
+
+/* --- Section label ------------------------ */
+.profile-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 8px;
+}
+
+/* --- Auto toggle -------------------------- */
+.profile-auto-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  user-select: none;
+}
+
+.profile-auto-icon {
+  font-size: 16px !important;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.profile-auto-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  flex: 1;
+}
+
+/* Hide native checkbox */
+.profile-auto-checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Custom toggle */
+.profile-toggle-track {
+  width: 30px;
+  height: 17px;
+  background: var(--surface-border);
+  border-radius: 999px;
+  position: relative;
+  flex-shrink: 0;
+  transition: background var(--transition-fast);
+}
+
+.profile-auto-checkbox:checked ~ .profile-toggle-track {
+  background: var(--accent-solid);
+}
+
+.profile-toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 13px;
+  height: 13px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform var(--transition-fast);
+}
+
+.profile-auto-checkbox:checked ~ .profile-toggle-track .profile-toggle-thumb {
+  transform: translateX(13px);
+}
+
+/* --- Theme groups ------------------------- */
+.profile-theme-group {
+  margin-bottom: 8px;
+}
+
+.profile-theme-group-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.profile-theme-group-label .material-icons-outlined {
+  font-size: 14px;
+}
+
+.profile-theme-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.profile-theme-option:hover {
+  background: var(--surface-glass-hover);
+}
+
+.profile-theme-option input[type="radio"] {
+  accent-color: var(--accent-solid);
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.profile-theme-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* --- Dark / Light mode toggle row --------- */
+.profile-mode-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-glass);
+}
+
+.profile-mode-toggle-row.profile-mode-disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.profile-mode-icon {
+  font-size: 16px !important;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.profile-mode-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  flex: 1;
+}
+
+.profile-mode-btn {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: var(--surface-glass-hover);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-family: inherit;
+  font-weight: 500;
+  padding: 3px 7px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.profile-mode-btn:hover:not(:disabled) {
+  color: var(--text-primary);
+  border-color: var(--surface-border-hover);
+}
+
+.profile-mode-btn:disabled {
+  cursor: not-allowed;
+}
+
+.profile-mode-btn .material-icons-outlined {
+  font-size: 13px;
+}
+
+/* --- Logout button ------------------------ */
+.profile-logout-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-danger-muted);
+  color: var(--color-danger);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: left;
+}
+
+.profile-logout-btn:hover {
+  background: rgba(244, 63, 94, 0.22);
+  border-color: rgba(244, 63, 94, 0.3);
+}
+
+.profile-logout-btn .material-icons-outlined {
+  font-size: 16px;
+}
