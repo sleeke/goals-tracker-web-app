@@ -44,21 +44,23 @@ export function GoalCard({
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
   }
 
-  // Collapsed view for completed goals
-  if (isCollapsed && goal.status === 'completed') {
+  // Collapsed view for goals in the completed/inactive section
+  if (isCollapsed && onToggleExpand) {
+    const subtitle =
+      goal.status === 'completed' ? `Completed ${formatCompletedDate()}` : 'Not scheduled today'
     return (
       <div className="goal-card goal-card--collapsed">
         <div className="collapsed-content">
           <div className="collapsed-title-section">
             <h3 className="collapsed-title">{goal.title}</h3>
-            <span className="collapsed-date">Completed {formatCompletedDate()}</span>
+            <span className="collapsed-date">{subtitle}</span>
           </div>
           <button
             className="btn-toggle-expand"
             onClick={onToggleExpand}
             title="Expand"
             disabled={isLoading}
-            aria-label="Expand completed goal"
+            aria-label="Expand goal"
           >
             ▶
           </button>

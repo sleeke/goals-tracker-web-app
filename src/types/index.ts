@@ -44,6 +44,7 @@ export interface Goal {
   priority: 'low' | 'medium' | 'high'
   color: string // hex color for UI
   notes?: string
+  applicableDays?: number[] // 0=Sun, 1=Mon, ..., 6=Sat. Empty/undefined means every day.
   localChanges?: boolean // for offline sync
   lastModifiedLocallyAt?: number
 }

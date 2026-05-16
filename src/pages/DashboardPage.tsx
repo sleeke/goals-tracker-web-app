@@ -118,8 +118,13 @@ export function DashboardPage() {
     }
   }, [goals, user?.uid])
 
-  const getGoalPeriod = (goal: Goal) => {
-    // calculate startDate and EndDate based on Goal frequency
+  /** Returns false only when applicableDays is a non-empty array that excludes today. */
+  const isGoalApplicableToday = (goal: Goal): boolean => {
+    if (!goal.applicableDays || goal.applicableDays.length === 0) return true
+    return goal.applicableDays.includes(new Date().getDay())
+  }
+
+  const getGoalPeriod = (goal: Goal) => {    // calculate startDate and EndDate based on Goal frequency
     const today = new Date()
     let startDate: Date
     let endDate: Date
@@ -392,9 +397,9 @@ export function DashboardPage() {
     }
   }
 
-  const activeGoals = goals.filter((g) => g.status === 'active')
+  const activeGoals = goals.filter((g) => g.status === 'active' && isGoalApplicableToday(g))
   const completedGoals = goals
-    .filter((g) => g.status === 'completed')
+    .filter((g) => g.status === 'completed' || (g.status === 'active' && !isGoalApplicableToday(g)))
     .sort((a, b) => {
       const dateA = a.completedDate ? new Date(a.completedDate).getTime() : 0
       const dateB = b.completedDate ? new Date(b.completedDate).getTime() : 0
