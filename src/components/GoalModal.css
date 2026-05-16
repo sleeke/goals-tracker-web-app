@@ -80,6 +80,15 @@
   letter-spacing: 0.3px;
 }
 
+.form-hint {
+  font-size: 10px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text-muted);
+  opacity: 0.8;
+}
+
 .form-group input,
 .form-group textarea,
 .form-group select {

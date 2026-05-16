@@ -52,10 +52,6 @@ test.describe('Completed Goals Feature', () => {
     const completedSection = page.locator('.completed-goals-section')
     await expect(completedSection).toBeVisible()
 
-    // Section header should show "Completed Goals"
-    const sectionHeader = page.locator('.completed-goals-header h3')
-    await expect(sectionHeader).toContainText('Completed Goals')
-
     // Completed goals section should contain the goal (in collapsed view)
     const completedGoalCard = completedSection.locator(`.goal-card--collapsed:has-text("${goalTitle}")`)
     await expect(completedGoalCard).toBeVisible()
@@ -204,6 +200,52 @@ test.describe('Completed Goals Feature', () => {
 
     // Completed goals list should be visible again
     await expect(completedGoalsList).toBeVisible()
+  })
+
+  test('should move a goal to the completed section when not scheduled today', async ({ page }) => {
+    const goalTitle = `Unscheduled Today Test ${Date.now()}`
+
+    // Create a goal with a large target so progress won't auto-complete it
+    await createGoal(page, {
+      title: goalTitle,
+      description: 'Test goal for day-scheduling feature',
+      frequency: 'daily',
+      target: 999,
+      unit: 'units',
+    })
+
+    // Goal should be in the active section initially
+    const activeGoalCard = page.locator(`.goal-card:has-text("${goalTitle}")`).first()
+    await expect(activeGoalCard).toBeVisible()
+
+    // Open the edit modal
+    await activeGoalCard.locator('[aria-label="Edit goal"]').click()
+    await expect(page.locator('.modal-content')).toBeVisible()
+
+    // Select only a day that is NOT today, so the goal won't apply today.
+    // We use JavaScript to determine today's index and pick a different day.
+    const DAY_FULL_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    const todayIndex: number = await page.evaluate(() => new Date().getDay())
+    const otherDayIndex = (todayIndex + 1) % 7
+    const otherDayName = DAY_FULL_NAMES[otherDayIndex]
+
+    // Click the other-day button inside the DaySelector
+    await page.locator(`.day-selector [aria-label="${otherDayName}"]`).click()
+
+    // Save the goal
+    await page.locator('.modal-footer button:has-text("Save Changes")').click()
+    await expect(page.locator('.modal-content')).not.toBeVisible()
+    await page.waitForTimeout(1000)
+
+    // Goal should now appear in the completed/not-scheduled section
+    const completedSection = page.locator('.completed-goals-section')
+    await expect(completedSection).toBeVisible()
+
+    const inactiveGoalCard = completedSection.locator(`.goal-card--collapsed:has-text("${goalTitle}")`)
+    await expect(inactiveGoalCard).toBeVisible()
+
+    // The collapsed subtitle should indicate the goal is not scheduled today (not completed)
+    await expect(inactiveGoalCard.locator('.collapsed-date')).toContainText('Not scheduled today')
   })
 
   test('should persist completed goals section state in localStorage', async ({ page }) => {

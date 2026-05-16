@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import type { Goal } from '@/types'
+import { DaySelector } from './DaySelector'
 import './GoalModal.css'
 
 interface EditGoalModalProps {
@@ -25,6 +26,7 @@ export function EditGoalModal({
   const [unit, setUnit] = useState('units')
   const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium')
   const [color, setColor] = useState('#667eea')
+  const [applicableDays, setApplicableDays] = useState<number[]>([])
   const [error, setError] = useState<string | null>(null)
 
   // Initialize form with goal data when modal opens
@@ -39,6 +41,7 @@ export function EditGoalModal({
       setUnit(goal.unit)
       setPriority(goal.priority)
       setColor(goal.color)
+      setApplicableDays(goal.applicableDays ?? [])
       setError(null)
     }
   }, [isOpen, goal])
@@ -73,6 +76,7 @@ export function EditGoalModal({
         unit,
         priority,
         color,
+        applicableDays,
       })
 
       onClose()
@@ -201,6 +205,15 @@ export function EditGoalModal({
               />
               <span className="color-preview" style={{ backgroundColor: color }} />
             </div>
+          </div>
+
+          <div className="form-group">
+            <label>Applicable Days <span className="form-hint">(leave blank for every day)</span></label>
+            <DaySelector
+              value={applicableDays}
+              onChange={setApplicableDays}
+              disabled={isLoading}
+            />
           </div>
 
           <div className="modal-footer">

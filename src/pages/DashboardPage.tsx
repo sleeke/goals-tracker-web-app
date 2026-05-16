@@ -118,8 +118,13 @@ export function DashboardPage() {
     }
   }, [goals, user?.uid])
 
-  const getGoalPeriod = (goal: Goal) => {
-    // calculate startDate and EndDate based on Goal frequency
+  /** Returns false only when applicableDays is a non-empty array that excludes today. */
+  const isGoalApplicableToday = (goal: Goal): boolean => {
+    if (!goal.applicableDays || goal.applicableDays.length === 0) return true
+    return goal.applicableDays.includes(new Date().getDay())
+  }
+
+  const getGoalPeriod = (goal: Goal) => {    // calculate startDate and EndDate based on Goal frequency
     const today = new Date()
     let startDate: Date
     let endDate: Date
@@ -392,9 +397,9 @@ export function DashboardPage() {
     }
   }
 
-  const activeGoals = goals.filter((g) => g.status === 'active')
+  const activeGoals = goals.filter((g) => g.status === 'active' && isGoalApplicableToday(g))
   const completedGoals = goals
-    .filter((g) => g.status === 'completed')
+    .filter((g) => g.status === 'completed' || (g.status === 'active' && !isGoalApplicableToday(g)))
     .sort((a, b) => {
       const dateA = a.completedDate ? new Date(a.completedDate).getTime() : 0
       const dateB = b.completedDate ? new Date(b.completedDate).getTime() : 0
@@ -461,7 +466,7 @@ export function DashboardPage() {
 
             {activeGoals.length === 0 && completedGoals.length > 0 && (
               <div className="empty-state">
-                <p>No active goals. Create one to get started!</p>
+                <p>No goals scheduled for today. Check the section below or create a new goal!</p>
               </div>
             )}
 
@@ -469,7 +474,7 @@ export function DashboardPage() {
               <div className="completed-goals-section">
                 <div className="completed-goals-header">
                   <h3>
-                    Completed Goals ({completedGoals.length})
+                    Completed &amp; Not Scheduled Today ({completedGoals.length})
                   </h3>
                   <button
                     className="btn-toggle-section"
