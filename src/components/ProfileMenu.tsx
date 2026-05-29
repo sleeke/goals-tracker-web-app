@@ -1,16 +1,67 @@
 import { useRef, useEffect, useState } from 'react'
 import { useTheme } from '@/context/theme'
 import { DARK_THEMES, LIGHT_THEMES, type Theme } from '@/context/theme'
+import {
+  getReminderSettings,
+  saveReminderSettings,
+  requestNotificationPermission,
+  getNotificationPermission,
+  showReminderNotification,
+  countRemainingGoals,
+} from '@/services/notificationService'
+import type { Goal } from '@/types'
 import './ProfileMenu.css'
 
 interface ProfileMenuProps {
   userEmail: string | null | undefined
   onLogout: () => void
+  onReminderSettingsChange?: () => void
+  goals?: Goal[]
+  goalProgress?: Record<string, number>
 }
 
-export function ProfileMenu({ userEmail, onLogout }: ProfileMenuProps) {
+export function ProfileMenu({
+  userEmail,
+  onLogout,
+  onReminderSettingsChange,
+  goals = [],
+  goalProgress = {},
+}: ProfileMenuProps) {
   const [open, setOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+
+  // Reminder settings state
+  const [reminderEnabled, setReminderEnabled] = useState(
+    () => getReminderSettings().enabled
+  )
+  const [reminderTime, setReminderTime] = useState(
+    () => getReminderSettings().time
+  )
+  const [notifPermission, setNotifPermission] = useState<NotificationPermission>(
+    () => getNotificationPermission()
+  )
+
+  const handleReminderToggle = async (checked: boolean) => {
+    if (checked && notifPermission !== 'granted') {
+      const perm = await requestNotificationPermission()
+      setNotifPermission(perm)
+      if (perm !== 'granted') return
+    }
+    saveReminderSettings({ enabled: checked, time: reminderTime })
+    setReminderEnabled(checked)
+    onReminderSettingsChange?.()
+  }
+
+  const handleReminderTimeChange = (time: string) => {
+    saveReminderSettings({ enabled: reminderEnabled, time })
+    setReminderTime(time)
+    onReminderSettingsChange?.()
+  }
+
+  const handleTestNotification = () => {
+    const remaining = countRemainingGoals(goals, goalProgress)
+    showReminderNotification(remaining)
+  }
   const {
     darkTheme, lightTheme, setDarkTheme, setLightTheme,
     autoTheme, setAutoTheme,
@@ -146,6 +197,58 @@ export function ProfileMenu({ userEmail, onLogout }: ProfileMenuProps) {
                 </label>
               ))}
             </div>
+          </div>
+
+          <div className="profile-divider" />
+
+          {/* Reminder settings */}
+          <div className="profile-section">
+            <div className="profile-section-label">Daily Reminder</div>
+
+            {notifPermission === 'denied' && (
+              <p className="profile-reminder-permission-denied">
+                <span className="material-icons-outlined" style={{ fontSize: 13, verticalAlign: 'text-bottom', marginRight: 4 }}>block</span>
+                Notifications blocked in browser settings.
+              </p>
+            )}
+
+            <label className="profile-auto-toggle">
+              <span className="material-icons-outlined profile-auto-icon">alarm</span>
+              <span className="profile-auto-label">Enable daily reminder</span>
+              <input
+                type="checkbox"
+                checked={reminderEnabled}
+                disabled={notifPermission === 'denied'}
+                onChange={(e) => handleReminderToggle(e.target.checked)}
+                className="profile-auto-checkbox"
+              />
+              <span className="profile-toggle-track">
+                <span className="profile-toggle-thumb" />
+              </span>
+            </label>
+
+            <div className={`profile-reminder-time-row${!reminderEnabled ? ' profile-mode-disabled' : ''}`}>
+              <span className="material-icons-outlined profile-auto-icon">schedule</span>
+              <span className="profile-auto-label">Reminder time</span>
+              <input
+                type="time"
+                className="profile-reminder-time-input"
+                value={reminderTime}
+                disabled={!reminderEnabled}
+                onChange={(e) => handleReminderTimeChange(e.target.value)}
+                aria-label="Daily reminder time"
+              />
+            </div>
+
+            {reminderEnabled && notifPermission === 'granted' && (
+              <button
+                className="profile-reminder-test-btn"
+                onClick={handleTestNotification}
+              >
+                <span className="material-icons-outlined">send</span>
+                Send test notification
+              </button>
+            )}
           </div>
 
           <div className="profile-divider" />

@@ -1,0 +1,66 @@
+/* ============================================
+   Reminder Banner — non-intrusive top-of-page toast
+   ============================================ */
+
+.reminder-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 10px 14px;
+  background: var(--surface-glass);
+  backdrop-filter: blur(var(--blur-glass));
+  -webkit-backdrop-filter: blur(var(--blur-glass));
+  border: 1px solid var(--surface-border);
+  border-left: 3px solid var(--accent-solid);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  animation: reminderSlideIn 0.25s ease;
+  margin-bottom: var(--space-md);
+}
+
+@keyframes reminderSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reminder-banner-icon {
+  font-size: 18px !important;
+  color: var(--accent-solid);
+  flex-shrink: 0;
+}
+
+.reminder-banner-message {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.reminder-banner-dismiss {
+  background: none;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast), background var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.reminder-banner-dismiss:hover {
+  color: var(--text-primary);
+  background: var(--surface-glass-hover);
+}
+
+.reminder-banner-dismiss .material-icons-outlined {
+  font-size: 16px;
+}
