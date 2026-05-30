@@ -42,6 +42,27 @@ const baseWeeklyGoal: Goal = {
   color: '#667eea',
 }
 
+describe('DashboardPage – loading state flicker', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    ;(updateGoal as Mock).mockResolvedValue(undefined)
+    ;(calculateGoalProgress as Mock).mockResolvedValue(0)
+    // subscribeToUserGoals captures the callback but does NOT invoke it —
+    // simulates network latency before the first Firestore snapshot arrives.
+    ;(subscribeToUserGoals as Mock).mockImplementation((_uid: string, _cb: unknown) => () => {})
+    ;(subscribeToGoalProgress as Mock).mockReturnValue(() => {})
+  })
+
+  it('shows the loading placeholder — not the empty state — while waiting for the first goals snapshot', () => {
+    const { queryByText } = render(<DashboardPage />)
+
+    // The subscription has not yet delivered any data.
+    // With the bug, isLoading is reset to false in the `finally` block before
+    // any goals arrive, so the "No goals yet" empty state briefly flashes.
+    expect(queryByText(/no goals yet/i)).not.toBeInTheDocument()
+  })
+})
+
 describe('DashboardPage – goal auto-complete', () => {
   beforeEach(() => {
     vi.clearAllMocks()

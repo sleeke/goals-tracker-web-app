@@ -48,9 +48,13 @@ export function DashboardPage() {
         setIsLoading(true)
         setError(null)
         
-        // Subscribe to real-time goal updates
+        // Subscribe to real-time goal updates.
+        // setIsLoading(false) is called inside the callback so the loading
+        // placeholder stays visible until the first snapshot actually arrives,
+        // preventing the empty-state flicker.
         const unsubscribe = subscribeToUserGoals(user.uid, (loadedGoals) => {
           setGoals(loadedGoals)
+          setIsLoading(false)
           loadProgressForGoals(loadedGoals)
         })
 
@@ -58,9 +62,8 @@ export function DashboardPage() {
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Failed to load goals'
         setError(message)
-        console.error('Error loading goals:', err)
-      } finally {
         setIsLoading(false)
+        console.error('Error loading goals:', err)
       }
     }
 
