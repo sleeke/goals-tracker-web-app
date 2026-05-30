@@ -48,9 +48,13 @@ export function DashboardPage() {
         setIsLoading(true)
         setError(null)
         
-        // Subscribe to real-time goal updates
+        // Subscribe to real-time goal updates.
+        // setIsLoading(false) is called inside the callback so the loading
+        // placeholder stays visible until the first snapshot actually arrives,
+        // preventing the empty-state flicker.
         const unsubscribe = subscribeToUserGoals(user.uid, (loadedGoals) => {
           setGoals(loadedGoals)
+          setIsLoading(false)
           loadProgressForGoals(loadedGoals)
         })
 
@@ -58,9 +62,8 @@ export function DashboardPage() {
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Failed to load goals'
         setError(message)
-        console.error('Error loading goals:', err)
-      } finally {
         setIsLoading(false)
+        console.error('Error loading goals:', err)
       }
     }
 
@@ -79,19 +82,17 @@ export function DashboardPage() {
 
     for (const goal of goals) {
       const unsubscribe = subscribeToGoalProgress(goal.id!, (progress) => {
-        // Calculate total progress for today
-        const today = new Date()
-        const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate())
-        const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59)
+        // Calculate total progress for the goal's current period (daily/weekly/monthly)
+        const { start, end } = getGoalPeriod(goal)
 
         console.log('[Dashboard] Progress subscription update for goal', goal.id, {
           progressRecords: progress.length,
-          startOfDay: startOfDay.toISOString(),
-          endOfDay: endOfDay.toISOString(),
+          periodStart: start.toISOString(),
+          periodEnd: end.toISOString(),
           records: progress.map(p => ({
             value: p.value,
             loggedAt: p.loggedAt?.toISOString?.() || p.loggedAt,
-            inRange: p.loggedAt >= startOfDay && p.loggedAt <= endOfDay,
+            inRange: p.loggedAt >= start && p.loggedAt <= end,
             revertedBy: p.revertedBy,
           }))
         })
@@ -99,7 +100,7 @@ export function DashboardPage() {
         const totalProgress = progress
           .filter((p) => {
             // loggedAt is now a proper JS Date thanks to subscribeToGoalProgress conversion
-            return p.loggedAt >= startOfDay && p.loggedAt <= endOfDay && !p.revertedBy
+            return p.loggedAt >= start && p.loggedAt <= end && !p.revertedBy
           })
           .reduce((total, p) => total + (p.value || 0), 0)
 
@@ -207,7 +208,6 @@ export function DashboardPage() {
       const message = err instanceof Error ? err.message : 'Failed to create goal'
       setError(message)
       console.error('Error creating goal:', err)
-    } finally {
       setIsLoading(false)
     }
   }
@@ -222,7 +222,6 @@ export function DashboardPage() {
       const message = err instanceof Error ? err.message : 'Failed to delete goal'
       setError(message)
       console.error('Error deleting goal:', err)
-    } finally {
       setIsLoading(false)
     }
   }
@@ -245,7 +244,6 @@ export function DashboardPage() {
       const message = err instanceof Error ? err.message : 'Failed to update goal'
       setError(message)
       console.error('Error updating goal:', err)
-    } finally {
       setIsLoading(false)
     }
   }
