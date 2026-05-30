@@ -79,19 +79,17 @@ export function DashboardPage() {
 
     for (const goal of goals) {
       const unsubscribe = subscribeToGoalProgress(goal.id!, (progress) => {
-        // Calculate total progress for today
-        const today = new Date()
-        const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate())
-        const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59)
+        // Calculate total progress for the goal's current period (daily/weekly/monthly)
+        const { start, end } = getGoalPeriod(goal)
 
         console.log('[Dashboard] Progress subscription update for goal', goal.id, {
           progressRecords: progress.length,
-          startOfDay: startOfDay.toISOString(),
-          endOfDay: endOfDay.toISOString(),
+          periodStart: start.toISOString(),
+          periodEnd: end.toISOString(),
           records: progress.map(p => ({
             value: p.value,
             loggedAt: p.loggedAt?.toISOString?.() || p.loggedAt,
-            inRange: p.loggedAt >= startOfDay && p.loggedAt <= endOfDay,
+            inRange: p.loggedAt >= start && p.loggedAt <= end,
             revertedBy: p.revertedBy,
           }))
         })
@@ -99,7 +97,7 @@ export function DashboardPage() {
         const totalProgress = progress
           .filter((p) => {
             // loggedAt is now a proper JS Date thanks to subscribeToGoalProgress conversion
-            return p.loggedAt >= startOfDay && p.loggedAt <= endOfDay && !p.revertedBy
+            return p.loggedAt >= start && p.loggedAt <= end && !p.revertedBy
           })
           .reduce((total, p) => total + (p.value || 0), 0)
 
