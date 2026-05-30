@@ -63,7 +63,6 @@ describe('DashboardPage – goal auto-complete', () => {
     const makeProgress = (id: string, loggedAt: Date): Progress => ({
       id,
       goalId: 'goal-weekly',
-      userId: 'user-1',
       value: 1,
       loggedAt,
       timestamp: loggedAt,
