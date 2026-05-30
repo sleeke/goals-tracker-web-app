@@ -208,7 +208,6 @@ export function DashboardPage() {
       const message = err instanceof Error ? err.message : 'Failed to create goal'
       setError(message)
       console.error('Error creating goal:', err)
-    } finally {
       setIsLoading(false)
     }
   }
@@ -223,7 +222,6 @@ export function DashboardPage() {
       const message = err instanceof Error ? err.message : 'Failed to delete goal'
       setError(message)
       console.error('Error deleting goal:', err)
-    } finally {
       setIsLoading(false)
     }
   }
@@ -246,7 +244,6 @@ export function DashboardPage() {
       const message = err instanceof Error ? err.message : 'Failed to update goal'
       setError(message)
       console.error('Error updating goal:', err)
-    } finally {
       setIsLoading(false)
     }
   }

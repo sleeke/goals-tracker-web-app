@@ -1,4 +1,4 @@
-import { act, render } from '@/test/test-utils'
+import { act, render, fireEvent } from '@/test/test-utils'
 import { describe, it, expect, vi, afterEach, beforeEach, type Mock } from 'vitest'
 import { DashboardPage } from '@/pages/DashboardPage'
 import type { Goal, Progress } from '@/types'
@@ -24,7 +24,7 @@ vi.mock('@/services/progressService', () => ({
   calculateGoalProgress: vi.fn(),
 }))
 
-import { subscribeToUserGoals, updateGoal } from '@/services/goalService'
+import { subscribeToUserGoals, updateGoal, createGoal } from '@/services/goalService'
 import { subscribeToGoalProgress, calculateGoalProgress } from '@/services/progressService'
 
 const baseWeeklyGoal: Goal = {
@@ -149,5 +149,76 @@ describe('DashboardPage – goal auto-complete', () => {
       'goal-weekly',
       expect.objectContaining({ status: 'active' }),
     )
+  })
+})
+
+// ── CRUD operation flicker ────────────────────────────────────────────────────
+//
+// Root cause: handleCreateGoal (and the other CRUD handlers) call
+// setIsLoading(false) in a `finally` block.  When a user creates their very
+// first goal the sequence is:
+//
+//   1. setIsLoading(true)           → isLoading=true,  goals=[]  → loading placeholder ✓
+//   2. await createGoal(...)        → write succeeds
+//   3. finally: setIsLoading(false) → isLoading=false, goals=[]  → "No goals yet" ← BUG
+//   4. subscription fires           → isLoading=false, goals=[…] → goals shown ✓
+//
+// The fix: remove setIsLoading(false) from the finally block (success path).
+// isLoading stays true until the subscription delivers the new goal.
+// Errors still call setIsLoading(false) from the catch block.
+
+describe('DashboardPage – first-goal creation flicker', () => {
+  let capturedGoalsCallback: ((goals: Goal[]) => void) | undefined
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    ;(updateGoal as Mock).mockResolvedValue(undefined)
+    ;(calculateGoalProgress as Mock).mockResolvedValue(0)
+    ;(subscribeToGoalProgress as Mock).mockReturnValue(() => {})
+    // Subscription captures the callback. Fired once with [] to reach the
+    // "no goals yet" initial state. NOT fired again after the write — simulates
+    // Firestore latency between the write completing and the snapshot arriving.
+    ;(subscribeToUserGoals as Mock).mockImplementation((_uid, cb) => {
+      capturedGoalsCallback = cb
+      return () => {}
+    })
+    // createGoal resolves immediately (write succeeded; snapshot not yet delivered)
+    ;(createGoal as Mock).mockResolvedValue({ id: 'goal-new', title: 'My First Goal' })
+  })
+
+  it('does not flash "No goals yet" after createGoal resolves but before the subscription fires', async () => {
+    const { queryByText, getByRole, getByLabelText } = render(<DashboardPage />)
+
+    // 1. Fire subscription with empty goals → isLoading=false, goals=[]
+    //    This enables the "New Goal" button and shows the empty state.
+    await act(async () => {
+      capturedGoalsCallback!([])
+    })
+    expect(queryByText(/no goals yet/i)).toBeInTheDocument()
+
+    // 2. Open the Create Goal modal
+    await act(async () => {
+      fireEvent.click(getByRole('button', { name: /new goal/i }))
+    })
+
+    // 3. Fill in the required title field
+    await act(async () => {
+      fireEvent.change(getByLabelText('Goal Title *'), {
+        target: { value: 'My First Goal' },
+      })
+    })
+
+    // 4. Submit the form. createGoal resolves immediately in the mock.
+    //    handleCreateGoal: setIsLoading(true) → await createGoal → finally: setIsLoading(false)
+    //    On BUGGY code:  isLoading=false, goals=[] → "No goals yet" flashes back.
+    //    On FIXED code:  isLoading stays true until subscription fires → loading placeholder.
+    await act(async () => {
+      fireEvent.click(getByRole('button', { name: /create goal/i }))
+    })
+
+    // REGRESSION ASSERTION: the empty-state must NOT appear during the create operation.
+    // On buggy code this FAILS because finally: setIsLoading(false) fires before
+    // the Firestore subscription delivers the new goal.
+    expect(queryByText(/no goals yet/i)).not.toBeInTheDocument()
   })
 })
