@@ -6,6 +6,8 @@ import { ProgressHistoryModal } from '@/components/ProgressHistoryModal'
 import { GoalCard } from '@/components/GoalCard'
 import { ProgressLoggerModal } from '@/components/ProgressLoggerModal'
 import { ProfileMenu } from '@/components/ProfileMenu'
+import { ReminderBanner } from '@/components/ReminderBanner'
+import { useDailyReminder } from '@/hooks/useDailyReminder'
 import {
   createGoal,
   updateGoal,
@@ -398,6 +400,12 @@ export function DashboardPage() {
   }
 
   const activeGoals = goals.filter((g) => g.status === 'active' && isGoalApplicableToday(g))
+
+  const { showBanner, remainingCount, dismissBanner, reschedule } = useDailyReminder(
+    activeGoals,
+    goalProgress
+  )
+
   const completedGoals = goals
     .filter((g) => g.status === 'completed' || (g.status === 'active' && !isGoalApplicableToday(g)))
     .sort((a, b) => {
@@ -418,11 +426,21 @@ export function DashboardPage() {
             <span className="material-icons-outlined" style={{ fontSize: 16, marginRight: 4, verticalAlign: 'text-bottom' }}>add</span>
             New Goal
           </button>
-          <ProfileMenu userEmail={user?.email} onLogout={handleLogout} />
+          <ProfileMenu
+            userEmail={user?.email}
+            onLogout={handleLogout}
+            onReminderSettingsChange={reschedule}
+            goals={activeGoals}
+            goalProgress={goalProgress}
+          />
         </div>
       </header>
 
       <main className="dashboard-content">
+        {showBanner && (
+          <ReminderBanner remainingCount={remainingCount} onDismiss={dismissBanner} />
+        )}
+
         {error && (
           <div className="error-banner">
             <div className="error-message-header">
